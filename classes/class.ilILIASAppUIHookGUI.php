@@ -19,7 +19,7 @@ class ilILIASAppUIHookGUI extends ilUIHookPluginGUI {
             /** @var $ilUser ilObjUser */
             global $ilUser;
             $appDirectory = './Customizing/global/plugins/Services/UIComponent/UserInterfaceHook/REST/RESTController/';
-            require_once($appDirectory . 'app.php');
+            require_once($appDirectory . 'RESTController.php');
             \RESTController\RESTController::registerAutoloader();
             $restController = new \RESTController\RESTController($appDirectory);
             $client = \RESTController\core\oauth2_v2\Common::CheckApiKey('ilias_app');
