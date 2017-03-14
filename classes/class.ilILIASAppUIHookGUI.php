@@ -7,7 +7,8 @@ require_once('./Services/UIComponent/classes/class.ilUIHookPluginGUI.php');
  *
  * @author Stefan Wanzenried <sw@studer-raimann.ch>
  */
-class ilILIASAppUIHookGUI extends ilUIHookPluginGUI {
+class ilILIASAppUIHookGUI extends ilUIHookPluginGUI
+{
 
     public function gotoHook()
     {
@@ -21,7 +22,7 @@ class ilILIASAppUIHookGUI extends ilUIHookPluginGUI {
             $appDirectory = './Customizing/global/plugins/Services/UIComponent/UserInterfaceHook/REST/RESTController/';
             require_once($appDirectory . 'RESTController.php');
             \RESTController\RESTController::registerAutoloader();
-            $restController = new \RESTController\RESTController($appDirectory);
+            $restController = new \RESTController\RESTController();
             $client = \RESTController\core\oauth2_v2\Common::CheckApiKey('ilias_app');
             $userId = $ilUser->getId();
             $withRefresh = $client->getKey('refresh_resource_owner');
