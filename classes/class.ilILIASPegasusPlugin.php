@@ -2,21 +2,21 @@
 include_once('./Services/UIComponent/classes/class.ilUserInterfaceHookPlugin.php');
 
 /**
- * Class ilILIASAppPlugin
+ * Class ilILIASPegasusPlugin
  *
  * @author Stefan Wanzenried <sw@studer-raimann.ch>
  */
-class ilILIASAppPlugin extends ilUserInterfaceHookPlugin
+class ilILIASPegasusPlugin extends ilUserInterfaceHookPlugin
 {
 
     /**
-     * @var ilILIASAppPlugin
+     * @var ilILIASPegasusPlugin
      */
     protected static $instance;
 
 
     /**
-     * @return ilILIASAppPlugin
+     * @return ilILIASPegasusPlugin
      */
     public static function getInstance()
     {
@@ -33,6 +33,6 @@ class ilILIASAppPlugin extends ilUserInterfaceHookPlugin
      */
     public function getPluginName()
     {
-        return 'ILIASApp';
+        return 'ILIASPegasus';
     }
 }

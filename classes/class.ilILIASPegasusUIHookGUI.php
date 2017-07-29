@@ -3,11 +3,11 @@
 require_once('./Services/UIComponent/classes/class.ilUIHookPluginGUI.php');
 
 /**
- * Class ilILIASAppUIHookGUI
+ * Class ilILIASPegasusUIHookGUI
  *
  * @author Stefan Wanzenried <sw@studer-raimann.ch>
  */
-class ilILIASAppUIHookGUI extends ilUIHookPluginGUI
+class ilILIASPegasusUIHookGUI extends ilUIHookPluginGUI
 {
 
     public function gotoHook()
@@ -23,11 +23,11 @@ class ilILIASAppUIHookGUI extends ilUIHookPluginGUI
             require_once($appDirectory . 'RESTController.php');
             \RESTController\RESTController::registerAutoloader();
             $restController = new \RESTController\RESTController();
-            $client = \RESTController\core\oauth2_v2\Common::CheckApiKey('ilias_app');
+            $client = \RESTController\core\oauth2_v2\Common::CheckApiKey('ilias_pegasus');
             $userId = $ilUser->getId();
             $withRefresh = $client->getKey('refresh_resource_owner');
             $iliasClient = $_COOKIE['ilClientId'];
-            $oauthData = \RESTController\core\oauth2_v2\Common::GetResponse('ilias_app', $userId, $iliasClient, null, $withRefresh);
+            $oauthData = \RESTController\core\oauth2_v2\Common::GetResponse('ilias_pegasus', $userId, $iliasClient, null, $withRefresh);
             $data = array(
                 $ilUser->getId(),
                 $ilUser->getLogin(),
@@ -53,7 +53,7 @@ class ilILIASAppUIHookGUI extends ilUIHookPluginGUI
         if (!isset($_GET['target'])) {
             return false;
         }
-        if ($_GET['target'] != 'ilias_app_oauth2') {
+        if ($_GET['target'] != 'ilias_pegasus_oauth2') {
             return false;
         }
 
