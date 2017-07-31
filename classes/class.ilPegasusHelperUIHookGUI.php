@@ -3,11 +3,12 @@
 require_once('./Services/UIComponent/classes/class.ilUIHookPluginGUI.php');
 
 /**
- * Class ilILIASPegasusUIHookGUI
+ * Class ilPegasusHelperUIHookGUI
  *
  * @author Stefan Wanzenried <sw@studer-raimann.ch>
+ * @author Martin Studer <ms@studer-raimann.ch>
  */
-class ilILIASPegasusUIHookGUI extends ilUIHookPluginGUI
+class ilPegasusHelperUIHookGUI extends ilUIHookPluginGUI
 {
 
     public function gotoHook()
@@ -19,15 +20,9 @@ class ilILIASPegasusUIHookGUI extends ilUIHookPluginGUI
         try {
             /** @var $ilUser ilObjUser */
             global $ilUser;
-            $appDirectory = './Customizing/global/plugins/Services/UIComponent/UserInterfaceHook/REST/RESTController/';
-            require_once($appDirectory . 'RESTController.php');
-            \RESTController\RESTController::registerAutoloader();
-            $restController = new \RESTController\RESTController();
-            $client = \RESTController\core\oauth2_v2\Common::CheckApiKey('ilias_pegasus');
-            $userId = $ilUser->getId();
-            $withRefresh = $client->getKey('refresh_resource_owner');
-            $iliasClient = $_COOKIE['ilClientId'];
-            $oauthData = \RESTController\core\oauth2_v2\Common::GetResponse('ilias_pegasus', $userId, $iliasClient, null, $withRefresh);
+
+            $oauthData = self::createAccessToken('ilias_pegasus');
+
             $data = array(
                 $ilUser->getId(),
                 $ilUser->getLogin(),
@@ -40,6 +35,28 @@ class ilILIASPegasusUIHookGUI extends ilUIHookPluginGUI
             die();
         } catch (Exception $e) {
         }
+    }
+
+
+    /**
+     * User has a valid session, create an access token
+     *
+     * @param $api_key
+     * @return array
+     */
+    public static function createAccessToken($api_key) {
+        global $ilUser;
+        $appDirectory = './Customizing/global/plugins/Services/UIComponent/UserInterfaceHook/REST/RESTController/';
+        require_once($appDirectory . 'RESTController.php');
+        \RESTController\RESTController::registerAutoloader();
+        $restController = new \RESTController\RESTController();
+        $client = \RESTController\core\oauth2_v2\Common::CheckApiKey($api_key);
+        $userId = $ilUser->getId();
+        $withRefresh = $client->getKey('refresh_resource_owner');
+        $iliasClient = $_COOKIE['ilClientId'];
+        $oauthData = \RESTController\core\oauth2_v2\Common::GetResponse($api_key, $userId, $iliasClient, null, $withRefresh);
+
+        return $oauthData;
     }
 
 

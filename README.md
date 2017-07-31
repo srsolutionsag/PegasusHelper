@@ -6,7 +6,7 @@ Start at your ILIAS root directory
 ```bash
 mkdir -p Customizing/global/plugins/Services/UIComponent/UserInterfaceHook/  
 cd Customizing/global/plugins/Services/UIComponent/UserInterfaceHook/  
-git clone https://github.com/studer-raimann/ILIASPegasusPlugin.git  
+git clone https://github.com/studer-raimann/PegasusHelper.git  
 ```  
 
 ###Contact

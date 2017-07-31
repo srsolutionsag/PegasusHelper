@@ -2,21 +2,22 @@
 include_once('./Services/UIComponent/classes/class.ilUserInterfaceHookPlugin.php');
 
 /**
- * Class ilPegasusHelper
+ * Class ilPegasusHelperPlugin
  *
  * @author Stefan Wanzenried <sw@studer-raimann.ch>
+ * @author Martin Studer <ms@studer-raimann.ch>
  */
-class ilPegasusHelper extends ilUserInterfaceHookPlugin
+class ilPegasusHelperPlugin extends ilUserInterfaceHookPlugin
 {
 
     /**
-     * @var ilPegasusHelper
+     * @var ilPegasusHelperPlugin
      */
     protected static $instance;
 
 
     /**
-     * @return ilPegasusHelper
+     * @return ilPegasusHelperPlugin
      */
     public static function getInstance()
     {
@@ -34,5 +35,21 @@ class ilPegasusHelper extends ilUserInterfaceHookPlugin
     public function getPluginName()
     {
         return 'PegasusHelper';
+    }
+
+    /**
+     * Before update processing
+     */
+    protected function beforeUpdate()
+    {
+        /**
+         * @var ilPluginAdmin $ilPluginAdmin
+         */
+        global $ilPluginAdmin;
+        if(!$ilPluginAdmin->isActive(IL_COMP_SERVICE, 'UIComponent', 'uihk', 'REST')) {
+            ilUtil::sendFailure('Please install the ILIAS REST Plugin first!',true);
+            return false;
+        }
+        return true;
     }
 }
