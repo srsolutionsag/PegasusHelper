@@ -20,7 +20,7 @@ git clone https://github.com/studer-raimann/PegasusHelper.git
 ```
 Update and activate the plugin in the ILIAS Plugin Administration
 
-3. Get the API Secret
+3. Get the API Secret  
 3.1 Go to the ILIAS Plugin Administration  
 3.2 Choose the Action 'Configure' of the REST Plugin  
 3.3 Click the Button 'Start Administration Panel'  
