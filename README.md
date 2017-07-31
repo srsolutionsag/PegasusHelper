@@ -1,6 +1,7 @@
 ## Installation
 
-1. Install RESTPlugin; Branch feature/sr-app-routes  
+### 1. Install RESTPlugin
+Branch feature/sr-app-routes  
 Start at your ILIAS root directory 
 ```bash
 mkdir -p Customizing/global/plugins/Services/UIComponent/UserInterfaceHook/  
@@ -11,7 +12,7 @@ git checkout feature/sr-app-routes
 ```  
 Update and activate the plugin in the ILIAS Plugin Administration
 
-2. Install PegausHelper
+### 2. Install PegausHelper
 Start at your ILIAS root directory 
 ```bash
 cd Customizing/global/plugins/Services/UIComponent/UserInterfaceHook/  
