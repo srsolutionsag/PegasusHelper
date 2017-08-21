@@ -46,7 +46,7 @@ class ilPegasusHelperUIHookGUI extends ilUIHookPluginGUI
 	 *
 	 * @return array
 	 */
-	function getHTML($a_comp, $a_part, $a_par = array()) {
+	public function getHTML($a_comp, $a_part, $a_par = array()) {
 
 		switch (true) {
 			case $this->isExcluded():
