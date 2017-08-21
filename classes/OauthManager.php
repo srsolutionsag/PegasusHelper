@@ -99,8 +99,11 @@ class OauthManager {
 	 * @return string|boolean false, if no client id is found, otherwise the client id
 	 */
 	public static function getRestClientId($access_token) {
+		global $ilIliasIniFile;
 		$ch = curl_init();
-		curl_setopt($ch, CURLOPT_URL, ilUtil::_getHttpPath()."/Customizing/global/plugins/Services/UIComponent/UserInterfaceHook/REST/api.php/v1/clients");
+		$HOST = $ilIliasIniFile->readVariable('server', 'http_path');
+
+		curl_setopt($ch, CURLOPT_URL, $HOST."/Customizing/global/plugins/Services/UIComponent/UserInterfaceHook/REST/api.php/v1/clients");
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 		curl_setopt($ch, CURLOPT_HTTPHEADER, array('Authorization: Bearer ' . $access_token));
 

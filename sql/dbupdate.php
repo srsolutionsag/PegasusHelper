@@ -38,19 +38,21 @@
                             'users' => null,
                             'scopes' => null,
                             'description' => 'ILIAS Pegasus App');
-
-
+	global $ilIliasIniFile;
+	$HOST = $ilIliasIniFile->readVariable('server', 'http_path');
     $ch = curl_init();
-    curl_setopt($ch, CURLOPT_URL, ilUtil::_getHttpPath()."/Customizing/global/plugins/Services/UIComponent/UserInterfaceHook/REST/api.php/v1/clients");
+    curl_setopt($ch, CURLOPT_URL, $HOST."/Customizing/global/plugins/Services/UIComponent/UserInterfaceHook/REST/api.php/v1/clients");
     curl_setopt($ch, CURLOPT_POST, true );
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
     curl_setopt($ch, CURLOPT_HTTPHEADER, array('Authorization: Bearer ' . $oauthData['access_token']));
     curl_setopt($ch, CURLOPT_POSTFIELDS, $params );
     $result = curl_exec($ch);
+
     $arr_result = json_decode($result, true);
     if($arr_result['error']) {
         throw new ilDatabaseException($arr_result['error']['message']);
     }
+
 ?>
 <#2>
 <?php
@@ -72,12 +74,14 @@
 ?>
 <#3>
 <?php
+	global $ilIliasIniFile;
     require_once "./Customizing/global/plugins/Services/UIComponent/UserInterfaceHook/PegasusHelper/classes/class.ilPegasusHelperUIHookGUI.php";
     $oauthData = ilPegasusHelperUIHookGUI::createAccessToken('apollon');
 
     $params = array( 'value' => '4500000');
     $ch = curl_init();
-    curl_setopt($ch, CURLOPT_URL, ilUtil::_getHttpPath()."/Customizing/global/plugins/Services/UIComponent/UserInterfaceHook/REST/api.php/v2/admin/config/refresh_token_ttl");
+	$HOST = $ilIliasIniFile->readVariable('server', 'http_path');
+    curl_setopt($ch, CURLOPT_URL, $HOST."/Customizing/global/plugins/Services/UIComponent/UserInterfaceHook/REST/api.php/v2/admin/config/refresh_token_ttl");
     curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'PUT');
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
     curl_setopt($ch, CURLOPT_HTTPHEADER, array('Authorization: Bearer ' . $oauthData['access_token']));
@@ -90,7 +94,7 @@
 ?>
 <#4>
 <?php
-    global $ilias;
+    global $ilias, $ilIliasIniFile;
 
     require_once "./Customizing/global/plugins/Services/UIComponent/UserInterfaceHook/PegasusHelper/classes/class.ilPegasusHelperUIHookGUI.php";
     $oauthData = ilPegasusHelperUIHookGUI::createAccessToken('apollon');
@@ -105,7 +109,8 @@
     $params = array('pattern' => '/v1/ilias-app/desktop',
                     'verb' => 'GET');
     $ch = curl_init();
-    curl_setopt($ch, CURLOPT_URL, ilUtil::_getHttpPath()."/Customizing/global/plugins/Services/UIComponent/UserInterfaceHook/REST/api.php/v2/admin/permission/".$rest_client_id);
+	$HOST = $ilIliasIniFile->readVariable('server', 'http_path');
+    curl_setopt($ch, CURLOPT_URL, $HOST."/Customizing/global/plugins/Services/UIComponent/UserInterfaceHook/REST/api.php/v2/admin/permission/".$rest_client_id);
     curl_setopt($ch, CURLOPT_POST, true );
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
     curl_setopt($ch, CURLOPT_HTTPHEADER, array('Authorization: Bearer ' . $oauthData['access_token']));
@@ -119,7 +124,7 @@
 ?>
 <#5>
 <?php
-    global $ilias;
+    global $ilias, $ilIliasIniFile;
     require_once "./Customizing/global/plugins/Services/UIComponent/UserInterfaceHook/PegasusHelper/classes/class.ilPegasusHelperUIHookGUI.php";
     $oauthData = ilPegasusHelperUIHookGUI::createAccessToken('apollon');
 
@@ -131,7 +136,8 @@
     $params = array('pattern' => '/v1/ilias-app/desktop',
         'verb' => 'OPTIONS');
     $ch = curl_init();
-    curl_setopt($ch, CURLOPT_URL, ilUtil::_getHttpPath()."/Customizing/global/plugins/Services/UIComponent/UserInterfaceHook/REST/api.php/v2/admin/permission/".$rest_client_id);
+	$HOST = $ilIliasIniFile->readVariable('server', 'http_path');
+    curl_setopt($ch, CURLOPT_URL, $HOST."/Customizing/global/plugins/Services/UIComponent/UserInterfaceHook/REST/api.php/v2/admin/permission/".$rest_client_id);
     curl_setopt($ch, CURLOPT_POST, true );
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
     curl_setopt($ch, CURLOPT_HTTPHEADER, array('Authorization: Bearer ' . $oauthData['access_token']));
@@ -145,7 +151,7 @@
 ?>
 <#6>
 <?php
-    global $ilias;
+    global $ilias, $ilIliasIniFile;
     require_once "./Customizing/global/plugins/Services/UIComponent/UserInterfaceHook/PegasusHelper/classes/class.ilPegasusHelperUIHookGUI.php";
     $oauthData = ilPegasusHelperUIHookGUI::createAccessToken('apollon');
 
@@ -157,7 +163,8 @@
     $params = array('pattern' => '/v1/ilias-app/objects/:refId',
         'verb' => 'GET');
     $ch = curl_init();
-    curl_setopt($ch, CURLOPT_URL, ilUtil::_getHttpPath()."/Customizing/global/plugins/Services/UIComponent/UserInterfaceHook/REST/api.php/v2/admin/permission/".$rest_client_id);
+	$HOST = $ilIliasIniFile->readVariable('server', 'http_path');
+    curl_setopt($ch, CURLOPT_URL, $HOST."/Customizing/global/plugins/Services/UIComponent/UserInterfaceHook/REST/api.php/v2/admin/permission/".$rest_client_id);
     curl_setopt($ch, CURLOPT_POST, true );
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
     curl_setopt($ch, CURLOPT_HTTPHEADER, array('Authorization: Bearer ' . $oauthData['access_token']));
@@ -171,7 +178,7 @@
 ?>
 <#7>
 <?php
-    global $ilias;
+    global $ilias, $ilIliasIniFile;
     require_once "./Customizing/global/plugins/Services/UIComponent/UserInterfaceHook/PegasusHelper/classes/class.ilPegasusHelperUIHookGUI.php";
     $oauthData = ilPegasusHelperUIHookGUI::createAccessToken('apollon');
 
@@ -183,7 +190,8 @@
     $params = array('pattern' => '/v1/ilias-app/objects/:refId',
                     'verb' => 'OPTIONS');
     $ch = curl_init();
-    curl_setopt($ch, CURLOPT_URL, ilUtil::_getHttpPath()."/Customizing/global/plugins/Services/UIComponent/UserInterfaceHook/REST/api.php/v2/admin/permission/".$rest_client_id);
+	$HOST = $ilIliasIniFile->readVariable('server', 'http_path');
+    curl_setopt($ch, CURLOPT_URL, $HOST."/Customizing/global/plugins/Services/UIComponent/UserInterfaceHook/REST/api.php/v2/admin/permission/".$rest_client_id);
     curl_setopt($ch, CURLOPT_POST, true );
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
     curl_setopt($ch, CURLOPT_HTTPHEADER, array('Authorization: Bearer ' . $oauthData['access_token']));
@@ -197,7 +205,7 @@
 ?>
 <#8>
 <?php
-    global $ilias;
+    global $ilias, $ilIliasIniFile;
     require_once "./Customizing/global/plugins/Services/UIComponent/UserInterfaceHook/PegasusHelper/classes/class.ilPegasusHelperUIHookGUI.php";
     $oauthData = ilPegasusHelperUIHookGUI::createAccessToken('apollon');
 
@@ -209,7 +217,8 @@
     $params = array('pattern' => '/v1/ilias-app/files/:refId',
                     'verb' => 'GET');
     $ch = curl_init();
-    curl_setopt($ch, CURLOPT_URL, ilUtil::_getHttpPath()."/Customizing/global/plugins/Services/UIComponent/UserInterfaceHook/REST/api.php/v2/admin/permission/".$rest_client_id);
+	$HOST = $ilIliasIniFile->readVariable('server', 'http_path');
+    curl_setopt($ch, CURLOPT_URL, $HOST."/Customizing/global/plugins/Services/UIComponent/UserInterfaceHook/REST/api.php/v2/admin/permission/".$rest_client_id);
     curl_setopt($ch, CURLOPT_POST, true );
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
     curl_setopt($ch, CURLOPT_HTTPHEADER, array('Authorization: Bearer ' . $oauthData['access_token']));
@@ -249,7 +258,7 @@
 ?>
 <#10>
 <?php
-    global $ilias;
+    global $ilias, $ilIliasIniFile;
     require_once "./Customizing/global/plugins/Services/UIComponent/UserInterfaceHook/PegasusHelper/classes/class.ilPegasusHelperUIHookGUI.php";
     $oauthData = ilPegasusHelperUIHookGUI::createAccessToken('apollon');
 
@@ -261,7 +270,8 @@
     $params = array('pattern' => '/v1/files/:id',
         'verb' => 'GET');
     $ch = curl_init();
-    curl_setopt($ch, CURLOPT_URL, ilUtil::_getHttpPath()."/Customizing/global/plugins/Services/UIComponent/UserInterfaceHook/REST/api.php/v2/admin/permission/".$rest_client_id);
+	$HOST = $ilIliasIniFile->readVariable('server', 'http_path');
+    curl_setopt($ch, CURLOPT_URL, $HOST."/Customizing/global/plugins/Services/UIComponent/UserInterfaceHook/REST/api.php/v2/admin/permission/".$rest_client_id);
     curl_setopt($ch, CURLOPT_POST, true );
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
     curl_setopt($ch, CURLOPT_HTTPHEADER, array('Authorization: Bearer ' . $oauthData['access_token']));
