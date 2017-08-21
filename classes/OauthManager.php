@@ -1,10 +1,11 @@
 <?php
 
 /**
- * Class OauthManager
+ * Class OauthManager handles an authentication when a user
+ * logs in from ILIAS Pegasus app.
  *
  * @author  Nicolas Märchy <nm@studer-raimann.ch>
- * @version 0.0.1
+ * @version 1.0.0
  *
  */
 class OauthManager {
@@ -12,7 +13,6 @@ class OauthManager {
 	const API_KEY = 'ilias_pegasus';
 
 	/**
-	 *
 	 * Checks if the {@code target} GET parameter is set
 	 * and if its marked for Oauth of ILIAS Pegasus.
 	 *
@@ -65,10 +65,16 @@ class OauthManager {
 	}
 
 	/**
-	 * Creates an access token by calling
+	 * Creates an access token by interacting with ILIAS REST plugin.
+	 * The resulting data contains:
+	 * [
+	 *  "access_token" => "<access_token>",
+	 *  "refresh_token" => "<refresh_token>"
+	 * ]
 	 *
-	 * @param $api_key
-	 * @return array
+	 * @param $api_key string the api key for the REST request
+	 *
+	 * @return array the resulting data
 	 */
 	public static function createAccessToken($api_key) {
 		global $ilUser;
@@ -90,8 +96,10 @@ class OauthManager {
 	}
 
 	/**
-	 * @param $access_token
-	 * @return mixed
+	 * Executes a curl request to get the client id.
+	 *
+	 * @param $access_token string a valid access token for ILIAS REST
+	 * @return string|boolean false, if no client id is found, otherwise the client id
 	 */
 	public static function getRestClientId($access_token) {
 		$ch = curl_init();
