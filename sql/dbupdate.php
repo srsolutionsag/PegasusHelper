@@ -49,7 +49,7 @@
     $result = curl_exec($ch);
 
     $arr_result = json_decode($result, true);
-    if($arr_result['error']) {
+    if($arr_result['error'] || curl_error($ch)) {
         throw new ilDatabaseException($arr_result['error']['message']);
     }
 
