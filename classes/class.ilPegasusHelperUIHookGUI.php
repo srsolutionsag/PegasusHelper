@@ -49,6 +49,8 @@ class ilPegasusHelperUIHookGUI extends ilUIHookPluginGUI
 	function getHTML($a_comp, $a_part, $a_par = array()) {
 
 		switch (true) {
+			case $this->isExcluded():
+				return parent::getHTML($a_comp, $a_part, $a_par);
 			case $this->outhManager->isHandler():
 				$data = $this->outhManager->authenticate();
 				$encodedData = implode('|||', $data);
@@ -62,6 +64,12 @@ class ilPegasusHelperUIHookGUI extends ilUIHookPluginGUI
 			default:
 				return parent::getHTML($a_comp, $a_part, $a_par);
 		}
+	}
+
+	private function isExcluded() {
+
+		return !(isset($_GET['target'])
+			&& preg_match("/^ilias_app.*$/", $_GET['target']) === 1);
 	}
 
 

@@ -22,9 +22,6 @@ class OauthManager {
 
 		global $ilUser;
 
-		if (!isset($_GET['target'])) {
-			return false;
-		}
 		if ($_GET['target'] != 'ilias_app_oauth2') {
 			return false;
 		}
