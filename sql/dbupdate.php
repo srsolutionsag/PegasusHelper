@@ -1,6 +1,6 @@
 <#1>
 <?php
-    require_once "./Customizing/global/plugins/Services/UIComponent/UserInterfaceHook/PegasusHelper/classes/class.ilPegasusHelperUIHookGUI.php";
+    require_once "./Customizing/global/plugins/Services/UIComponent/UserInterfaceHook/PegasusHelper/classes/OauthManager.php";
     /**
      * @param int $length
      * @return string
@@ -16,7 +16,7 @@
     //'xxxx.xxxx-xx'
     $api_secret = getRandString(4).".".getRandString(4)."-".getRandString(2);
 
-    $oauthData = ilPegasusHelperUIHookGUI::createAccessToken('apollon');
+    $oauthData = OauthManager::createAccessToken('apollon');
 
     $params = array( 'id' => null,
                             'api_key' => "ilias_pegasus",
@@ -56,8 +56,8 @@
 ?>
 <#2>
 <?php
-    require_once "./Customizing/global/plugins/Services/UIComponent/UserInterfaceHook/PegasusHelper/classes/class.ilPegasusHelperUIHookGUI.php";
-    $oauthData = ilPegasusHelperUIHookGUI::createAccessToken('apollon');
+    require_once "./Customizing/global/plugins/Services/UIComponent/UserInterfaceHook/PegasusHelper/classes/OauthManager.php";
+    $oauthData = OauthManager::createAccessToken('apollon');
 
     $params = array( 'value' => '3600000');
     $ch = curl_init();
@@ -75,8 +75,8 @@
 <#3>
 <?php
 	global $ilIliasIniFile;
-    require_once "./Customizing/global/plugins/Services/UIComponent/UserInterfaceHook/PegasusHelper/classes/class.ilPegasusHelperUIHookGUI.php";
-    $oauthData = ilPegasusHelperUIHookGUI::createAccessToken('apollon');
+    require_once "./Customizing/global/plugins/Services/UIComponent/UserInterfaceHook/PegasusHelper/classes/OauthManager.php";
+    $oauthData = OauthManager::createAccessToken('apollon');
 
     $params = array( 'value' => '4500000');
     $ch = curl_init();
@@ -96,13 +96,13 @@
 <?php
     global $ilias, $ilIliasIniFile;
 
-    require_once "./Customizing/global/plugins/Services/UIComponent/UserInterfaceHook/PegasusHelper/classes/class.ilPegasusHelperUIHookGUI.php";
-    $oauthData = ilPegasusHelperUIHookGUI::createAccessToken('apollon');
+    require_once "./Customizing/global/plugins/Services/UIComponent/UserInterfaceHook/PegasusHelper/classes/OauthManager.php";
+    $oauthData = OauthManager::createAccessToken('apollon');
 
-    $rest_client_id = ilPegasusHelperUIHookGUI::getRestClientId($oauthData['access_token']);
+    $rest_client_id = OauthManager::getRestClientId($oauthData['access_token']);
 
     if(!$rest_client_id) {
-        throw new ilDatabaseException("REST Client ".ilPegasusHelperUIHookGUI::API_KEY." is not configured");
+        throw new ilDatabaseException("REST Client ".OauthManager::API_KEY." is not configured");
     }
 
 
@@ -125,12 +125,12 @@
 <#5>
 <?php
     global $ilias, $ilIliasIniFile;
-    require_once "./Customizing/global/plugins/Services/UIComponent/UserInterfaceHook/PegasusHelper/classes/class.ilPegasusHelperUIHookGUI.php";
-    $oauthData = ilPegasusHelperUIHookGUI::createAccessToken('apollon');
+    require_once "./Customizing/global/plugins/Services/UIComponent/UserInterfaceHook/PegasusHelper/classes/OauthManager.php";
+    $oauthData = OauthManager::createAccessToken('apollon');
 
-    $rest_client_id = ilPegasusHelperUIHookGUI::getRestClientId($oauthData['access_token']);
+    $rest_client_id = OauthManager::getRestClientId($oauthData['access_token']);
     if(!$rest_client_id) {
-        throw new ilDatabaseException("REST Client ".ilPegasusHelperUIHookGUI::API_KEY." is not configured");
+        throw new ilDatabaseException("REST Client ".OauthManager::API_KEY." is not configured");
     }
 
     $params = array('pattern' => '/v1/ilias-app/desktop',
@@ -152,12 +152,12 @@
 <#6>
 <?php
     global $ilias, $ilIliasIniFile;
-    require_once "./Customizing/global/plugins/Services/UIComponent/UserInterfaceHook/PegasusHelper/classes/class.ilPegasusHelperUIHookGUI.php";
-    $oauthData = ilPegasusHelperUIHookGUI::createAccessToken('apollon');
+    require_once "./CCustomizing/global/plugins/Services/UIComponent/UserInterfaceHook/PegasusHelper/classes/OauthManager.php";
+    $oauthData = OauthManager::createAccessToken('apollon');
 
-    $rest_client_id = ilPegasusHelperUIHookGUI::getRestClientId($oauthData['access_token']);
+    $rest_client_id = OauthManager::getRestClientId($oauthData['access_token']);
     if(!$rest_client_id) {
-        throw new ilDatabaseException("REST Client ".ilPegasusHelperUIHookGUI::API_KEY." is not configured");
+        throw new ilDatabaseException("REST Client ".OauthManager::API_KEY." is not configured");
     }
 
     $params = array('pattern' => '/v1/ilias-app/objects/:refId',
@@ -179,12 +179,12 @@
 <#7>
 <?php
     global $ilias, $ilIliasIniFile;
-    require_once "./Customizing/global/plugins/Services/UIComponent/UserInterfaceHook/PegasusHelper/classes/class.ilPegasusHelperUIHookGUI.php";
-    $oauthData = ilPegasusHelperUIHookGUI::createAccessToken('apollon');
+    require_once "./Customizing/global/plugins/Services/UIComponent/UserInterfaceHook/PegasusHelper/classes/OauthManager.php";
+    $oauthData = OauthManager::createAccessToken('apollon');
 
-    $rest_client_id = ilPegasusHelperUIHookGUI::getRestClientId($oauthData['access_token']);
+    $rest_client_id = OauthManager::getRestClientId($oauthData['access_token']);
     if(!$rest_client_id) {
-        throw new ilDatabaseException("REST Client ".ilPegasusHelperUIHookGUI::API_KEY." is not configured");
+        throw new ilDatabaseException("REST Client ".OauthManager::API_KEY." is not configured");
     }
 
     $params = array('pattern' => '/v1/ilias-app/objects/:refId',
@@ -206,12 +206,12 @@
 <#8>
 <?php
     global $ilias, $ilIliasIniFile;
-    require_once "./Customizing/global/plugins/Services/UIComponent/UserInterfaceHook/PegasusHelper/classes/class.ilPegasusHelperUIHookGUI.php";
-    $oauthData = ilPegasusHelperUIHookGUI::createAccessToken('apollon');
+    require_once "./Customizing/global/plugins/Services/UIComponent/UserInterfaceHook/PegasusHelper/classes/OauthManager.php";
+    $oauthData = OauthManager::createAccessToken('apollon');
 
-    $rest_client_id = ilPegasusHelperUIHookGUI::getRestClientId($oauthData['access_token']);
+    $rest_client_id = OauthManager::getRestClientId($oauthData['access_token']);
     if(!$rest_client_id) {
-        throw new ilDatabaseException("REST Client ".ilPegasusHelperUIHookGUI::API_KEY." is not configured");
+        throw new ilDatabaseException("REST Client ".OauthManager::API_KEY." is not configured");
     }
 
     $params = array('pattern' => '/v1/ilias-app/files/:refId',
@@ -233,12 +233,12 @@
 <#9>
 <?php
     global $ilias;
-    require_once "./Customizing/global/plugins/Services/UIComponent/UserInterfaceHook/PegasusHelper/classes/class.ilPegasusHelperUIHookGUI.php";
-    $oauthData = ilPegasusHelperUIHookGUI::createAccessToken('apollon');
+    require_once "./Customizing/global/plugins/Services/UIComponent/UserInterfaceHook/PegasusHelper/classes/OauthManager.php";
+    $oauthData = OauthManager::createAccessToken('apollon');
 
-    $rest_client_id = ilPegasusHelperUIHookGUI::getRestClientId($oauthData['access_token']);
+    $rest_client_id = OauthManager::getRestClientId($oauthData['access_token']);
     if(!$rest_client_id) {
-        throw new ilDatabaseException("REST Client ".ilPegasusHelperUIHookGUI::API_KEY." is not configured");
+        throw new ilDatabaseException("REST Client ".OauthManager::API_KEY." is not configured");
     }
 
     $params = array('pattern' => '/v1/ilias-app/files/:refId',
@@ -259,12 +259,12 @@
 <#10>
 <?php
     global $ilias, $ilIliasIniFile;
-    require_once "./Customizing/global/plugins/Services/UIComponent/UserInterfaceHook/PegasusHelper/classes/class.ilPegasusHelperUIHookGUI.php";
-    $oauthData = ilPegasusHelperUIHookGUI::createAccessToken('apollon');
+    require_once "./Customizing/global/plugins/Services/UIComponent/UserInterfaceHook/PegasusHelper/classes/OauthManager.php";
+    $oauthData = OauthManager::createAccessToken('apollon');
 
-    $rest_client_id = ilPegasusHelperUIHookGUI::getRestClientId($oauthData['access_token']);
+    $rest_client_id = OauthManager::getRestClientId($oauthData['access_token']);
     if(!$rest_client_id) {
-        throw new ilDatabaseException("REST Client ".ilPegasusHelperUIHookGUI::API_KEY." is not configured");
+        throw new ilDatabaseException("REST Client ".OauthManager::API_KEY." is not configured");
     }
 
     $params = array('pattern' => '/v1/files/:id',

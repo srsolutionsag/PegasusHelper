@@ -14,7 +14,6 @@ require_once(__DIR__ . '/OauthManager.php');
  */
 class ilPegasusHelperUIHookGUI extends ilUIHookPluginGUI
 {
-    const API_KEY = 'ilias_pegasus';
 
     private $tokenChecker;
     private $outhManager;
@@ -78,29 +77,4 @@ class ilPegasusHelperUIHookGUI extends ilUIHookPluginGUI
 		return !(isset($_GET['target'])
 			&& preg_match("/^ilias_app.*$/", $_GET['target']) === 1);
 	}
-
-
-    /**
-     * Delegates to {@link OauthManager::createAccessToken}.
-     * This method is only needed by the dbupdate.
-     *
-     * @param $api_key string the api key for the REST request
-     *
-     * @return array the resulting data
-     */
-    public static function createAccessToken($api_key) {
-        return OauthManager::createAccessToken($api_key);
-    }
-
-
-    /**
-     * Delegates to {@link OauthManager::getRestClientId}.
-     * This method is only needed by the dbupdate.
-     *
-     * @param $access_token string a valid access token for ILIAS REST
-     * @return string|boolean false, if no client id is found, otherwise the client id
-     */
-    public static function getRestClientId($access_token) {
-        return OauthManager::getRestClientId($access_token);
-    }
 }
