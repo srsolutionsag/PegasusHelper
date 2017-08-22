@@ -7,10 +7,11 @@ require_once('./Services/Utilities/classes/class.ilUtil.php');
 require_once(__DIR__.'/entity/UserToken.php');
 
 /**
- * Class TokenChecker
+ * Class TokenChecker handles a specific link to log in
+ * the user with a token and redirect him to the wanted page.
  *
  * @author  Nicolas Märchy <nm@studer-raimann.ch>
- * @version 0.0.3
+ * @version 1.0.0
  *
  */
 class TokenChecker {
@@ -20,7 +21,6 @@ class TokenChecker {
 	private $userId;
 	private $refId;
 	private $token;
-
 
 	/**
 	 * @return boolean true if this handler needs to handle the request, otherwise false
@@ -48,6 +48,10 @@ class TokenChecker {
 	/**
 	 * Checks the request to an valid token,
 	 * logs in and redirects the user to the wanted page.
+	 *
+	 * If the user is already logged in, the user will be redirected.
+	 *
+	 * The token will always be deleted.
 	 */
 	public function execute() {
 
@@ -56,7 +60,6 @@ class TokenChecker {
 		 * @var $ilAuthSession ilAuthSession
 		 */
 		$ilAuthSession = $DIC['ilAuthSession'];
-//		$ilAuthSession->init();
 
 		if ($ilAuthSession->isAuthenticated()) {
 			$this->deleteToken();
@@ -65,14 +68,10 @@ class TokenChecker {
 
 			if ($this->isTokenValid()) {
 
-				$this->deleteToken();
-
 				// log in user
 				$ilAuthSession->regenerateId();
 				$ilAuthSession->setUserId($this->userId);
 				$ilAuthSession->setAuthenticated(true, $this->userId);
-
-				$this->redirect();
 			}
 
 			$this->deleteToken();
@@ -80,6 +79,10 @@ class TokenChecker {
 		}
 	}
 
+
+	/**
+	 * @return bool true if the token is valid, otherwise false
+	 */
 	private function isTokenValid() {
 
 		/**
@@ -101,6 +104,10 @@ class TokenChecker {
 		return $now < $expires;
 	}
 
+
+	/**
+	 * Deletes the token if it exists.
+	 */
 	private function deleteToken() {
 
 		$token = UserToken::find($this->userId);
@@ -109,6 +116,13 @@ class TokenChecker {
 		}
 	}
 
+
+	/**
+	 * Redirects the user to the wanted page.
+	 * The wanted page is determined by the ref_id.
+	 *
+	 * This methods redirects only once per request to avoid recursive calls.
+	 */
 	private function redirect() {
 
 		if (!self::$self_call) {
