@@ -111,12 +111,12 @@ class OauthManager {
 		$arr_result = json_decode($result, true);
 
 		foreach($arr_result as $result) {
-			if($result['api_key'] == ilPegasusHelperUIHookGUI::API_KEY) {
+			if($result['api_key'] == self::API_KEY) {
 				return $result['id'];
 			}
 		}
 
-		ilUtil::sendFailure('API KEY '.ilPegasusHelperUIHookGUI::API_KEY.' not Found', true);
+		ilUtil::sendFailure('API KEY '.self::API_KEY.' not Found', true);
 		return false;
 	}
 }
