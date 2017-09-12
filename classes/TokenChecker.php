@@ -143,12 +143,19 @@ class TokenChecker {
 
 					global $ilCtrl;
 
+					$type = ilObject2::_lookupType($this->refId, true);
+
 					$ilCtrl->initBaseClass("ilrepositorygui");
 					$ilCtrl->setParameterByClass("ilnewstimelinegui", "ref_id", $this->refId);
 					$ilCtrl->setParameterByClass("ilnewstimelinegui", "cmd", "show");
 
-					$link = $ilCtrl->getLinkTargetByClass(array("ilrepositorygui", "ilobjcoursegui", "ilnewstimelinegui"));
-					ilUtil::redirect(ilUtil::_getHttpPath(). "/ilias.php" . htmlspecialchars_decode($link));
+					if ($type === "crs") {
+						$link = $ilCtrl->getLinkTargetByClass(array("ilrepositorygui", "ilobjcoursegui", "ilnewstimelinegui"));
+						ilUtil::redirect(ilUtil::_getHttpPath(). "/ilias.php" . htmlspecialchars_decode($link));
+					} else if ($type === "grp") {
+						$link = $ilCtrl->getLinkTargetByClass(array("ilrepositorygui", "ilobjgroupgui", "ilnewstimelinegui"));
+						ilUtil::redirect(ilUtil::_getHttpPath(). "/ilias.php" . htmlspecialchars_decode($link));
+					}
 					break;
 			}
 		}
