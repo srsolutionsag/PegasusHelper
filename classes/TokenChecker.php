@@ -11,7 +11,7 @@ require_once(__DIR__.'/entity/UserToken.php');
  * the user with a token and redirect him to the wanted page.
  *
  * @author  Nicolas Märchy <nm@studer-raimann.ch>
- * @version 1.0.0
+ * @version 1.1.0
  *
  */
 class TokenChecker {
@@ -20,6 +20,7 @@ class TokenChecker {
 
 	private $userId;
 	private $refId;
+	private $view;
 	private $token;
 
 	/**
@@ -33,13 +34,14 @@ class TokenChecker {
 
 		$matches = array();
 
-		if (preg_match("/^ilias_app_auth\|(\d+)\|(\d+)\|(.+)$/", $_GET['target'], $matches) === 0) {
+		if (preg_match("/^ilias_app_auth\|(\d+)\|(\d+)\|(.+)\|(.+)$/", $_GET['target'], $matches) === 0) {
 			return false;
 		}
 
 		$this->userId = $matches[1];
 		$this->refId = $matches[2];
-		$this->token = $matches[3];
+		$this->view = $matches[3];
+		$this->token = $matches[4];
 
 		return true;
 	}
@@ -119,7 +121,11 @@ class TokenChecker {
 
 	/**
 	 * Redirects the user to the wanted page.
-	 * The wanted page is determined by the ref_id.
+	 * The wanted page is determined by the ref_id
+	 * and the view.
+	 *
+	 * * view 'default': goto the ref_id
+	 * * view 'timeline': goto the timeline of the ref_id
 	 *
 	 * This methods redirects only once per request to avoid recursive calls.
 	 */
@@ -127,8 +133,24 @@ class TokenChecker {
 
 		if (!self::$self_call) {
 			self::$self_call = true;
-			$link = ilLink::_getLink($this->refId);
-			ilUtil::redirect($link);
+
+			switch ($this->view) {
+				case "default":
+					$link = ilLink::_getLink($this->refId);
+					ilUtil::redirect($link);
+					break;
+				case "timeline":
+
+					global $ilCtrl;
+
+					$ilCtrl->initBaseClass("ilrepositorygui");
+					$ilCtrl->setParameterByClass("ilnewstimelinegui", "ref_id", $this->refId);
+					$ilCtrl->setParameterByClass("ilnewstimelinegui", "cmd", "show");
+
+					$link = $ilCtrl->getLinkTargetByClass(array("ilrepositorygui", "ilobjcoursegui", "ilnewstimelinegui"));
+					ilUtil::redirect(ilUtil::_getHttpPath(). "/ilias.php" . htmlspecialchars_decode($link));
+					break;
+			}
 		}
 	}
 }
