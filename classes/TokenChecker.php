@@ -28,9 +28,9 @@ class TokenChecker {
 	 */
 	public function isHandler() {
 
-		if ($_SERVER['SCRIPT_NAME'] != "/goto.php") {
+		/*if ($_SERVER['SCRIPT_NAME'] != "/goto.php") {
 			return false;
-		}
+		}*/
 
 		$matches = array();
 
