@@ -23,7 +23,7 @@ class RestSetup {
 	public function __construct() {
 
 		// pattern: 'xxxx.xxxx-xx'
-		$api_secret = $this->getRandString(4).".".getRandString(4)."-".getRandString(2);
+		$api_secret = $this->getRandString(4).".".$this->getRandString(4)."-".$this->getRandString(2);
 
 		$this->clientParams = array( 'id' => null,
 			'api_key' => "ilias_pegasus",
