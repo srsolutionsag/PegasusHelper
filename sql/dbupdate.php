@@ -11,6 +11,7 @@
 
 	require_once "./Customizing/global/plugins/Services/UIComponent/UserInterfaceHook/PegasusHelper/classes/rest/RestSetup.php";
 	require_once "./Customizing/global/plugins/Services/UIComponent/UserInterfaceHook/PegasusHelper/classes/rest/TokenType.php";
+	require_once "./Customizing/global/plugins/Services/UIComponent/UserInterfaceHook/PegasusHelper/classes/rest/TokenParam.php";
 
 	$token = new TokenParam(3600000, TokenType::ACCESS_TOKEN);
 
@@ -22,6 +23,7 @@
 
 	require_once "./Customizing/global/plugins/Services/UIComponent/UserInterfaceHook/PegasusHelper/classes/rest/RestSetup.php";
 	require_once "./Customizing/global/plugins/Services/UIComponent/UserInterfaceHook/PegasusHelper/classes/rest/TokenType.php";
+	require_once "./Customizing/global/plugins/Services/UIComponent/UserInterfaceHook/PegasusHelper/classes/rest/TokenParam.php";
 
 	$token = new TokenParam(4500000, TokenType::REFRESH_TOKEN);
 
