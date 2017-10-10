@@ -28,10 +28,6 @@ class TokenChecker {
 	 */
 	public function isHandler() {
 
-		/*if ($_SERVER['SCRIPT_NAME'] != "/goto.php") {
-			return false;
-		}*/
-
 		$matches = array();
 
 		if (preg_match("/^ilias_app_auth\|(\d+)\|(\d+)\|(.+)\|(.+)$/", $_GET['target'], $matches) === 0) {
@@ -63,22 +59,16 @@ class TokenChecker {
 		 */
 		$ilAuthSession = $DIC['ilAuthSession'];
 
-		if ($ilAuthSession->isAuthenticated()) {
-			$this->deleteToken();
-			$this->redirect();
-		} else {
+		if ($this->isTokenValid()) {
 
-			if ($this->isTokenValid()) {
-
-				// log in user
-				$ilAuthSession->regenerateId();
-				$ilAuthSession->setUserId($this->userId);
-				$ilAuthSession->setAuthenticated(true, $this->userId);
-			}
-
-			$this->deleteToken();
-			$this->redirect();
+			// log in user
+			$ilAuthSession->regenerateId();
+			$ilAuthSession->setUserId($this->userId);
+			$ilAuthSession->setAuthenticated(true, $this->userId);
 		}
+
+		$this->deleteToken();
+		$this->redirect();
 	}
 
 

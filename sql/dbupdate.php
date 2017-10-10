@@ -1,285 +1,144 @@
 <#1>
 <?php
-    require_once "./Customizing/global/plugins/Services/UIComponent/UserInterfaceHook/PegasusHelper/classes/OauthManager.php";
-    /**
-     * @param int $length
-     * @return string
-     */
-    function getRandString($length = 0) {
-        $characters = '123456789abcdefghijklmnopqrstuvwxyz';
-        $randstring = '';
-        for ($i = 0; $i < $length; $i++) {
-            $randstring .= $characters[rand(0, strlen($characters))];
-        }
-        return $randstring;
-    }
-    //'xxxx.xxxx-xx'
-    $api_secret = getRandString(4).".".getRandString(4)."-".getRandString(2);
 
-    $oauthData = OauthManager::createAccessToken('apollon');
-
-    $params = array( 'id' => null,
-                            'api_key' => "ilias_pegasus",
-                            'api_secret' => $api_secret,
-                            'cert_serial' => null,
-                            'cert_issuer' => null,
-                            'cert_subject' => null,
-                            'redirect_uri' => null,
-                            'consent_message' => null,
-                            'client_credentials_userid' => 0,
-                            'grant_client_credentials' => 1,
-                            'grant_authorization_code' => 1,
-                            'grant_implicit' => 1,
-                            'grant_resource_owner' => 1,
-                            'refresh_authorization_code' => 1,
-                            'refresh_resource_owner' => 1,
-                            'grant_bridge' => null,
-                            'ips' => null,
-                            'users' => null,
-                            'scopes' => null,
-                            'description' => 'ILIAS Pegasus App');
-	global $ilIliasIniFile;
-	$HOST = $ilIliasIniFile->readVariable('server', 'http_path');
-    $ch = curl_init();
-    curl_setopt($ch, CURLOPT_URL, $HOST."/Customizing/global/plugins/Services/UIComponent/UserInterfaceHook/REST/api.php/v1/clients");
-    curl_setopt($ch, CURLOPT_POST, true );
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-    curl_setopt($ch, CURLOPT_HTTPHEADER, array('Authorization: Bearer ' . $oauthData['access_token']));
-    curl_setopt($ch, CURLOPT_POSTFIELDS, $params );
-    $result = curl_exec($ch);
-
-    $arr_result = json_decode($result, true);
-    if($arr_result['error'] || curl_error($ch)) {
-        throw new ilDatabaseException($arr_result['error']['message']);
-    }
+	require_once "./Customizing/global/plugins/Services/UIComponent/UserInterfaceHook/PegasusHelper/classes/rest/RestSetup.php";
+	$rest = new RestSetup();
+	$rest->setupClient();
 
 ?>
 <#2>
 <?php
-    require_once "./Customizing/global/plugins/Services/UIComponent/UserInterfaceHook/PegasusHelper/classes/OauthManager.php";
-    $oauthData = OauthManager::createAccessToken('apollon');
 
-    $params = array( 'value' => '3600000');
-    $ch = curl_init();
-    curl_setopt($ch, CURLOPT_URL, ilUtil::_getHttpPath()."/Customizing/global/plugins/Services/UIComponent/UserInterfaceHook/REST/api.php/v2/admin/config/access_token_ttl");
-    curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'PUT');
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-    curl_setopt($ch, CURLOPT_HTTPHEADER, array('Authorization: Bearer ' . $oauthData['access_token']));
-    curl_setopt($ch, CURLOPT_POSTFIELDS,http_build_query($params));
-    $result = curl_exec($ch);
-    $arr_result = json_decode($result, true);
-    if($arr_result['error'] || $arr_result['message']) {
-        throw new ilDatabaseException($arr_result['message'].' '.$arr_result['error']['message']);
-    }
+	require_once "./Customizing/global/plugins/Services/UIComponent/UserInterfaceHook/PegasusHelper/classes/rest/RestSetup.php";
+	require_once "./Customizing/global/plugins/Services/UIComponent/UserInterfaceHook/PegasusHelper/classes/rest/TokenType.php";
+
+	$token = new TokenParam(3600000, TokenType::ACCESS_TOKEN);
+
+	$rest = new RestSetup();
+	$rest->configTTL($token);
 ?>
 <#3>
 <?php
-	global $ilIliasIniFile;
-    require_once "./Customizing/global/plugins/Services/UIComponent/UserInterfaceHook/PegasusHelper/classes/OauthManager.php";
-    $oauthData = OauthManager::createAccessToken('apollon');
 
-    $params = array( 'value' => '4500000');
-    $ch = curl_init();
-	$HOST = $ilIliasIniFile->readVariable('server', 'http_path');
-    curl_setopt($ch, CURLOPT_URL, $HOST."/Customizing/global/plugins/Services/UIComponent/UserInterfaceHook/REST/api.php/v2/admin/config/refresh_token_ttl");
-    curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'PUT');
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-    curl_setopt($ch, CURLOPT_HTTPHEADER, array('Authorization: Bearer ' . $oauthData['access_token']));
-    curl_setopt($ch, CURLOPT_POSTFIELDS,http_build_query($params));
-    $result = curl_exec($ch);
-    $arr_result = json_decode($result, true);
-    if($arr_result['error'] || $arr_result['message']) {
-        throw new ilDatabaseException($arr_result['message'].' '.$arr_result['error']['message']);
-    }
+	require_once "./Customizing/global/plugins/Services/UIComponent/UserInterfaceHook/PegasusHelper/classes/rest/RestSetup.php";
+	require_once "./Customizing/global/plugins/Services/UIComponent/UserInterfaceHook/PegasusHelper/classes/rest/TokenType.php";
+
+	$token = new TokenParam(4500000, TokenType::REFRESH_TOKEN);
+
+	$rest = new RestSetup();
+	$rest->configTTL($token);
 ?>
 <#4>
 <?php
-    global $ilias, $ilIliasIniFile;
 
-    require_once "./Customizing/global/plugins/Services/UIComponent/UserInterfaceHook/PegasusHelper/classes/OauthManager.php";
-    $oauthData = OauthManager::createAccessToken('apollon');
+	require_once "./Customizing/global/plugins/Services/UIComponent/UserInterfaceHook/PegasusHelper/classes/rest/RestSetup.php";
+	require_once "./Customizing/global/plugins/Services/UIComponent/UserInterfaceHook/PegasusHelper/classes/rest/RouteParam.php";
 
-    $rest_client_id = OauthManager::getRestClientId($oauthData['access_token']);
+	$route = new RouteParam("/v1/ilias-app/desktop", "GET");
 
-    if(!$rest_client_id) {
-        throw new ilDatabaseException("REST Client ".OauthManager::API_KEY." is not configured");
-    }
-
-
-    $params = array('pattern' => '/v1/ilias-app/desktop',
-                    'verb' => 'GET');
-    $ch = curl_init();
-	$HOST = $ilIliasIniFile->readVariable('server', 'http_path');
-    curl_setopt($ch, CURLOPT_URL, $HOST."/Customizing/global/plugins/Services/UIComponent/UserInterfaceHook/REST/api.php/v2/admin/permission/".$rest_client_id);
-    curl_setopt($ch, CURLOPT_POST, true );
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-    curl_setopt($ch, CURLOPT_HTTPHEADER, array('Authorization: Bearer ' . $oauthData['access_token']));
-    curl_setopt($ch, CURLOPT_POSTFIELDS, $params );
-    $result = curl_exec($ch);
-
-    $arr_result = json_decode($result, true);
-    if($arr_result['error'] || $arr_result['message']) {
-        throw new ilDatabaseException($arr_result['message'].' '.$arr_result['error']['message']);
-    }
+	$rest = new RestSetup();
+	$rest->addRoute($route);
 ?>
 <#5>
 <?php
-    global $ilias, $ilIliasIniFile;
-    require_once "./Customizing/global/plugins/Services/UIComponent/UserInterfaceHook/PegasusHelper/classes/OauthManager.php";
-    $oauthData = OauthManager::createAccessToken('apollon');
 
-    $rest_client_id = OauthManager::getRestClientId($oauthData['access_token']);
-    if(!$rest_client_id) {
-        throw new ilDatabaseException("REST Client ".OauthManager::API_KEY." is not configured");
-    }
+	require_once "./Customizing/global/plugins/Services/UIComponent/UserInterfaceHook/PegasusHelper/classes/rest/RestSetup.php";
+	require_once "./Customizing/global/plugins/Services/UIComponent/UserInterfaceHook/PegasusHelper/classes/rest/RouteParam.php";
 
-    $params = array('pattern' => '/v1/ilias-app/desktop',
-        'verb' => 'OPTIONS');
-    $ch = curl_init();
-	$HOST = $ilIliasIniFile->readVariable('server', 'http_path');
-    curl_setopt($ch, CURLOPT_URL, $HOST."/Customizing/global/plugins/Services/UIComponent/UserInterfaceHook/REST/api.php/v2/admin/permission/".$rest_client_id);
-    curl_setopt($ch, CURLOPT_POST, true );
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-    curl_setopt($ch, CURLOPT_HTTPHEADER, array('Authorization: Bearer ' . $oauthData['access_token']));
-    curl_setopt($ch, CURLOPT_POSTFIELDS, $params );
-    $result = curl_exec($ch);
+	$route = new RouteParam("/v1/ilias-app/desktop", "OPTIONS");
 
-    $arr_result = json_decode($result, true);
-    if($arr_result['error'] || $arr_result['message']) {
-        throw new ilDatabaseException($arr_result['message'].' '.$arr_result['error']['message']);
-    }
+	$rest = new RestSetup();
+	$rest->addRoute($route);
 ?>
 <#6>
 <?php
-    global $ilias, $ilIliasIniFile;
-    require_once "./CCustomizing/global/plugins/Services/UIComponent/UserInterfaceHook/PegasusHelper/classes/OauthManager.php";
-    $oauthData = OauthManager::createAccessToken('apollon');
 
-    $rest_client_id = OauthManager::getRestClientId($oauthData['access_token']);
-    if(!$rest_client_id) {
-        throw new ilDatabaseException("REST Client ".OauthManager::API_KEY." is not configured");
-    }
+	require_once "./Customizing/global/plugins/Services/UIComponent/UserInterfaceHook/PegasusHelper/classes/rest/RestSetup.php";
+	require_once "./Customizing/global/plugins/Services/UIComponent/UserInterfaceHook/PegasusHelper/classes/rest/RouteParam.php";
 
-    $params = array('pattern' => '/v1/ilias-app/objects/:refId',
-        'verb' => 'GET');
-    $ch = curl_init();
-	$HOST = $ilIliasIniFile->readVariable('server', 'http_path');
-    curl_setopt($ch, CURLOPT_URL, $HOST."/Customizing/global/plugins/Services/UIComponent/UserInterfaceHook/REST/api.php/v2/admin/permission/".$rest_client_id);
-    curl_setopt($ch, CURLOPT_POST, true );
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-    curl_setopt($ch, CURLOPT_HTTPHEADER, array('Authorization: Bearer ' . $oauthData['access_token']));
-    curl_setopt($ch, CURLOPT_POSTFIELDS, $params );
-    $result = curl_exec($ch);
+	$route = new RouteParam("/v1/ilias-app/objects/:refId", "GET");
 
-    $arr_result = json_decode($result, true);
-    if($arr_result['error'] || $arr_result['message']) {
-        throw new ilDatabaseException($arr_result['message'].' '.$arr_result['error']['message']);
-    }
+	$rest = new RestSetup();
+	$rest->addRoute($route);
 ?>
 <#7>
 <?php
-    global $ilias, $ilIliasIniFile;
-    require_once "./Customizing/global/plugins/Services/UIComponent/UserInterfaceHook/PegasusHelper/classes/OauthManager.php";
-    $oauthData = OauthManager::createAccessToken('apollon');
 
-    $rest_client_id = OauthManager::getRestClientId($oauthData['access_token']);
-    if(!$rest_client_id) {
-        throw new ilDatabaseException("REST Client ".OauthManager::API_KEY." is not configured");
-    }
+	require_once "./Customizing/global/plugins/Services/UIComponent/UserInterfaceHook/PegasusHelper/classes/rest/RestSetup.php";
+	require_once "./Customizing/global/plugins/Services/UIComponent/UserInterfaceHook/PegasusHelper/classes/rest/RouteParam.php";
 
-    $params = array('pattern' => '/v1/ilias-app/objects/:refId',
-                    'verb' => 'OPTIONS');
-    $ch = curl_init();
-	$HOST = $ilIliasIniFile->readVariable('server', 'http_path');
-    curl_setopt($ch, CURLOPT_URL, $HOST."/Customizing/global/plugins/Services/UIComponent/UserInterfaceHook/REST/api.php/v2/admin/permission/".$rest_client_id);
-    curl_setopt($ch, CURLOPT_POST, true );
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-    curl_setopt($ch, CURLOPT_HTTPHEADER, array('Authorization: Bearer ' . $oauthData['access_token']));
-    curl_setopt($ch, CURLOPT_POSTFIELDS, $params );
-    $result = curl_exec($ch);
+	$route = new RouteParam("/v1/ilias-app/objects/:refId", "OPTIONS");
 
-    $arr_result = json_decode($result, true);
-    if($arr_result['error'] || $arr_result['message']) {
-        throw new ilDatabaseException($arr_result['message'].' '.$arr_result['error']['message']);
-    }
+	$rest = new RestSetup();
+	$rest->addRoute($route);
 ?>
 <#8>
 <?php
-    global $ilias, $ilIliasIniFile;
-    require_once "./Customizing/global/plugins/Services/UIComponent/UserInterfaceHook/PegasusHelper/classes/OauthManager.php";
-    $oauthData = OauthManager::createAccessToken('apollon');
 
-    $rest_client_id = OauthManager::getRestClientId($oauthData['access_token']);
-    if(!$rest_client_id) {
-        throw new ilDatabaseException("REST Client ".OauthManager::API_KEY." is not configured");
-    }
+	require_once "./Customizing/global/plugins/Services/UIComponent/UserInterfaceHook/PegasusHelper/classes/rest/RestSetup.php";
+	require_once "./Customizing/global/plugins/Services/UIComponent/UserInterfaceHook/PegasusHelper/classes/rest/RouteParam.php";
 
-    $params = array('pattern' => '/v1/ilias-app/files/:refId',
-                    'verb' => 'GET');
-    $ch = curl_init();
-	$HOST = $ilIliasIniFile->readVariable('server', 'http_path');
-    curl_setopt($ch, CURLOPT_URL, $HOST."/Customizing/global/plugins/Services/UIComponent/UserInterfaceHook/REST/api.php/v2/admin/permission/".$rest_client_id);
-    curl_setopt($ch, CURLOPT_POST, true );
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-    curl_setopt($ch, CURLOPT_HTTPHEADER, array('Authorization: Bearer ' . $oauthData['access_token']));
-    curl_setopt($ch, CURLOPT_POSTFIELDS, $params );
-    $result = curl_exec($ch);
+	$route = new RouteParam("/v1/ilias-app/files/:refId", "GET");
 
-    $arr_result = json_decode($result, true);
-    if($arr_result['error'] || $arr_result['message']) {
-        throw new ilDatabaseException($arr_result['message'].' '.$arr_result['error']['message']);
-    }
+	$rest = new RestSetup();
+	$rest->addRoute($route);
 ?>
 <#9>
 <?php
-    global $ilias;
-    require_once "./Customizing/global/plugins/Services/UIComponent/UserInterfaceHook/PegasusHelper/classes/OauthManager.php";
-    $oauthData = OauthManager::createAccessToken('apollon');
 
-    $rest_client_id = OauthManager::getRestClientId($oauthData['access_token']);
-    if(!$rest_client_id) {
-        throw new ilDatabaseException("REST Client ".OauthManager::API_KEY." is not configured");
-    }
+	require_once "./Customizing/global/plugins/Services/UIComponent/UserInterfaceHook/PegasusHelper/classes/rest/RestSetup.php";
+	require_once "./Customizing/global/plugins/Services/UIComponent/UserInterfaceHook/PegasusHelper/classes/rest/RouteParam.php";
 
-    $params = array('pattern' => '/v1/ilias-app/files/:refId',
-                    'verb' => 'OPTIONS');
-    $ch = curl_init();
-    curl_setopt($ch, CURLOPT_URL, ilUtil::_getHttpPath()."/Customizing/global/plugins/Services/UIComponent/UserInterfaceHook/REST/api.php/v2/admin/permission/".$rest_client_id);
-    curl_setopt($ch, CURLOPT_POST, true );
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-    curl_setopt($ch, CURLOPT_HTTPHEADER, array('Authorization: Bearer ' . $oauthData['access_token']));
-    curl_setopt($ch, CURLOPT_POSTFIELDS, $params );
-    $result = curl_exec($ch);
+	$route = new RouteParam("/v1/ilias-app/files/:refId", "OPTIONS");
 
-    $arr_result = json_decode($result, true);
-    if($arr_result['error'] || $arr_result['message']) {
-        throw new ilDatabaseException($arr_result['message'].' '.$arr_result['error']['message']);
-    }
+	$rest = new RestSetup();
+	$rest->addRoute($route);
 ?>
 <#10>
 <?php
-    global $ilias, $ilIliasIniFile;
-    require_once "./Customizing/global/plugins/Services/UIComponent/UserInterfaceHook/PegasusHelper/classes/OauthManager.php";
-    $oauthData = OauthManager::createAccessToken('apollon');
 
-    $rest_client_id = OauthManager::getRestClientId($oauthData['access_token']);
-    if(!$rest_client_id) {
-        throw new ilDatabaseException("REST Client ".OauthManager::API_KEY." is not configured");
-    }
+	require_once "./Customizing/global/plugins/Services/UIComponent/UserInterfaceHook/PegasusHelper/classes/rest/RestSetup.php";
+	require_once "./Customizing/global/plugins/Services/UIComponent/UserInterfaceHook/PegasusHelper/classes/rest/RouteParam.php";
 
-    $params = array('pattern' => '/v1/files/:id',
-        'verb' => 'GET');
-    $ch = curl_init();
-	$HOST = $ilIliasIniFile->readVariable('server', 'http_path');
-    curl_setopt($ch, CURLOPT_URL, $HOST."/Customizing/global/plugins/Services/UIComponent/UserInterfaceHook/REST/api.php/v2/admin/permission/".$rest_client_id);
-    curl_setopt($ch, CURLOPT_POST, true );
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-    curl_setopt($ch, CURLOPT_HTTPHEADER, array('Authorization: Bearer ' . $oauthData['access_token']));
-    curl_setopt($ch, CURLOPT_POSTFIELDS, $params );
-    $result = curl_exec($ch);
+	$route = new RouteParam("/v1/files/:id", "GET");
 
-    $arr_result = json_decode($result, true);
-    if($arr_result['error'] || $arr_result['message']) {
-        throw new ilDatabaseException($arr_result['message'].' '.$arr_result['error']['message']);
-    }
+	$rest = new RestSetup();
+	$rest->addRoute($route);
+?>
+<#11>
+<?php
+
+	require_once "./Customizing/global/plugins/Services/UIComponent/UserInterfaceHook/PegasusHelper/classes/rest/RestSetup.php";
+	require_once "./Customizing/global/plugins/Services/UIComponent/UserInterfaceHook/PegasusHelper/classes/rest/RouteParam.php";
+
+	$route = new RouteParam("/v1/files/:id", "OPTIONS");
+
+	$rest = new RestSetup();
+	$rest->addRoute($route);
+?>
+<#12>
+<?php
+
+	require_once "./Customizing/global/plugins/Services/UIComponent/UserInterfaceHook/PegasusHelper/classes/rest/RestSetup.php";
+	require_once "./Customizing/global/plugins/Services/UIComponent/UserInterfaceHook/PegasusHelper/classes/rest/RouteParam.php";
+
+	$routes = array(
+		new RouteParam("/v2/ilias-app/desktop", "GET"),
+		new RouteParam("/v2/ilias-app/desktop", "OPTIONS"),
+
+		new RouteParam("/v2/ilias-app/objects/:refId", "GET"),
+		new RouteParam("/v2/ilias-app/objects/:refId", "OPTIONS"),
+
+		new RouteParam("/v2/ilias-app/files/:refId", "GET"),
+		new RouteParam("/v2/ilias-app/files/:refId", "OPTIONS"),
+
+		new RouteParam("/v2/ilias-app/auth-token", "GET"),
+		new RouteParam("/v2/ilias-app/auth-token", "OPTIONS")
+	);
+
+	$rest = new RestSetup();
+
+	foreach ($routes as $route) {
+		$rest->addRoute($route);
+	}
 ?>

@@ -10,4 +10,40 @@
  */
 class TokenParam {
 
+	/**
+	 * @var int
+	 */
+	private $ttl;
+	/**
+	 * @var string
+	 */
+	private $type;
+
+
+	/**
+	 * TokenParam constructor.
+	 *
+	 * @param int    $ttl
+	 * @param string $type
+	 */
+	public function __construct($ttl, $type) {
+		$this->ttl = $ttl;
+		$this->type = $type;
+	}
+
+
+	/**
+	 * @return int
+	 */
+	public function getTTL() {
+		return $this->ttl;
+	}
+
+
+	/**
+	 * @return string
+	 */
+	public function getType() {
+		return $this->type;
+	}
 }

@@ -8,6 +8,8 @@
  * @version 0.0.1
  *
  */
-class TokenType {
+interface TokenType {
 
+	const ACCESS_TOKEN = "access_token_ttl";
+	const REFRESH_TOKEN = "refresh_token_ttl";
 }
