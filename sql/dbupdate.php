@@ -144,3 +144,8 @@
 		$rest->addRoute($route);
 	}
 ?>
+<#13>
+<?php
+require_once "./Customizing/global/plugins/Services/UIComponent/UserInterfaceHook/PegasusHelper/classes/entity/UserToken.php";
+	UserToken::updateDB();
+?>
