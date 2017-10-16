@@ -3,6 +3,7 @@
 require_once('./Services/UIComponent/classes/class.ilUIHookPluginGUI.php');
 require_once(__DIR__ . '/TokenChecker.php');
 require_once(__DIR__ . '/OauthManager.php');
+require_once(__DIR__ . '/LoginPageManager.php');
 
 /**
  * Class ilPegasusHelperUIHookGUI handles different kind of requests,
@@ -17,6 +18,7 @@ class ilPegasusHelperUIHookGUI extends ilUIHookPluginGUI
 
     private $tokenChecker;
     private $outhManager;
+	private $loginPageManager;
 
 	/**
 	 * ilPegasusHelperUIHookGUI constructor.
@@ -24,6 +26,7 @@ class ilPegasusHelperUIHookGUI extends ilUIHookPluginGUI
 	public function __construct() {
 		$this->tokenChecker = new TokenChecker();
 		$this->outhManager = new OauthManager();
+		$this->loginPageManager = new LoginPageManager();
 	}
 
 	/**
@@ -59,6 +62,9 @@ class ilPegasusHelperUIHookGUI extends ilUIHookPluginGUI
 				break;
 			case $this->tokenChecker->isHandler():
 				$this->tokenChecker->execute();
+				break;
+			case $this->loginPageManager->isHandler():
+				return array("mode" => ilUIHookPluginGUI::REPLACE, "html" => "./Customizing/global/plugins/Services/UIComponent/UserInterfaceHook/PegasusHelper/classes/templates/pegasus_login_page.html");
 				break;
 			default:
 				return parent::getHTML($a_comp, $a_part, $a_par);
