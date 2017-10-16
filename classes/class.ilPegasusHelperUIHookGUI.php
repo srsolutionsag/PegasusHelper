@@ -4,7 +4,6 @@ require_once('./Services/UIComponent/classes/class.ilUIHookPluginGUI.php');
 require_once(__DIR__ . '/TokenChecker.php');
 require_once(__DIR__ . '/OauthManager.php');
 require_once(__DIR__ . '/LoginPageManager.php');
-require_once(__DIR__ . '/LoginPage/class.srLoginPageGUI.php');
 
 /**
  * Class ilPegasusHelperUIHookGUI handles different kind of requests,
