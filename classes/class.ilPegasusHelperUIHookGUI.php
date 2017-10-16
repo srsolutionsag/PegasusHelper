@@ -66,12 +66,6 @@ class ilPegasusHelperUIHookGUI extends ilUIHookPluginGUI
 				break;
 			case $this->loginPageManager->isHandler():
 				return array("mode" => ilUIHookPluginGUI::REPLACE, "html" => "./Customizing/global/plugins/Services/UIComponent/UserInterfaceHook/PegasusHelper/classes/templates/pegasus_login_page.html");
-
-				//$tpl->getStandardTemplate();
-				//global $ilCtrl;
-				//$ilCtrl->clearParameters($this);
-				//$ilCtrl->setParameterByClass("srLoginPageGUI","target", '');
-				//$ilCtrl->redirectByClass(array("ilUIPluginRouterGUI", "srLoginPageGUI"),"show");
 				break;
 			default:
 				return parent::getHTML($a_comp, $a_part, $a_par);
