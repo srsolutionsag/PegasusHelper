@@ -64,7 +64,9 @@ class ilPegasusHelperUIHookGUI extends ilUIHookPluginGUI
 				$this->tokenChecker->execute();
 				break;
 			case $this->loginPageManager->isHandler():
-				return array("mode" => ilUIHookPluginGUI::REPLACE, "html" => "./Customizing/global/plugins/Services/UIComponent/UserInterfaceHook/PegasusHelper/classes/templates/pegasus_login_page.html");
+				$script = ILIAS_HTTP_PATH."/Customizing/global/plugins/Services/UIComponent/UserInterfaceHook/PegasusHelper/classes/templates/pegasus_login_page.html";
+				header("Location: ".$script);
+				exit();
 				break;
 			default:
 				return parent::getHTML($a_comp, $a_part, $a_par);
