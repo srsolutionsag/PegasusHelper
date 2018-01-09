@@ -149,3 +149,29 @@
 require_once "./Customizing/global/plugins/Services/UIComponent/UserInterfaceHook/PegasusHelper/classes/entity/UserToken.php";
 	UserToken::updateDB();
 ?>
+<#14>
+<?php
+
+	require_once "./Customizing/global/plugins/Services/UIComponent/UserInterfaceHook/PegasusHelper/classes/rest/RestSetup.php";
+	require_once "./Customizing/global/plugins/Services/UIComponent/UserInterfaceHook/PegasusHelper/classes/rest/RouteParam.php";
+
+	$routes = [
+		new RouteParam("/learnplace/:objectId", "GET"),
+		new RouteParam("/learnplace/:objectId", "OPTIONS"),
+
+		new RouteParam("/learnplace/:objectId/journal-entries", "GET"),
+		new RouteParam("/learnplace/:objectId/journal-entries", "OPTIONS"),
+
+		new RouteParam("/learnplace/:objectId/journal-entry", "POST"),
+		new RouteParam("/learnplace/:objectId/journal-entry", "OPTIONS"),
+
+		new RouteParam("/learnplace/:objectId/blocks", "GET"),
+		new RouteParam("/learnplace/:objectId/blocks", "OPTIONS"),
+	];
+
+	$rest = new RestSetup();
+
+	foreach ($routes as $route) {
+		$rest->addRoute($route);
+	}
+?>
