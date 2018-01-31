@@ -156,17 +156,17 @@ require_once "./Customizing/global/plugins/Services/UIComponent/UserInterfaceHoo
 	require_once "./Customizing/global/plugins/Services/UIComponent/UserInterfaceHook/PegasusHelper/classes/rest/RouteParam.php";
 
 	$routes = [
-		new RouteParam("/v2/learnplace/:objectId", "GET"),
-		new RouteParam("/v2/learnplace/:objectId", "OPTIONS"),
+		new RouteParam("/v2/ilias-app/learnplace/:objectId", "GET"),
+		new RouteParam("/v2/ilias-app/learnplace/:objectId", "OPTIONS"),
 
-		new RouteParam("/v2/learnplace/:objectId/journal-entries", "GET"),
-		new RouteParam("/v2/learnplace/:objectId/journal-entries", "OPTIONS"),
+		new RouteParam("/v2/ilias-app/learnplace/:objectId/journal-entries", "GET"),
+		new RouteParam("/v2/ilias-app/learnplace/:objectId/journal-entries", "OPTIONS"),
 
-		new RouteParam("/v2/learnplace/:objectId/journal-entry", "POST"),
-		new RouteParam("/v2/learnplace/:objectId/journal-entry", "OPTIONS"),
+		new RouteParam("/v2/ilias-app/learnplace/:objectId/journal-entry", "POST"),
+		new RouteParam("/v2/ilias-app/learnplace/:objectId/journal-entry", "OPTIONS"),
 
-		new RouteParam("/v2/learnplace/:objectId/blocks", "GET"),
-		new RouteParam("/v2/learnplace/:objectId/blocks", "OPTIONS"),
+		new RouteParam("/v2/ilias-app/learnplace/:objectId/blocks", "GET"),
+		new RouteParam("/v2/ilias-app/learnplace/:objectId/blocks", "OPTIONS"),
 	];
 
 	$rest = new RestSetup();
