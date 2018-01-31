@@ -175,3 +175,20 @@ require_once "./Customizing/global/plugins/Services/UIComponent/UserInterfaceHoo
 		$rest->addRoute($route);
 	}
 ?>
+<#15>
+<?php
+
+require_once "./Customizing/global/plugins/Services/UIComponent/UserInterfaceHook/PegasusHelper/classes/rest/RestSetup.php";
+require_once "./Customizing/global/plugins/Services/UIComponent/UserInterfaceHook/PegasusHelper/classes/rest/RouteParam.php";
+
+$routes = [
+	new RouteParam("/v2/ilias-app/news", "GET"),
+	new RouteParam("/v2/ilias-app/news", "OPTIONS"),
+];
+
+$rest = new RestSetup();
+
+foreach ($routes as $route) {
+	$rest->addRoute($route);
+}
+?>
