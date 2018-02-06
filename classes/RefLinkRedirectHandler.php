@@ -1,10 +1,7 @@
 <?php
 
 require_once('./Services/Link/classes/class.ilLink.php');
-require_once('./Services/Authentication/classes/class.ilSession.php');
-require_once('./Services/User/classes/class.ilObjUser.php');
 require_once('./Services/Utilities/classes/class.ilUtil.php');
-require_once(__DIR__.'/entity/UserToken.php');
 require_once __DIR__ . '/BaseHandler.php';
 require_once __DIR__ . '/authentication/UserTokenAuthenticator.php';
 
@@ -112,10 +109,10 @@ final class RefLinkRedirectHandler extends BaseHandler {
 					$ilCtrl->setParameterByClass("ilnewstimelinegui", "cmd", "show");
 
 					if ($type === "crs") {
-						$link = $ilCtrl->getLinkTargetByClass(array("ilrepositorygui", "ilobjcoursegui", "ilnewstimelinegui"));
+						$link = $ilCtrl->getLinkTargetByClass(["ilrepositorygui", "ilobjcoursegui", "ilnewstimelinegui"]);
 						ilUtil::redirect(ilUtil::_getHttpPath(). "/ilias.php" . htmlspecialchars_decode($link));
 					} else if ($type === "grp") {
-						$link = $ilCtrl->getLinkTargetByClass(array("ilrepositorygui", "ilobjgroupgui", "ilnewstimelinegui"));
+						$link = $ilCtrl->getLinkTargetByClass(["ilrepositorygui", "ilobjgroupgui", "ilnewstimelinegui"]);
 						ilUtil::redirect(ilUtil::_getHttpPath(). "/ilias.php" . htmlspecialchars_decode($link));
 					}
 					break;

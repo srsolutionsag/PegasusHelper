@@ -1,6 +1,8 @@
 <?php
 
+require_once('./Services/Authentication/classes/class.ilSession.php');
 require_once __DIR__ . '/UserTokenAuthenticator.php';
+require_once(__DIR__.'/../entity/UserToken.php');
 
 /**
  * Class UserTokenAuthenticator
