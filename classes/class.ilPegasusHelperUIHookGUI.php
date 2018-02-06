@@ -4,6 +4,7 @@ require_once './Services/UIComponent/classes/class.ilUIHookPluginGUI.php';
 require_once __DIR__ . '/authentication/DefaultUserTokenAuthenticator.php';
 require_once __DIR__ . '/ExcludedHandler.php';
 require_once __DIR__ . '/RefLinkRedirectHandler.php';
+require_once __DIR__ . '/NewsLinkRedirectHandler.php';
 require_once __DIR__ . '/OauthManager.php';
 require_once __DIR__ . '/LoginPageManager.php';
 
@@ -27,9 +28,12 @@ final class ilPegasusHelperUIHookGUI extends ilUIHookPluginGUI
 	 * ilPegasusHelperUIHookGUI constructor.
 	 */
 	public function __construct() {
+		global $DIC;
+
 		$this->handlers = new ExcludedHandler();
 		$this->handlers->add(new OauthManager());
 		$this->handlers->add(new RefLinkRedirectHandler(new DefaultUserTokenAuthenticator()));
+		$this->handlers->add(new NewsLinkRedirectHandler(new DefaultUserTokenAuthenticator(), $DIC->ctrl()));
 		$this->handlers->add(new LoginPageManager());
 	}
 
