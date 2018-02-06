@@ -15,7 +15,7 @@ require_once __DIR__ . '/authentication/UserTokenAuthenticator.php';
  */
 final class RefLinkRedirectHandler extends BaseHandler {
 
-	static $self_call;
+	private static $self_call;
 
 	private $userId;
 	private $refId;
