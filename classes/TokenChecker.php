@@ -5,6 +5,7 @@ require_once('./Services/Authentication/classes/class.ilSession.php');
 require_once('./Services/User/classes/class.ilObjUser.php');
 require_once('./Services/Utilities/classes/class.ilUtil.php');
 require_once(__DIR__.'/entity/UserToken.php');
+require_once __DIR__ . '/BaseHandler.php';
 
 /**
  * Class TokenChecker handles a specific link to log in
@@ -14,7 +15,7 @@ require_once(__DIR__.'/entity/UserToken.php');
  * @version 1.1.0
  *
  */
-class TokenChecker {
+final class TokenChecker extends BaseHandler {
 
 	static $self_call;
 
@@ -22,6 +23,15 @@ class TokenChecker {
 	private $refId;
 	private $view;
 	private $token;
+
+
+	public function handle() {
+		if(!$this->isHandler())
+			parent::next();
+		else
+			$this->execute();
+	}
+
 
 	/**
 	 * @return boolean true if this handler needs to handle the request, otherwise false
