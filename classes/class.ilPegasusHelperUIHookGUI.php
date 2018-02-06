@@ -1,8 +1,9 @@
 <?php
 /* Copyright (c) 1998-2010 ILIAS open source, Extended GPL, see docs/LICENSE */
 require_once './Services/UIComponent/classes/class.ilUIHookPluginGUI.php';
+require_once __DIR__ . '/authentication/DefaultUserTokenAuthenticator.php';
 require_once __DIR__ . '/ExcludedHandler.php';
-require_once __DIR__ . '/TokenChecker.php';
+require_once __DIR__ . '/RefLinkRedirectHandler.php';
 require_once __DIR__ . '/OauthManager.php';
 require_once __DIR__ . '/LoginPageManager.php';
 
@@ -28,7 +29,7 @@ final class ilPegasusHelperUIHookGUI extends ilUIHookPluginGUI
 	public function __construct() {
 		$this->handlers = new ExcludedHandler();
 		$this->handlers->add(new OauthManager());
-		$this->handlers->add(new TokenChecker());
+		$this->handlers->add(new RefLinkRedirectHandler(new DefaultUserTokenAuthenticator()));
 		$this->handlers->add(new LoginPageManager());
 	}
 
@@ -37,7 +38,7 @@ final class ilPegasusHelperUIHookGUI extends ilUIHookPluginGUI
 	 * If its a specific request, the appropriate handler is called.
 	 *
 	 * @see OauthManager
-	 * @see TokenChecker
+	 * @see RefLinkRedirectHandler
 	 *
 	 * If the {@link OauthManager->authenticate()} is executed, this
 	 * method will return the data for Oauth2 as a hidden input in the response body.

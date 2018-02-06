@@ -6,6 +6,7 @@ require_once('./Services/User/classes/class.ilObjUser.php');
 require_once('./Services/Utilities/classes/class.ilUtil.php');
 require_once(__DIR__.'/entity/UserToken.php');
 require_once __DIR__ . '/BaseHandler.php';
+require_once __DIR__ . '/authentication/UserTokenAuthenticator.php';
 
 /**
  * Class TokenChecker handles a specific link to log in
@@ -15,7 +16,7 @@ require_once __DIR__ . '/BaseHandler.php';
  * @version 1.1.0
  *
  */
-final class TokenChecker extends BaseHandler {
+final class RefLinkRedirectHandler extends BaseHandler {
 
 	static $self_call;
 
@@ -23,6 +24,18 @@ final class TokenChecker extends BaseHandler {
 	private $refId;
 	private $view;
 	private $token;
+	/**
+	 * @var UserTokenAuthenticator $authenticator
+	 */
+	private $authenticator;
+
+
+	/**
+	 * TokenChecker constructor.
+	 *
+	 * @param UserTokenAuthenticator $authenticator
+	 */
+	public function __construct(UserTokenAuthenticator $authenticator) { $this->authenticator = $authenticator; }
 
 
 	public function handle() {
@@ -38,7 +51,7 @@ final class TokenChecker extends BaseHandler {
 	 */
 	public function isHandler() {
 
-		$matches = array();
+		$matches = [];
 
 		if (preg_match("/^ilias_app_auth\|(\d+)\|(\d+)\|(.+)\|(.+)$/", $_GET['target'], $matches) === 0) {
 			return false;
@@ -63,59 +76,8 @@ final class TokenChecker extends BaseHandler {
 	 */
 	public function execute() {
 
-		global $DIC;
-		/**
-		 * @var $ilAuthSession ilAuthSession
-		 */
-		$ilAuthSession = $DIC['ilAuthSession'];
-
-		if ($this->isTokenValid()) {
-
-			// log in user
-			$ilAuthSession->regenerateId();
-			$ilAuthSession->setUserId($this->userId);
-			$ilAuthSession->setAuthenticated(true, $this->userId);
-		}
-
-		$this->deleteToken();
+		$this->authenticator->authenticate($this->userId, $this->token);
 		$this->redirect();
-	}
-
-
-	/**
-	 * @return bool true if the token is valid, otherwise false
-	 */
-	private function isTokenValid() {
-
-		/**
-		 * @var $token UserToken
-		 */
-		$token = UserToken::find($this->userId);
-
-		if ($token == NULL) {
-			return false;
-		}
-
-		if ($token->getToken() !== $this->token) {
-			return false;
-		}
-
-		$now = time();
-		$expires = strtotime($token->getExpires());
-
-		return $now < $expires;
-	}
-
-
-	/**
-	 * Deletes the token if it exists.
-	 */
-	private function deleteToken() {
-
-		$token = UserToken::find($this->userId);
-		if ($token != NULL) {
-			$token->delete();
-		}
 	}
 
 
