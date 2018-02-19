@@ -96,13 +96,13 @@ final class NewsLinkRedirectHandler extends BaseHandler {
 			self::$self_call = true;
 
 			$this->controlFlow->initBaseClass("ilPersonalDesktopGUI");
+			$this->controlFlow->setTargetScript('ilias.php');
 			$this->controlFlow->setParameterByClass("ilpdnewsblockgui", "news_id", $this->newsId);
 			$this->controlFlow->setParameterByClass("ilpdnewsblockgui", "news_context", $this->newsContext);
-			$this->controlFlow->setParameterByClass("ilnewstimelinegui", "cmd", "showNews");
-			$this->controlFlow->setCmdClass('ilnewstimelinegui');
+			$this->controlFlow->setParameterByClass("ilpdnewsblockgui", "block_type", "pdnews");
+			$this->controlFlow->setParameterByClass("ilpdnewsblockgui", "col_side", "left");
 
-			$url = $this->controlFlow->getLinkTargetByClass("ilnewstimelinegui", "showNews");
-			ilUtil::redirect($url);
+			$this->controlFlow->redirectByClass(["ilPersonalDesktopGUI", "ilColumnGUI", "ilpdnewsblockgui"], "showNews");
 		}
 	}
 }
