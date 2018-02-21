@@ -37,7 +37,16 @@ final class ilPegasusHelperPlugin extends ilUserInterfaceHookPlugin
         return 'PegasusHelper';
     }
 
-    /**
+
+	protected function beforeUninstall() {
+    	global $DIC;
+    	$database = $DIC->database();
+		$database->dropTable(UserToken::returnDbTableName(), false);
+		return parent::beforeUninstall();
+	}
+
+
+	/**
      * Before update processing
      */
     protected function beforeUpdate()
@@ -52,4 +61,6 @@ final class ilPegasusHelperPlugin extends ilUserInterfaceHookPlugin
         }
         return true;
     }
+
+
 }
