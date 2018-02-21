@@ -7,6 +7,7 @@ require_once __DIR__ . '/RefLinkRedirectHandler.php';
 require_once __DIR__ . '/NewsLinkRedirectHandler.php';
 require_once __DIR__ . '/OauthManager.php';
 require_once __DIR__ . '/LoginPageManager.php';
+require_once __DIR__ . '/ResourceLinkHandler.php';
 
 /**
  * Class ilPegasusHelperUIHookGUI handles different kind of requests,
@@ -35,6 +36,7 @@ final class ilPegasusHelperUIHookGUI extends ilUIHookPluginGUI
 		$this->handlers->add(new RefLinkRedirectHandler(new DefaultUserTokenAuthenticator()));
 		$this->handlers->add(new NewsLinkRedirectHandler(new DefaultUserTokenAuthenticator(), $DIC->ctrl()));
 		$this->handlers->add(new LoginPageManager());
+		$this->handlers->add(new ResourceLinkHandler(new DefaultUserTokenAuthenticator()));
 	}
 
 	/**
@@ -56,7 +58,7 @@ final class ilPegasusHelperUIHookGUI extends ilUIHookPluginGUI
 	 *
 	 * @return array
 	 */
-	public function getHTML($a_comp, $a_part, $a_par = array()) {
+	public function getHTML($a_comp, $a_part, $a_par = []) {
 
 		$this->handlers->handle();
 		return parent::getHTML($a_comp, $a_part, $a_par);

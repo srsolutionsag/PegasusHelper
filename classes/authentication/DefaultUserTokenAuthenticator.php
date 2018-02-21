@@ -32,6 +32,8 @@ final class DefaultUserTokenAuthenticator implements UserTokenAuthenticator {
 		 * @var $ilAuthSession ilAuthSession
 		 */
 		$ilAuthSession = $DIC['ilAuthSession'];
+		$user = $DIC->user();
+
 
 		if ($this->isTokenValid($userId, $token)) {
 
@@ -39,6 +41,9 @@ final class DefaultUserTokenAuthenticator implements UserTokenAuthenticator {
 			$ilAuthSession->regenerateId();
 			$ilAuthSession->setUserId($userId);
 			$ilAuthSession->setAuthenticated(true, $userId);
+
+			$user->setId($userId);
+			$user->read();
 		}
 
 		$this->deleteToken($userId);
