@@ -1,5 +1,7 @@
 <?php
 
+require_once __DIR__ . '/BaseHandler.php';
+
 /**
  * Class OauthManager handles an authentication when a user
  * logs in from ILIAS Pegasus app.
@@ -8,9 +10,21 @@
  * @version 1.0.0
  *
  */
-class OauthManager {
+final class OauthManager extends BaseHandler {
 
 	const API_KEY = 'ilias_pegasus';
+
+
+	public function handle() {
+		if($this->isHandler()) {
+			$data = $this->authenticate();
+			$encodedData = implode('|||', $data);
+			$out = '<input type="hidden" name="data" id="data" value="' . $encodedData . '">';
+			echo $out;
+			die();
+		}
+		parent::next();
+	}
 
 	/**
 	 * Checks if the {@code target} GET parameter is set
@@ -18,7 +32,7 @@ class OauthManager {
 	 *
 	 * @return boolean true if this handler needs to handle the request, otherwise false
 	 */
-	public function isHandler() {
+	private function isHandler() {
 
 		global $ilUser;
 
@@ -40,7 +54,7 @@ class OauthManager {
 	 *
 	 * @return array the resulting data
 	 */
-	public function authenticate() {
+	private function authenticate() {
 
 		try {
 			/** @var $ilUser ilObjUser */
@@ -61,6 +75,7 @@ class OauthManager {
 		}
 	}
 
+
 	/**
 	 * Creates an access token by interacting with ILIAS REST plugin.
 	 * The resulting data contains:
@@ -72,6 +87,8 @@ class OauthManager {
 	 * @param $api_key string the api key for the REST request
 	 *
 	 * @return array the resulting data
+	 *
+	 * @throws \RESTController\core\oauth2_v2\Exceptions\InvalidRequest
 	 */
 	public static function createAccessToken($api_key) {
 		global $ilUser;
@@ -105,7 +122,7 @@ class OauthManager {
 
 		curl_setopt($ch, CURLOPT_URL, $HOST."/Customizing/global/plugins/Services/UIComponent/UserInterfaceHook/REST/api.php/v1/clients");
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-		curl_setopt($ch, CURLOPT_HTTPHEADER, array('Authorization: Bearer ' . $access_token));
+		curl_setopt($ch, CURLOPT_HTTPHEADER, ['Authorization: Bearer ' . $access_token, 'Content-Type: text/plain']);
 
 		$result = curl_exec($ch);
 		$arr_result = json_decode($result, true);

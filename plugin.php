@@ -1,7 +1,7 @@
 <?php
 $id = 'sragpegasushelper';
-$version = '0.0.9';
-$ilias_min_version = '5.1.0';
+$version = '0.0.11';
+$ilias_min_version = '5.2.0';
 $ilias_max_version = '5.2.999';
-$responsible = 'Stefan Wanzenried, Martin Studer, Nicolas Märchy';
+$responsible = 'Martin Studer, Nicolas Märchy, Nicolas Schäfli';
 $responsible_mail = 'info@studer-raimann.ch';

@@ -7,7 +7,7 @@ include_once('./Services/UIComponent/classes/class.ilUserInterfaceHookPlugin.php
  * @author Stefan Wanzenried <sw@studer-raimann.ch>
  * @author Martin Studer <ms@studer-raimann.ch>
  */
-class ilPegasusHelperPlugin extends ilUserInterfaceHookPlugin
+final class ilPegasusHelperPlugin extends ilUserInterfaceHookPlugin
 {
 
     /**
@@ -37,7 +37,7 @@ class ilPegasusHelperPlugin extends ilUserInterfaceHookPlugin
         return 'PegasusHelper';
     }
 
-    /**
+	/**
      * Before update processing
      */
     protected function beforeUpdate()
@@ -52,4 +52,6 @@ class ilPegasusHelperPlugin extends ilUserInterfaceHookPlugin
         }
         return true;
     }
+
+
 }

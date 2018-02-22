@@ -1,5 +1,7 @@
 <?php
 
+require_once __DIR__ . '/BaseHandler.php';
+
 /**
  * Class LoginPageManager handles the display of a specific Login Page
  *
@@ -7,7 +9,7 @@
  * @version 1.0.0
  *
  */
-class LoginPageManager {
+final class LoginPageManager extends BaseHandler {
 
 
 	/**
@@ -16,14 +18,22 @@ class LoginPageManager {
 	 *
 	 * @return boolean true if this handler needs to handle the request, otherwise false
 	 */
-	public function isHandler() {
+	private function isHandler() {
 
-		global $ilUser;
-
-		if ($_GET['target'] == 'ilias_app_login_page') {
+		if (strcmp($_GET['target'], 'ilias_app_login_page') === 0) {
 			return true;
 		}
 
 		return false;
+	}
+
+	public function handle() {
+		if(!$this->isHandler())
+			$this->next();
+		else {
+			$script = ILIAS_HTTP_PATH."/Customizing/global/plugins/Services/UIComponent/UserInterfaceHook/PegasusHelper/classes/templates/pegasus_login_page.html";
+			header("Location: ".$script);
+			exit();
+		}
 	}
 }

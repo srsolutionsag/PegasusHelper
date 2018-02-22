@@ -149,3 +149,46 @@
 require_once "./Customizing/global/plugins/Services/UIComponent/UserInterfaceHook/PegasusHelper/classes/entity/UserToken.php";
 	UserToken::updateDB();
 ?>
+<#14>
+<?php
+
+	require_once "./Customizing/global/plugins/Services/UIComponent/UserInterfaceHook/PegasusHelper/classes/rest/RestSetup.php";
+	require_once "./Customizing/global/plugins/Services/UIComponent/UserInterfaceHook/PegasusHelper/classes/rest/RouteParam.php";
+
+	$routes = [
+		new RouteParam("/v2/ilias-app/learnplace/:objectId", "GET"),
+		new RouteParam("/v2/ilias-app/learnplace/:objectId", "OPTIONS"),
+
+		new RouteParam("/v2/ilias-app/learnplace/:objectId/journal-entries", "GET"),
+		new RouteParam("/v2/ilias-app/learnplace/:objectId/journal-entries", "OPTIONS"),
+
+		new RouteParam("/v2/ilias-app/learnplace/:objectId/journal-entry", "POST"),
+		new RouteParam("/v2/ilias-app/learnplace/:objectId/journal-entry", "OPTIONS"),
+
+		new RouteParam("/v2/ilias-app/learnplace/:objectId/blocks", "GET"),
+		new RouteParam("/v2/ilias-app/learnplace/:objectId/blocks", "OPTIONS"),
+	];
+
+	$rest = new RestSetup();
+
+	foreach ($routes as $route) {
+		$rest->addRoute($route);
+	}
+?>
+<#15>
+<?php
+
+require_once "./Customizing/global/plugins/Services/UIComponent/UserInterfaceHook/PegasusHelper/classes/rest/RestSetup.php";
+require_once "./Customizing/global/plugins/Services/UIComponent/UserInterfaceHook/PegasusHelper/classes/rest/RouteParam.php";
+
+$routes = [
+	new RouteParam("/v2/ilias-app/news", "GET"),
+	new RouteParam("/v2/ilias-app/news", "OPTIONS"),
+];
+
+$rest = new RestSetup();
+
+foreach ($routes as $route) {
+	$rest->addRoute($route);
+}
+?>

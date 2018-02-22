@@ -7,7 +7,7 @@ require_once ('./Services/Form/classes/class.ilNonEditableValueGUI.php');
 /**
  * Class ilPegasusHelperConfigGUI
  */
-class ilPegasusHelperConfigGUI extends ilPluginConfigGUI {
+final class ilPegasusHelperConfigGUI extends ilPluginConfigGUI {
 
 
 	public function __construct() {
@@ -26,7 +26,7 @@ class ilPegasusHelperConfigGUI extends ilPluginConfigGUI {
 		global $ilDB, $tpl;
 
 		$api_key =  'ilias_pegasus';
-		$sql = "SELECT api_secret FROM ui_uihk_rest_client where api_key = '".$api_key."'";
+		$sql = "SELECT api_secret FROM ui_uihk_rest_client where api_key = '$api_key'";
 		$set = $ilDB->query($sql);
 		while ($rec = $ilDB->fetchAssoc($set)) {
 			$api_secret = $rec['api_secret'];

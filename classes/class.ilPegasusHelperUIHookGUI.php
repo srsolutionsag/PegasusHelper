@@ -1,9 +1,13 @@
 <?php
 /* Copyright (c) 1998-2010 ILIAS open source, Extended GPL, see docs/LICENSE */
-require_once('./Services/UIComponent/classes/class.ilUIHookPluginGUI.php');
-require_once(__DIR__ . '/TokenChecker.php');
-require_once(__DIR__ . '/OauthManager.php');
-require_once(__DIR__ . '/LoginPageManager.php');
+require_once './Services/UIComponent/classes/class.ilUIHookPluginGUI.php';
+require_once __DIR__ . '/authentication/DefaultUserTokenAuthenticator.php';
+require_once __DIR__ . '/ExcludedHandler.php';
+require_once __DIR__ . '/RefLinkRedirectHandler.php';
+require_once __DIR__ . '/NewsLinkRedirectHandler.php';
+require_once __DIR__ . '/OauthManager.php';
+require_once __DIR__ . '/LoginPageManager.php';
+require_once __DIR__ . '/ResourceLinkHandler.php';
 
 /**
  * Class ilPegasusHelperUIHookGUI handles different kind of requests,
@@ -13,20 +17,26 @@ require_once(__DIR__ . '/LoginPageManager.php');
  * @author Martin Studer <ms@studer-raimann.ch>
  * @author Nicolas Märchy <nm@studer-raimann.ch>
  */
-class ilPegasusHelperUIHookGUI extends ilUIHookPluginGUI
+final class ilPegasusHelperUIHookGUI extends ilUIHookPluginGUI
 {
 
-    private $tokenChecker;
-    private $outhManager;
-	private $loginPageManager;
+	/**
+	 * @var BaseHandler $handlers
+	 */
+	private $handlers;
 
 	/**
 	 * ilPegasusHelperUIHookGUI constructor.
 	 */
 	public function __construct() {
-		$this->tokenChecker = new TokenChecker();
-		$this->outhManager = new OauthManager();
-		$this->loginPageManager = new LoginPageManager();
+		global $DIC;
+
+		$this->handlers = new ExcludedHandler();
+		$this->handlers->add(new OauthManager());
+		$this->handlers->add(new RefLinkRedirectHandler(new DefaultUserTokenAuthenticator()));
+		$this->handlers->add(new NewsLinkRedirectHandler(new DefaultUserTokenAuthenticator(), $DIC->ctrl()));
+		$this->handlers->add(new LoginPageManager());
+		$this->handlers->add(new ResourceLinkHandler(new DefaultUserTokenAuthenticator()));
 	}
 
 	/**
@@ -34,7 +44,7 @@ class ilPegasusHelperUIHookGUI extends ilUIHookPluginGUI
 	 * If its a specific request, the appropriate handler is called.
 	 *
 	 * @see OauthManager
-	 * @see TokenChecker
+	 * @see RefLinkRedirectHandler
 	 *
 	 * If the {@link OauthManager->authenticate()} is executed, this
 	 * method will return the data for Oauth2 as a hidden input in the response body.
@@ -48,41 +58,12 @@ class ilPegasusHelperUIHookGUI extends ilUIHookPluginGUI
 	 *
 	 * @return array
 	 */
-	public function getHTML($a_comp, $a_part, $a_par = array()) {
+	public function getHTML($a_comp, $a_part, $a_par = []) {
 
-		switch (true) {
-			case $this->isExcluded():
-				return parent::getHTML($a_comp, $a_part, $a_par);
-			case $this->outhManager->isHandler():
-				$data = $this->outhManager->authenticate();
-				$encodedData = implode('|||', $data);
-				$out = '<input type="hidden" name="data" id="data" value="' . $encodedData . '">';
-				echo $out;
-				die();
-				break;
-			case $this->tokenChecker->isHandler():
-				$this->tokenChecker->execute();
-				break;
-			case $this->loginPageManager->isHandler():
-				$script = ILIAS_HTTP_PATH."/Customizing/global/plugins/Services/UIComponent/UserInterfaceHook/PegasusHelper/classes/templates/pegasus_login_page.html";
-				header("Location: ".$script);
-				exit();
-				break;
-			default:
-				return parent::getHTML($a_comp, $a_part, $a_par);
-		}
+		$this->handlers->handle();
+		return parent::getHTML($a_comp, $a_part, $a_par);
 	}
 
 
-	/**
-	 * Checks the GET parameter {@code target} against a regex.
-	 * The param has to start with 'ilias_app'.
-	 *
-	 * @return bool true, if the request can be excluded from handlers, otherwise false
-	 */
-	private function isExcluded() {
 
-		return !(isset($_GET['target'])
-			&& preg_match("/^ilias_app.*$/", $_GET['target']) === 1);
-	}
 }
