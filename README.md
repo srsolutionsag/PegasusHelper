@@ -27,11 +27,7 @@ Update and activate the plugin in the ILIAS Plugin Administration
 3.4 Click the Button 'Manage API-Keys and Authorization Schemes'  
 3.5 Click the Button 'Modify' at the row 'ilias_pegasus'  
 
-## Contact
-studer + raimann ag  
-Farbweg 9  
-3400 Burgdorf  
-Switzerland 
-
+### Contact
 info@studer-raimann.ch  
-www.studer-raimann.ch  
+https://studer-raimann.ch  
+
