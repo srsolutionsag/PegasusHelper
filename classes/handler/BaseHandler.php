@@ -1,5 +1,7 @@
 <?php
 
+namespace SRAG\PegasusHelper\handler;
+
 /**
  * Class BaseHandler
  *
@@ -13,7 +15,7 @@
  *
  * @see chain of responsability
  */
-abstract class BaseHandler {
+abstract class BaseHandler implements ChainRequestHandler {
 
 	/**
 	 * @var BaseHandler $next
@@ -38,10 +40,10 @@ abstract class BaseHandler {
 	/**
 	 * Add a new chain link to the end of the chain.
 	 *
-	 * @param BaseHandler $handler  The chain element which should be added to the chain end.
+	 * @param ChainRequestHandler $handler  The chain element which should be added to the chain end.
 	 * @return  void
 	 */
-	public final function add(BaseHandler $handler) {
+	public final function add(ChainRequestHandler $handler) {
 		if(is_null($this->next))
 			$this->next = $handler;
 		else

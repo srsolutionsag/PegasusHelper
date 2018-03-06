@@ -1,6 +1,8 @@
 <?php
 
-require_once('./Services/ActiveRecord/class.ActiveRecord.php');
+namespace SRAG\PegasusHelper\entity;
+
+use ActiveRecord;
 
 /**
  * Class UserToken is the entity class for the custom user token.

@@ -1,8 +1,6 @@
 <?php
-require_once('class.ilPegasusHelperPlugin.php');
-require_once('./Services/Component/classes/class.ilPluginConfigGUI.php');
-require_once('./Services/Form/classes/class.ilPropertyFormGUI.php');
-require_once ('./Services/Form/classes/class.ilNonEditableValueGUI.php');
+
+require_once __DIR__ . '/../bootstrap.php';
 
 /**
  * Class ilPegasusHelperConfigGUI

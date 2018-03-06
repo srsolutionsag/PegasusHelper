@@ -1,7 +1,9 @@
 <?php
 
-require_once "./Customizing/global/plugins/Services/UIComponent/UserInterfaceHook/PegasusHelper/classes/OauthManager.php";
-require_once "./Services/Database/exceptions/exception.ilDatabaseException.php";
+namespace SRAG\PegasusHelper\rest;
+
+use ilDatabaseException;
+use SRAG\PegasusHelper\handler\OAuthManager\v52\OauthManagerImpl;
 
 /**
  * Class RestSetup
@@ -78,12 +80,12 @@ class RestSetup {
 	public function addRoute($routeParams) {
 
 		// TODO: move this method to this class
-		$oauthData = OauthManager::createAccessToken('apollon');
+		$oauthData = OauthManagerImpl::createAccessToken('apollon');
 
 		// TODO: move this method to this class
-		$rest_client_id = OauthManager::getRestClientId($oauthData['access_token']);
+		$rest_client_id = OauthManagerImpl::getRestClientId($oauthData['access_token']);
 		if(!$rest_client_id) {
-			throw new ilDatabaseException("REST Client ".OauthManager::API_KEY." is not configured");
+			throw new ilDatabaseException("REST Client ".OauthManagerImpl::API_KEY." is not configured");
 		}
 
 		$uri = $this->host."/Customizing/global/plugins/Services/UIComponent/UserInterfaceHook/REST/api.php/v2/admin/permission/".$rest_client_id;
@@ -114,7 +116,7 @@ class RestSetup {
 	private function post($uri, $params) {
 
 		// TODO: move this method to this class
-		$oauthData = OauthManager::createAccessToken('apollon');
+		$oauthData = OauthManagerImpl::createAccessToken('apollon');
 
 		$ch = curl_init();
 		curl_setopt($ch, CURLOPT_URL, $uri);
@@ -129,7 +131,7 @@ class RestSetup {
 	private function put($uri, $params) {
 
 		// TODO: move this method to this class
-		$oauthData = OauthManager::createAccessToken('apollon');
+		$oauthData = OauthManagerImpl::createAccessToken('apollon');
 
 		$ch = curl_init();
 		curl_setopt($ch, CURLOPT_URL, $uri);

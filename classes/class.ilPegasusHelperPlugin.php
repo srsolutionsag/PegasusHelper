@@ -1,5 +1,6 @@
 <?php
-include_once('./Services/UIComponent/classes/class.ilUserInterfaceHookPlugin.php');
+
+require_once __DIR__ . '/../bootstrap.php';
 
 /**
  * Class ilPegasusHelperPlugin

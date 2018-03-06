@@ -1,6 +1,9 @@
 <?php
 
-require_once __DIR__ . '/BaseHandler.php';
+namespace SRAG\PegasusHelper\handler\ExcludedHandler\v52;
+
+use SRAG\PegasusHelper\handler\BaseHandler;
+use SRAG\PegasusHelper\handler\ExcludedHandler\ExcludedHandler;
 
 /**
  * Class ExcludedHandler
@@ -10,7 +13,7 @@ require_once __DIR__ . '/BaseHandler.php';
  *
  * @author  Nicolas Schäfli <ns@studer-raimann.ch>
  */
-final class ExcludedHandler extends BaseHandler {
+final class ExcludedHandlerImpl extends BaseHandler implements ExcludedHandler {
 
 	public function handle() {
 

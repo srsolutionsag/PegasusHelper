@@ -1,6 +1,9 @@
 <?php
 
-require_once __DIR__ . '/BaseHandler.php';
+namespace SRAG\PegasusHelper\handler\LoginPageHandler\v52;
+
+use SRAG\PegasusHelper\handler\BaseHandler;
+use SRAG\PegasusHelper\handler\LoginPageHandler\LoginPageManager;
 
 /**
  * Class LoginPageManager handles the display of a specific Login Page
@@ -9,7 +12,7 @@ require_once __DIR__ . '/BaseHandler.php';
  * @version 1.0.0
  *
  */
-final class LoginPageManager extends BaseHandler {
+final class LoginPageManagerImpl extends BaseHandler implements LoginPageManager {
 
 
 	/**

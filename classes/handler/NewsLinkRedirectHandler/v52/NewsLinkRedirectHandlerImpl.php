@@ -1,8 +1,10 @@
 <?php
 
-require_once('./Services/Utilities/classes/class.ilUtil.php');
-require_once __DIR__ . '/BaseHandler.php';
-require_once __DIR__ . '/authentication/UserTokenAuthenticator.php';
+namespace SRAG\PegasusHelper\handler\NewsLinkRedirectHandler\v52;
+
+use ilCtrl;
+use SRAG\PegasusHelper\authentication\UserTokenAuthenticator;
+use SRAG\PegasusHelper\handler\BaseHandler;
 
 /**
  * Class NewsLinkRedirectHandler
@@ -12,7 +14,7 @@ require_once __DIR__ . '/authentication/UserTokenAuthenticator.php';
  *
  * @author  Nicolas Schäfli <ns@studer-raimann.ch>
  */
-final class NewsLinkRedirectHandler extends BaseHandler {
+final class NewsLinkRedirectHandlerImpl extends BaseHandler {
 
 
 	private static $self_call;

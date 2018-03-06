@@ -1,9 +1,13 @@
 <?php
 
-require_once('./Services/Link/classes/class.ilLink.php');
-require_once('./Services/Utilities/classes/class.ilUtil.php');
-require_once __DIR__ . '/BaseHandler.php';
-require_once __DIR__ . '/authentication/UserTokenAuthenticator.php';
+namespace SRAG\PegasusHelper\handler\RefLinkRedirectHandler\v52;
+
+use ilLink;
+use ilObject2;
+use ilUtil;
+use SRAG\PegasusHelper\authentication\UserTokenAuthenticator;
+use SRAG\PegasusHelper\handler\BaseHandler;
+use SRAG\PegasusHelper\handler\RefLinkRedirectHandler\RefLinkRedirectHandler;
 
 /**
  * Class TokenChecker handles a specific link to log in
@@ -13,7 +17,7 @@ require_once __DIR__ . '/authentication/UserTokenAuthenticator.php';
  * @version 1.1.0
  *
  */
-final class RefLinkRedirectHandler extends BaseHandler {
+final class RefLinkRedirectHandlerImpl extends BaseHandler implements RefLinkRedirectHandler {
 
 	private static $self_call;
 

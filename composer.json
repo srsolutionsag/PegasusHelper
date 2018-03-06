@@ -1,0 +1,43 @@
+{
+  "name": "studer-raimann.ag/pegasus-helper",
+  "description": "Plugin which solves integartion problems with ILIAS for the ILIAS pegasus app developed my studer+raimann ag",
+  "type": "project",
+  "license": "GPLv3",
+  "authors": [
+    {
+      "name": "Nicolas Schaefli",
+      "email": "ns@studer-raimann.ch"
+    }
+  ],
+  "minimum-stability": "stable",
+  "require": {},
+  "autoload": {
+    "psr-4": {
+      "SRAG\\PegasusHelper\\": "classes/"
+    },
+    "classmap": [
+      "./classes/class.ilPegasusHelperConfigGUI.php",
+      "./classes/class.ilPegasusHelperPlugin.php",
+      "./classes/class.ilPegasusHelperUIHookGUI.php",
+      "../../../../../../../Services/Form",
+      "../../../../../../../Services/News",
+      "../../../../../../../Services/Component",
+      "../../../../../../../Services/UIComponent",
+      "../../../../../../../Services/Database",
+      "../../../../../../../Services/ActiveRecord",
+      "../../../../../../../Services/Authentication",
+      "../../../../../../../Services/Utilities",
+      "../../../../../../../Services/Link",
+      "../../../../../../../Services/WebAccessChecker"
+    ]
+  },
+  "config": {
+    "optimize-autoloader": true,
+    "classmap-authoritative": true,
+    "sort-packages": true,
+    "discard-changes": true,
+    "htaccess-protect": true,
+    "secure-http": true,
+    "process-timeout": 600
+  }
+}

@@ -1,6 +1,14 @@
 <?php
 
-require_once __DIR__ . '/BaseHandler.php';
+namespace SRAG\PegasusHelper\handler\OAuthManager\v52;
+
+use Exception;
+use ilObjUser;
+use ilUtil;
+use RESTController\core\oauth2_v2\Common;
+use RESTController\RESTController;
+use SRAG\PegasusHelper\handler\BaseHandler;
+use SRAG\PegasusHelper\handler\ChainRequestHandler;
 
 /**
  * Class OauthManager handles an authentication when a user
@@ -10,7 +18,7 @@ require_once __DIR__ . '/BaseHandler.php';
  * @version 1.0.0
  *
  */
-final class OauthManager extends BaseHandler {
+final class OauthManagerImpl extends BaseHandler implements ChainRequestHandler {
 
 	const API_KEY = 'ilias_pegasus';
 
@@ -92,19 +100,19 @@ final class OauthManager extends BaseHandler {
 	 */
 	public static function createAccessToken($api_key) {
 		global $ilUser;
-		$appDirectory = './Customizing/global/plugins/Services/UIComponent/UserInterfaceHook/REST/RESTController/';
-		require_once($appDirectory . 'RESTController.php');
-		\RESTController\RESTController::registerAutoloader();
+		$restControllerFilePath = './Customizing/global/plugins/Services/UIComponent/UserInterfaceHook/REST/RESTController/RESTController.php';
+		require_once($restControllerFilePath);
+		RESTController::registerAutoloader();
 		/*
 		 * the RESTController needs to be initialized, because of its constructor,
 		 * which performs several operations to prepare ILIAS
 		 */
-		$restController = new \RESTController\RESTController();
-		$client = \RESTController\core\oauth2_v2\Common::CheckApiKey($api_key);
+		new RESTController();
+		$client = Common::CheckApiKey($api_key);
 		$userId = $ilUser->getId();
 		$withRefresh = $client->getKey('refresh_resource_owner');
 		$iliasClient = $_COOKIE['ilClientId'];
-		$oauthData = \RESTController\core\oauth2_v2\Common::GetResponse($api_key, $userId, $iliasClient, null, $withRefresh);
+		$oauthData = Common::GetResponse($api_key, $userId, $iliasClient, null, $withRefresh);
 
 		return $oauthData;
 	}

@@ -1,5 +1,12 @@
 <?php
 
+namespace SRAG\PegasusHelper\handler\ResourceLinkHandler\v52;
+
+use ilWebAccessCheckerDelivery;
+use SRAG\PegasusHelper\authentication\UserTokenAuthenticator;
+use SRAG\PegasusHelper\handler\BaseHandler;
+use SRAG\PegasusHelper\handler\ResourceLinkHandler\ResourceLinkHandler;
+
 /**
  * Class ResourceLinkHandler
  *
@@ -8,7 +15,7 @@
  *
  * @author  Nicolas Schäfli <ns@studer-raimann.ch>
  */
-final class ResourceLinkHandler extends BaseHandler {
+final class ResourceLinkHandlerImpl extends BaseHandler implements ResourceLinkHandler {
 
 	private static $self_call = false;
 
