@@ -1,13 +1,18 @@
 <?php
 /* Copyright (c) 1998-2010 ILIAS open source, Extended GPL, see docs/LICENSE */
-require_once './Services/UIComponent/classes/class.ilUIHookPluginGUI.php';
-require_once __DIR__ . '/authentication/DefaultUserTokenAuthenticator.php';
-require_once __DIR__ . '/ExcludedHandler.php';
-require_once __DIR__ . '/RefLinkRedirectHandler.php';
-require_once __DIR__ . '/NewsLinkRedirectHandler.php';
-require_once __DIR__ . '/OauthManager.php';
-require_once __DIR__ . '/LoginPageManager.php';
-require_once __DIR__ . '/ResourceLinkHandler.php';
+
+use SRAG\PegasusHelper\container\PegasusHelperContainer;
+use SRAG\PegasusHelper\handler\ChainRequestHandler;
+use SRAG\PegasusHelper\handler\ExcludedHandler\ExcludedHandler;
+use SRAG\PegasusHelper\handler\LoginPageHandler\LoginPageManager;
+use SRAG\PegasusHelper\handler\NewsLinkRedirectHandler\NewsLinkRedirectHandler;
+use SRAG\PegasusHelper\handler\OAuthManager\OAuthManager;
+use SRAG\PegasusHelper\handler\OAuthManager\v52\OauthManagerImpl;
+use SRAG\PegasusHelper\handler\RefLinkRedirectHandler\RefLinkRedirectHandler;
+use SRAG\PegasusHelper\handler\RefLinkRedirectHandler\v52\RefLinkRedirectHandlerImpl;
+use SRAG\PegasusHelper\handler\ResourceLinkHandler\ResourceLinkHandler;
+
+require_once __DIR__ . '/../bootstrap.php';
 
 /**
  * Class ilPegasusHelperUIHookGUI handles different kind of requests,
@@ -21,7 +26,7 @@ final class ilPegasusHelperUIHookGUI extends ilUIHookPluginGUI
 {
 
 	/**
-	 * @var BaseHandler $handlers
+	 * @var ChainRequestHandler $handlers
 	 */
 	private $handlers;
 
@@ -29,22 +34,20 @@ final class ilPegasusHelperUIHookGUI extends ilUIHookPluginGUI
 	 * ilPegasusHelperUIHookGUI constructor.
 	 */
 	public function __construct() {
-		global $DIC;
-
-		$this->handlers = new ExcludedHandler();
-		$this->handlers->add(new OauthManager());
-		$this->handlers->add(new RefLinkRedirectHandler(new DefaultUserTokenAuthenticator()));
-		$this->handlers->add(new NewsLinkRedirectHandler(new DefaultUserTokenAuthenticator(), $DIC->ctrl()));
-		$this->handlers->add(new LoginPageManager());
-		$this->handlers->add(new ResourceLinkHandler(new DefaultUserTokenAuthenticator()));
+		$this->handlers = PegasusHelperContainer::resolve(ExcludedHandler::class);
+		$this->handlers->add(PegasusHelperContainer::resolve(OauthManager::class));
+		$this->handlers->add(PegasusHelperContainer::resolve(RefLinkRedirectHandler::class));
+		$this->handlers->add(PegasusHelperContainer::resolve(NewsLinkRedirectHandler::class));
+		$this->handlers->add(PegasusHelperContainer::resolve(LoginPageManager::class));
+		$this->handlers->add(PegasusHelperContainer::resolve(ResourceLinkHandler::class));
 	}
 
 	/**
 	 * Checks, if the request is a specific request of ILIAS Pegasus.
 	 * If its a specific request, the appropriate handler is called.
 	 *
-	 * @see OauthManager
-	 * @see RefLinkRedirectHandler
+	 * @see OauthManagerImpl
+	 * @see RefLinkRedirectHandlerImpl
 	 *
 	 * If the {@link OauthManager->authenticate()} is executed, this
 	 * method will return the data for Oauth2 as a hidden input in the response body.

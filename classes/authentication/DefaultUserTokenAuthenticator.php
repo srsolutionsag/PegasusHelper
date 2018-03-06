@@ -1,8 +1,9 @@
 <?php
 
-require_once('./Services/Authentication/classes/class.ilSession.php');
-require_once __DIR__ . '/UserTokenAuthenticator.php';
-require_once(__DIR__.'/../entity/UserToken.php');
+namespace SRAG\PegasusHelper\authentication;
+
+use ilAuthSession;
+use SRAG\PegasusHelper\entity\UserToken;
 
 /**
  * Class UserTokenAuthenticator

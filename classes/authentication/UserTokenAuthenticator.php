@@ -1,4 +1,7 @@
 <?php
+
+namespace SRAG\PegasusHelper\authentication;
+
 /**
  * Interface UserTokenAuthenticator
  *

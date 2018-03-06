@@ -1,5 +1,7 @@
 <?php
 
+namespace SRAG\PegasusHelper\rest;
+
 /**
  * Class RouteParam
  *
