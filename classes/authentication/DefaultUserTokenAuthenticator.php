@@ -3,6 +3,7 @@
 namespace SRAG\PegasusHelper\authentication;
 
 use ilAuthSession;
+use function register_shutdown_function;
 use SRAG\PegasusHelper\entity\UserToken;
 
 /**
@@ -47,7 +48,7 @@ final class DefaultUserTokenAuthenticator implements UserTokenAuthenticator {
 			$user->read();
 		}
 
-		$this->deleteToken($userId);
+		$this->deleteToken($userId, $token);
 	}
 
 
@@ -85,10 +86,9 @@ final class DefaultUserTokenAuthenticator implements UserTokenAuthenticator {
 	 * @param int $userId   The user id which should be used to destroy the token.
 	 * @return void
 	 */
-	private function deleteToken($userId) {
-
-		$token = UserToken::find($userId);
-		if ($token != NULL) {
+	private function deleteToken($userId, $token) {
+		$token = UserToken::where(['userId' => $userId, 'token' => $token])->first();
+		if ($token !== NULL) {
 			$token->delete();
 		}
 	}
