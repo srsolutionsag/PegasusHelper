@@ -3,7 +3,6 @@
 namespace SRAG\PegasusHelper\authentication;
 
 use ilAuthSession;
-use function register_shutdown_function;
 use SRAG\PegasusHelper\entity\UserToken;
 
 /**
