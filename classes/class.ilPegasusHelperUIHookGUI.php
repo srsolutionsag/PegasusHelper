@@ -1,9 +1,18 @@
 <?php
 /* Copyright (c) 1998-2010 ILIAS open source, Extended GPL, see docs/LICENSE */
-require_once('./Services/UIComponent/classes/class.ilUIHookPluginGUI.php');
-require_once(__DIR__ . '/TokenChecker.php');
-require_once(__DIR__ . '/OauthManager.php');
-require_once(__DIR__ . '/LoginPageManager.php');
+
+use SRAG\PegasusHelper\container\PegasusHelperContainer;
+use SRAG\PegasusHelper\handler\ChainRequestHandler;
+use SRAG\PegasusHelper\handler\ExcludedHandler\ExcludedHandler;
+use SRAG\PegasusHelper\handler\LoginPageHandler\LoginPageManager;
+use SRAG\PegasusHelper\handler\NewsLinkRedirectHandler\NewsLinkRedirectHandler;
+use SRAG\PegasusHelper\handler\OAuthManager\OAuthManager;
+use SRAG\PegasusHelper\handler\OAuthManager\v52\OauthManagerImpl;
+use SRAG\PegasusHelper\handler\RefLinkRedirectHandler\RefLinkRedirectHandler;
+use SRAG\PegasusHelper\handler\RefLinkRedirectHandler\v52\RefLinkRedirectHandlerImpl;
+use SRAG\PegasusHelper\handler\ResourceLinkHandler\ResourceLinkHandler;
+
+require_once __DIR__ . '/../bootstrap.php';
 
 /**
  * Class ilPegasusHelperUIHookGUI handles different kind of requests,
@@ -13,28 +22,32 @@ require_once(__DIR__ . '/LoginPageManager.php');
  * @author Martin Studer <ms@studer-raimann.ch>
  * @author Nicolas Märchy <nm@studer-raimann.ch>
  */
-class ilPegasusHelperUIHookGUI extends ilUIHookPluginGUI
+final class ilPegasusHelperUIHookGUI extends ilUIHookPluginGUI
 {
 
-    private $tokenChecker;
-    private $outhManager;
-	private $loginPageManager;
+	/**
+	 * @var ChainRequestHandler $handlers
+	 */
+	private $handlers;
 
 	/**
 	 * ilPegasusHelperUIHookGUI constructor.
 	 */
 	public function __construct() {
-		$this->tokenChecker = new TokenChecker();
-		$this->outhManager = new OauthManager();
-		$this->loginPageManager = new LoginPageManager();
+		$this->handlers = PegasusHelperContainer::resolve(ExcludedHandler::class);
+		$this->handlers->add(PegasusHelperContainer::resolve(OauthManager::class));
+		$this->handlers->add(PegasusHelperContainer::resolve(RefLinkRedirectHandler::class));
+		$this->handlers->add(PegasusHelperContainer::resolve(NewsLinkRedirectHandler::class));
+		$this->handlers->add(PegasusHelperContainer::resolve(LoginPageManager::class));
+		$this->handlers->add(PegasusHelperContainer::resolve(ResourceLinkHandler::class));
 	}
 
 	/**
 	 * Checks, if the request is a specific request of ILIAS Pegasus.
 	 * If its a specific request, the appropriate handler is called.
 	 *
-	 * @see OauthManager
-	 * @see TokenChecker
+	 * @see OauthManagerImpl
+	 * @see RefLinkRedirectHandlerImpl
 	 *
 	 * If the {@link OauthManager->authenticate()} is executed, this
 	 * method will return the data for Oauth2 as a hidden input in the response body.
@@ -48,41 +61,12 @@ class ilPegasusHelperUIHookGUI extends ilUIHookPluginGUI
 	 *
 	 * @return array
 	 */
-	public function getHTML($a_comp, $a_part, $a_par = array()) {
+	public function getHTML($a_comp, $a_part, $a_par = []) {
 
-		switch (true) {
-			case $this->isExcluded():
-				return parent::getHTML($a_comp, $a_part, $a_par);
-			case $this->outhManager->isHandler():
-				$data = $this->outhManager->authenticate();
-				$encodedData = implode('|||', $data);
-				$out = '<input type="hidden" name="data" id="data" value="' . $encodedData . '">';
-				echo $out;
-				die();
-				break;
-			case $this->tokenChecker->isHandler():
-				$this->tokenChecker->execute();
-				break;
-			case $this->loginPageManager->isHandler():
-				$script = ILIAS_HTTP_PATH."/Customizing/global/plugins/Services/UIComponent/UserInterfaceHook/PegasusHelper/classes/templates/pegasus_login_page.html";
-				header("Location: ".$script);
-				exit();
-				break;
-			default:
-				return parent::getHTML($a_comp, $a_part, $a_par);
-		}
+		$this->handlers->handle();
+		return parent::getHTML($a_comp, $a_part, $a_par);
 	}
 
 
-	/**
-	 * Checks the GET parameter {@code target} against a regex.
-	 * The param has to start with 'ilias_app'.
-	 *
-	 * @return bool true, if the request can be excluded from handlers, otherwise false
-	 */
-	private function isExcluded() {
 
-		return !(isset($_GET['target'])
-			&& preg_match("/^ilias_app.*$/", $_GET['target']) === 1);
-	}
 }

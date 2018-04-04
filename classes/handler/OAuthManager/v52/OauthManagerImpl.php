@@ -1,5 +1,15 @@
 <?php
 
+namespace SRAG\PegasusHelper\handler\OAuthManager\v52;
+
+use Exception;
+use ilObjUser;
+use ilUtil;
+use RESTController\core\oauth2_v2\Common;
+use RESTController\RESTController;
+use SRAG\PegasusHelper\handler\BaseHandler;
+use SRAG\PegasusHelper\handler\ChainRequestHandler;
+
 /**
  * Class OauthManager handles an authentication when a user
  * logs in from ILIAS Pegasus app.
@@ -8,9 +18,21 @@
  * @version 1.0.0
  *
  */
-class OauthManager {
+final class OauthManagerImpl extends BaseHandler implements ChainRequestHandler {
 
 	const API_KEY = 'ilias_pegasus';
+
+
+	public function handle() {
+		if($this->isHandler()) {
+			$data = $this->authenticate();
+			$encodedData = implode('|||', $data);
+			$out = '<input type="hidden" name="data" id="data" value="' . $encodedData . '">';
+			echo $out;
+			die();
+		}
+		parent::next();
+	}
 
 	/**
 	 * Checks if the {@code target} GET parameter is set
@@ -18,7 +40,7 @@ class OauthManager {
 	 *
 	 * @return boolean true if this handler needs to handle the request, otherwise false
 	 */
-	public function isHandler() {
+	private function isHandler() {
 
 		global $ilUser;
 
@@ -40,7 +62,7 @@ class OauthManager {
 	 *
 	 * @return array the resulting data
 	 */
-	public function authenticate() {
+	private function authenticate() {
 
 		try {
 			/** @var $ilUser ilObjUser */
@@ -61,6 +83,7 @@ class OauthManager {
 		}
 	}
 
+
 	/**
 	 * Creates an access token by interacting with ILIAS REST plugin.
 	 * The resulting data contains:
@@ -72,22 +95,24 @@ class OauthManager {
 	 * @param $api_key string the api key for the REST request
 	 *
 	 * @return array the resulting data
+	 *
+	 * @throws \RESTController\core\oauth2_v2\Exceptions\InvalidRequest
 	 */
 	public static function createAccessToken($api_key) {
 		global $ilUser;
-		$appDirectory = './Customizing/global/plugins/Services/UIComponent/UserInterfaceHook/REST/RESTController/';
-		require_once($appDirectory . 'RESTController.php');
-		\RESTController\RESTController::registerAutoloader();
+		$restControllerFilePath = './Customizing/global/plugins/Services/UIComponent/UserInterfaceHook/REST/RESTController/RESTController.php';
+		require_once($restControllerFilePath);
+		RESTController::registerAutoloader();
 		/*
 		 * the RESTController needs to be initialized, because of its constructor,
 		 * which performs several operations to prepare ILIAS
 		 */
-		$restController = new \RESTController\RESTController();
-		$client = \RESTController\core\oauth2_v2\Common::CheckApiKey($api_key);
+		new RESTController();
+		$client = Common::CheckApiKey($api_key);
 		$userId = $ilUser->getId();
 		$withRefresh = $client->getKey('refresh_resource_owner');
 		$iliasClient = $_COOKIE['ilClientId'];
-		$oauthData = \RESTController\core\oauth2_v2\Common::GetResponse($api_key, $userId, $iliasClient, null, $withRefresh);
+		$oauthData = Common::GetResponse($api_key, $userId, $iliasClient, null, $withRefresh);
 
 		return $oauthData;
 	}
@@ -105,7 +130,7 @@ class OauthManager {
 
 		curl_setopt($ch, CURLOPT_URL, $HOST."/Customizing/global/plugins/Services/UIComponent/UserInterfaceHook/REST/api.php/v1/clients");
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-		curl_setopt($ch, CURLOPT_HTTPHEADER, array('Authorization: Bearer ' . $access_token));
+		curl_setopt($ch, CURLOPT_HTTPHEADER, ['Authorization: Bearer ' . $access_token, 'Content-Type: text/plain']);
 
 		$result = curl_exec($ch);
 		$arr_result = json_decode($result, true);
