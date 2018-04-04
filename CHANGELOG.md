@@ -14,7 +14,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Fixed
 - Fixed a bug which could lead to an access denied error with a valid authentication token.
 
-
+## [0.0.11]
+### Added
+- Login
+- Open links in ILIAS
+- Open time line of a course in ILIAS
 
 
 ## [Unreleased]
