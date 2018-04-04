@@ -44,6 +44,28 @@ Update and activate the plugin in the ILIAS Plugin Administration.
 - Click the Button 'Manage API-Keys and Authorization Schemes'  
 - Click the Button 'Modify' at the row 'ilias_pegasus'  
 
+## Update
+
+### 1. Update RESTPlugin
+Branch feature/sr-app-routes
+Start at your ILIAS root directory
+
+```bash
+cd Customizing/global/plugins/Services/UIComponent/UserInterfaceHook/REST
+git pull
+```
+Update / activate the plugin in the ILIAS Plugin Administration.
+
+### 2. Update PegasusHelper
+Start at your ILIAS root directory 
+
+```bash
+cd Customizing/global/plugins/Services/UIComponent/UserInterfaceHook/PegasusHelper
+git pull
+```
+
+Update / activate the plugin in the ILIAS Plugin Administration.
+
 ## Caveats
 ### ILIAS host address
 
