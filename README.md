@@ -67,7 +67,7 @@ git pull
 Update / activate the plugin in the ILIAS Plugin Administration.
 
 ## Caveats
-### ILIAS host address
+### ILIAS http path
 
 #### Description
 If the host address of ILIAS is configured with http but requests to ILIAS are
