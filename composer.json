@@ -2,7 +2,7 @@
   "name": "studer-raimann.ag/pegasus-helper",
   "description": "Plugin which solves integartion problems with ILIAS for the ILIAS pegasus app developed my studer+raimann ag",
   "type": "project",
-  "license": "GPLv3",
+  "license": "GPL-3.0",
   "authors": [
     {
       "name": "Nicolas Schaefli",
