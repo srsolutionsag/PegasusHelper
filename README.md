@@ -48,14 +48,14 @@ Update and activate the plugin in the ILIAS Plugin Administration.
 ### ILIAS host address
 
 #### Description
-If the host address of ILIAS is configured with http but request to ILIAS are
+If the host address of ILIAS is configured with http but requests to ILIAS are
 redirected to https, the plugin migration of the PegasusHelper will fail.
 
 The PegasusHelper configures the REST plugin while updating to ensure that all
 routes are as expected by the Pegasus mobile application. In order to configure the REST
-plugin the PegasusHelper adds all routes to the REST plugin with local http POST request.
+plugin the PegasusHelper adds all routes to the REST plugin with local http POST requests.
 
-The redirect will transform the POST request to GET request which are not understood by
+The redirect will transform the POST request to a GET request which is not understood by
 the REST plugin which leads to the migration error of the PegasusHelper.
 
 #### Solution
