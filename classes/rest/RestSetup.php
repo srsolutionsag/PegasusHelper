@@ -28,25 +28,11 @@ class RestSetup {
 		$api_secret = $this->getRandString(4).".".$this->getRandString(4)."-".$this->getRandString(2);
 
 		$this->clientParams = array( 'id' => null,
-			'api_key' => "ilias_pegasus",
-			'api_secret' => $api_secret,
-			'cert_serial' => null,
-			'cert_issuer' => null,
-			'cert_subject' => null,
-			'redirect_uri' => null,
-			'consent_message' => null,
-			'client_credentials_userid' => 0,
-			'grant_client_credentials' => 1,
-			'grant_authorization_code' => 1,
-			'grant_implicit' => 1,
-			'grant_resource_owner' => 1,
-			'refresh_authorization_code' => 1,
-			'refresh_resource_owner' => 1,
-			'grant_bridge' => null,
-			'ips' => null,
-			'users' => null,
-			'scopes' => null,
-			'description' => 'ILIAS Pegasus App');
+            'api_key' => "ilias_pegasus",
+            'api_secret' => $api_secret,
+            'grant_resource_owner' => 1,
+            'refresh_authorization_code' => 1,
+            'description' => 'ILIAS Pegasus App');
 
 		global $ilIliasIniFile;
 		$this->host = $ilIliasIniFile->readVariable('server', 'http_path');
