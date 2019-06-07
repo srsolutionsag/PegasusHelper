@@ -8,19 +8,20 @@
  */
 
 include_once "auxiliaries.php";
-include_once "sources.php";
+include_once "sourcesInfo.php";
+include_once "sourcesTarget.php";
 include_once "tests.php";
-
-print "Diagnostics for REST- and PegasusHelper-plugins\n";
-print "===============================================\n";
 
 init();
 
-print "\n> Gathering information for tests...\n";
+printNormal("Diagnostics for REST- and PegasusHelper-plugins\n");
+printNormal("===============================================\n");
+printNormal("\n> Gathering information for tests...\n");
 
 $info = getInfo();
+$targetInfo = getTargetInfo($info);
 
-print "\n> Running tests...\n";
+printNormal("\n> Running tests...\n");
 
 $testsList = [
     [
@@ -28,7 +29,7 @@ $testsList = [
         "tests" => [
             [
                 "msg" => "location where script is run",
-                "fn" => "testExecutionDirectory"
+                "fn" => "testWorkingDirectory"
             ],
             [
                 "msg" => "location of REST-plugin",
@@ -73,6 +74,10 @@ $testsList = [
                 "fn" => "testRESTInIlDB"
             ],
             [
+                "msg" => "plugin-updates in ilias",
+                "fn" => "testRESTLastUpdateVersion"
+            ],
+            [
                 "msg" => "ilias-database version",
                 "fn" => "testRESTDbVersion"
             ],
@@ -98,6 +103,10 @@ $testsList = [
                 "fn" => "testPegasusHelperInIlDB"
             ],
             [
+                "msg" => "plugin-updates in ilias",
+                "fn" => "testPegasusHelperLastUpdateVersion"
+            ],
+            [
                 "msg" => "ilias-database version",
                 "fn" => "testPegasusHelperDbVersion"
             ],
@@ -109,6 +118,11 @@ $testsList = [
     ]
 ];
 
-runTests($testsList, $info);
+runTests($testsList, $info, $targetInfo);
+
+if($info["TestScript"]["correct_working_directory"]) {
+    printNormal("\n> Write log-file 'results.log' in 'PegasusHelper/testing/' ...\n");
+    writeLog($info, $targetInfo);
+}
 
 finalize();

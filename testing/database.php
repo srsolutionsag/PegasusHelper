@@ -8,9 +8,9 @@ function initIlDB() {
     try {
         list($host, $username, $password, $database) = getClientInfo();
         $ilDB_handle = new mysqli($host, $username, $password, $database);
-        if ($ilDB_handle->connect_errno) $ilDB_handle = NULL;
+        if($ilDB_handle->connect_errno) throw new Exception($ilDB_handle->connect_error);
     } catch (Exception $e) {
-        printBad("\nERROR when connecting to ILIAS-database\n" .  $e->getMessage() . "\n");
+        printBad("\nWARNING unable to connect to ILIAS-database\n" .  $e->getMessage() . "\n");
         $ilDB_handle = NULL;
     }
 
@@ -31,35 +31,35 @@ function getClientInfo() {
 }
 
 function makeClientSelection($clients) {
-    print "your ILIAS-installation seems to have multiple clients\n";
-    for ($i = 0; $i < count($clients); $i++) {
+    printNormal("your ILIAS-installation seems to have multiple clients\n");
+    for($i = 0; $i < count($clients); $i++) {
         $tmp = explode("/", $clients[$i]);
         $clients[$i] = end($tmp);
-        print $i . ") " . $clients[$i] . "\n";
+        printNormal($i . ") " . $clients[$i] . "\n");
     }
 
-    print "please enter the number of the client for which you want to run the tests: ";
+    printNormal("please enter the number of the client for which you want to run the tests: ");
     for($i = 0; $i < 3; $i++) {
         $handle = fopen ("php://stdin","r");
         $line = trim(fgets($handle));
         if(ctype_digit($line))
             return $clients[(int) $line];
-        print "please enter a number for one of the clients as listed above: ";
+        printNormal("please enter a number for one of the clients as listed above: ");
     }
 
-    print "\nselecting client '" . $clients[0] . "' by default";
+    printNormal("\nselecting client '" . $clients[0] . "' by default");
     return $clients[0];
 }
 
 function queryAndFetchIlDB($ilDB_handle, $query) {
-    if (!isset($ilDB_handle)) return NULL;
+    if(!isset($ilDB_handle)) return NULL;
 
     $result = $ilDB_handle->query($query);
     return $result ? $result->fetch_assoc() : NULL;
 }
 
 function closeIlDB($ilDB_handle) {
-    if (!isset($ilDB_handle)) return;
+    if(!isset($ilDB_handle)) return;
 
     $ilDB_handle->close();
 }
