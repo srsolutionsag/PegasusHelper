@@ -6,15 +6,15 @@ include_once "database.php";
  * collection of information for tests, about the current installation
  */
 
-function getInfo() {
+function getInfo($context) {
     $info = [];
 
-    $ilDB_handle = initIlDB();
+    $ilDB_handle = initIlDB($context);
     $info["TestScript"] = getTestScriptInfo($ilDB_handle);
     $info["ILIAS"] = getILIASInfo();
-    $info["REST"] = getPluginInfo("REST", "rest", $ilDB_handle);
-    $info["PegasusHelper"] = getPluginInfo("PegasusHelper", "sragpegasushelper", $ilDB_handle);
-    closeIlDB($ilDB_handle);
+    $info["REST"] = getPluginInfo("REST", "rest", $ilDB_handle, $context);
+    $info["PegasusHelper"] = getPluginInfo("PegasusHelper", "sragpegasushelper", $ilDB_handle, $context);
+    closeIlDB($ilDB_handle, $context);
 
     return $info;
 }
@@ -56,13 +56,13 @@ function getILIASInfo() {
     return $ilias_info;
 }
 
-function getPluginInfo($plugin_dir, $plugin_id, $ilDB_handle) {
+function getPluginInfo($plugin_dir, $plugin_id, $ilDB_handle, $context) {
     global $root_plugins;
     $plugin_info = [];
     $err_msg = "WARNING unable to get some Information about plugin " . $plugin_dir;
 
     try {
-        include_once $root_plugins . $plugin_dir . "/plugin.php";
+        include $root_plugins . $plugin_dir . "/plugin.php";
         $plugin_info["version"] = $version;
         $plugin_info["ilias_min_version"] = $ilias_min_version;
         $plugin_info["ilias_max_version"] = $ilias_max_version;
@@ -75,7 +75,7 @@ function getPluginInfo($plugin_dir, $plugin_id, $ilDB_handle) {
 
     try {
         $query = "SELECT last_update_version, active, db_version FROM ilias.il_plugin WHERE plugin_id = '" . $plugin_id . "'";
-        $plugin_info += ["ilDB" => queryAndFetchIlDB($ilDB_handle, $query)];
+        $plugin_info += ["ilDB" => queryAndFetchIlDB($ilDB_handle, $query, $context)];
 
         $plugin_info["ilDB"]["available"] = isset($plugin_info["ilDB"]);
     } catch (Exception $e) {

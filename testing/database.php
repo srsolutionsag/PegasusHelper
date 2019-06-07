@@ -4,13 +4,18 @@
  * code to access the ILIAS-database
  */
 
-function initIlDB() {
+function initIlDB($context) {
     try {
-        list($host, $username, $password, $database) = getClientInfo();
-        $ilDB_handle = new mysqli($host, $username, $password, $database);
-        if($ilDB_handle->connect_errno) throw new Exception($ilDB_handle->connect_error);
+        if($context == "cli") {
+            list($host, $username, $password, $database) = getClientInfo();
+            $ilDB_handle = new mysqli($host, $username, $password, $database);
+            if ($ilDB_handle->connect_errno) throw new Exception($ilDB_handle->connect_error);
+        } else {
+            global $ilDB;
+            $ilDB_handle = $ilDB;
+        }
     } catch (Exception $e) {
-        printBad("\nWARNING unable to connect to ILIAS-database\n" .  $e->getMessage() . "\n");
+        if($context === "cli") printBad("\nWARNING unable to connect to ILIAS-database\n" .  $e->getMessage() . "\n");
         $ilDB_handle = NULL;
     }
 
@@ -51,15 +56,19 @@ function makeClientSelection($clients) {
     return $clients[0];
 }
 
-function queryAndFetchIlDB($ilDB_handle, $query) {
+function queryAndFetchIlDB($ilDB_handle, $query, $context) {
     if(!isset($ilDB_handle)) return NULL;
 
     $result = $ilDB_handle->query($query);
-    return $result ? $result->fetch_assoc() : NULL;
+    if($result) {
+        if($context === "cli") $result = $result->fetch_assoc();
+        else $result = (array) $ilDB_handle->fetchAssoc($result);
+    }
+
+    return $result;
 }
 
-function closeIlDB($ilDB_handle) {
+function closeIlDB($ilDB_handle, $context) {
     if(!isset($ilDB_handle)) return;
-
-    $ilDB_handle->close();
+    if($context === "cli") $ilDB_handle->close();
 }

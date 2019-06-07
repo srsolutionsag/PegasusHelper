@@ -28,17 +28,19 @@ function finalize() {
 }
 
 function runTests($testsList, $info, $targetInfo) {
+    $no_category = 0;
     foreach ($testsList as $category) {
-        printNormal("\n" . $category["title"] . "\n");
+        printNormal("\n" . $no_category . ") " . $category["title"] . "\n");
 
         foreach ($category["tests"] as $test) {
             try {
                 $result = $test["fn"]($info, $targetInfo);
                 printTest($test["msg"], $result);
             } catch (Exception $e) {
-                printBad("\nERROR when running test '" . $test["msg"] . "'\n" .  $e->getMessage() . "\n");
+                printBad("\nERROR when running test '" . $test["msg"] . "'\n" . $e->getMessage() . "\n");
             }
         }
+        $no_category++;
     }
 }
 

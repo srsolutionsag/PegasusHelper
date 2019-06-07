@@ -3,7 +3,7 @@
 include_once "auxiliaries.php";
 
 /**
- * tests to be performed are implemented here and must be added to the tests-list in "run.php"
+ * tests to be performed are implemented here and must be added to $testsList in the getTestsList-function below
  *
  * template for a test-function:
  *
@@ -14,11 +14,140 @@ include_once "auxiliaries.php";
  *
  */
 
+function getTestsList($context) {
+    $testsList = [
+        [
+            "title" => "General",
+            "tests" => [
+                [
+                    "msg" => "location where script is run",
+                    "fn" => "testWorkingDirectory",
+                    "run" => ["cli" => true, "ilias" => false]
+                ],
+                [
+                    "msg" => "location of REST-plugin",
+                    "fn" => "testRESTDirectory",
+                    "run" => ["cli" => true, "ilias" => true]
+                ],
+                [
+                    "msg" => "location of PegasusHelper-plugin",
+                    "fn" => "testPegasusHelperDirectory",
+                    "run" => ["cli" => true, "ilias" => true]
+                ],
+                [
+                    "msg" => "connection to ILIAS-database",
+                    "fn" => "testIlBDConnection",
+                    "run" => ["cli" => true, "ilias" => false]
+                ]
+            ]
+        ],
+        [
+            "title" => "ILIAS",
+            "tests" => [
+                [
+                    "msg" => "version",
+                    "fn" => "testILIASVersion",
+                    "run" => ["cli" => true, "ilias" => true]
+                ],
+                [
+                    "msg" => "https redirects",
+                    "fn" => "testILIASRedirectStatement",
+                    "run" => ["cli" => true, "ilias" => true]
+                ]
+            ]
+        ],
+        [
+            "title" => "REST-plugin",
+            "tests" => [
+                [
+                    "msg" => "version",
+                    "fn" => "testRESTVersion",
+                    "run" => ["cli" => true, "ilias" => true]
+                ],
+                [
+                    "msg" => "compatible ilias-version",
+                    "fn" => "testRESTkMinMaxVersion",
+                    "run" => ["cli" => true, "ilias" => true]
+                ],
+                [
+                    "msg" => "entry in ilias-database",
+                    "fn" => "testRESTInIlDB",
+                    "run" => ["cli" => true, "ilias" => false]
+                ],
+                [
+                    "msg" => "plugin-updates in ilias",
+                    "fn" => "testRESTLastUpdateVersion",
+                    "run" => ["cli" => true, "ilias" => true]
+                ],
+                [
+                    "msg" => "ilias-database version",
+                    "fn" => "testRESTDbVersion",
+                    "run" => ["cli" => true, "ilias" => true]
+                ],
+                [
+                    "msg" => "active",
+                    "fn" => "testRESTPluginActive",
+                    "run" => ["cli" => true, "ilias" => true]
+                ]
+            ]
+        ],
+        [
+            "title" => "PegasusHelper-plugin",
+            "tests" => [
+                [
+                    "msg" => "version",
+                    "fn" => "testPegasusHelperVersion",
+                    "run" => ["cli" => true, "ilias" => true]
+                ],
+                [
+                    "msg" => "compatible ilias-version",
+                    "fn" => "testPegasusHelperMinMaxVersion",
+                    "run" => ["cli" => true, "ilias" => true]
+                ],
+                [
+                    "msg" => "entry in ilias-database",
+                    "fn" => "testPegasusHelperInIlDB",
+                    "run" => ["cli" => true, "ilias" => false]
+                ],
+                [
+                    "msg" => "plugin-updates in ilias",
+                    "fn" => "testPegasusHelperLastUpdateVersion",
+                    "run" => ["cli" => true, "ilias" => true]
+                ],
+                [
+                    "msg" => "ilias-database version",
+                    "fn" => "testPegasusHelperDbVersion",
+                    "run" => ["cli" => true, "ilias" => true]
+                ],
+                [
+                    "msg" => "active",
+                    "fn" => "testPegasusHelperPluginActive",
+                    "run" => ["cli" => true, "ilias" => true]
+                ]
+            ]
+        ]
+    ];
+
+    $no_category = 0;
+    foreach ($testsList as $category) {
+        $no_test = 0;
+        foreach ($category["tests"] as $test) {
+            if(!$test["run"][$context]) {
+                unset($testsList[$no_category]["tests"][$no_test]);
+            }
+            $no_test++;
+        }
+        $no_category++;
+    }
+
+    return $testsList;
+}
+
 // 0 general
 
 function testWorkingDirectory($info, $targetInfo) {
     $pass = $info["TestScript"]["correct_working_directory"];
-    $msg = $pass ? NULL : "the script must be run from [YOUR_ILIAS]/Customizing/global/plugins/Services/UIComponent/UserInterfaceHook/PegasusHelper/testing";
+    $msg = $pass ? "correct" : "the script must be run from [YOUR_ILIAS]/Customizing/global/plugins/Services/UIComponent/UserInterfaceHook/PegasusHelper/testing";
     $mandatory = true;
 
     return [$pass, $msg, $mandatory];
@@ -29,7 +158,7 @@ function testRESTDirectory($info, $targetInfo) {
 
     global $root_plugins;
     $pass = file_exists($root_plugins . "/REST");
-    $msg = $pass ? NULL : "REST must be located at [YOUR_ILIAS]/Customizing/global/plugins/Services/UIComponent/UserInterfaceHook/REST";
+    $msg = $pass ? "correct" : "REST must be located at [YOUR_ILIAS]/Customizing/global/plugins/Services/UIComponent/UserInterfaceHook/REST";
     $mandatory = true;
 
     return [$pass, $msg, $mandatory];
@@ -40,7 +169,7 @@ function testPegasusHelperDirectory($info, $targetInfo) {
 
     global $root_plugins;
     $pass = file_exists($root_plugins . "/PegasusHelper");
-    $msg = $pass ? NULL : "PegasusHelper must be located at [YOUR_ILIAS]/Customizing/global/plugins/Services/UIComponent/UserInterfaceHook/PegasusHelper";
+    $msg = $pass ? "correct" : "PegasusHelper must be located at [YOUR_ILIAS]/Customizing/global/plugins/Services/UIComponent/UserInterfaceHook/PegasusHelper";
     $mandatory = true;
 
     return [$pass, $msg, $mandatory];
@@ -48,7 +177,7 @@ function testPegasusHelperDirectory($info, $targetInfo) {
 
 function testIlBDConnection($info, $targetInfo) {
     $pass = $info["TestScript"]["ilDB_connection"];
-    $msg = $pass ? NULL : "connection to ILIAS-database failed, some tests cannot be performed";
+    $msg = $pass ? "succeeded" : "connection to ILIAS-database failed, some tests cannot be performed";
     $mandatory = false;
 
     return [$pass, $msg, $mandatory];
@@ -65,7 +194,7 @@ function testILIASRedirectStatement($info, $targetInfo) {
     if(!$info["ILIAS"]["ilias_ini"]["available"]) return failTestFromMissingInfo();
 
     $pass = isset($info["ILIAS"]["ilias_ini"]["server"]["http_path"]);
-    $msg = $pass ? NULL : "if requests to ILIAS are redirected to https, then the file ilias.ini.php must be configured accordingly";
+    $msg = $pass ? "present" : "if requests to ILIAS are redirected to https, then the file ilias.ini.php must be configured accordingly";
     $mandatory = false;
 
     return [$pass, $msg, $mandatory];
@@ -157,7 +286,7 @@ function testMinMaxVersion($v, $v_min, $v_max) {
     $V_MAX = strVersionToArray($v_max);
 
     $pass = ($V_MIN <= $V) && ($V <= $V_MAX);
-    $msg = $pass ? $v : "the version " . $v . " is not contained in " . $v_min . " and " . $v_max;
+    $msg = $pass ? "version " . $v : "the version " . $v . " is not contained in " . $v_min . " and " . $v_max;
     $mandatory = true;
 
     return [$pass, $msg, $mandatory];
@@ -165,7 +294,7 @@ function testMinMaxVersion($v, $v_min, $v_max) {
 
 function testVersionIs($version, $target, $custom_msg_fail = NULL) {
     $pass = $version === $target;
-    $msg = $pass ? $version : ($custom_msg_fail ? $custom_msg_fail : "version must be " . $target . " but is " . $version);
+    $msg = $pass ? "version " . $version : ($custom_msg_fail ? $custom_msg_fail : "version must be " . $target . " but is " . $version);
     $mandatory = true;
 
     return [$pass, $msg, $mandatory];
@@ -173,7 +302,7 @@ function testVersionIs($version, $target, $custom_msg_fail = NULL) {
 
 function testInIlDB($plugin_info) {
     $pass = $plugin_info["ilDB"]["available"];
-    $msg = $pass ? NULL : "the plugin must be installed";
+    $msg = $pass ? "found entry" : "the plugin must be installed";
     $mandatory = true;
 
     return [$pass, $msg, $mandatory];
@@ -181,7 +310,7 @@ function testInIlDB($plugin_info) {
 
 function testPluginActive($plugin_info) {
     $pass = (bool) $plugin_info["active"];
-    $msg = $pass ? NULL : "the plugin must be activated";
+    $msg = $pass ? "yes" : "the plugin must be activated";
     $mandatory = true;
 
     return [$pass, $msg, $mandatory];
