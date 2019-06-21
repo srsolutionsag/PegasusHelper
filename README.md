@@ -44,6 +44,18 @@ Update and activate the plugin in the ILIAS Plugin Administration.
 - Click the Button 'Manage API-Keys and Authorization Schemes'  
 - Click the Button 'Modify' at the row 'ilias_pegasus'  
 
+## Testing
+If the installation of the REST- or PegasusHelper-plugin as described above fails, the test-script in the directory 'testing' may provide useful information
+
+Start at your ILIAS root directory
+```bash
+cd Customizing/global/plugins/Services/UIComponent/UserInterfaceHook/PegasusHelper/testing/
+php run.php
+```
+The script prints out feedback from the tests and writes a log-file 'results.log' in 'PegasusHelper/testing/'
+
+Also read through the paragraph 'Caveats' below
+
 ## Update
 
 ### 1. Update RESTPlugin
