@@ -7,10 +7,7 @@
  * @author Marc Schneiter <msc@studer-raimann.ch>
  */
 
-include_once "auxiliaries.php";
-include_once "sourcesInfo.php";
-include_once "sourcesTarget.php";
-include_once "tests.php";
+include_once "includefile.php";
 
 init();
 
@@ -18,13 +15,14 @@ printNormal("Diagnostics for REST- and PegasusHelper-plugins\n");
 printNormal("===============================================\n");
 printNormal("\n> Gathering information for tests...\n");
 
-$info = getInfo("cli");
+$info = getInfo();
 $targetInfo = getTargetInfo($info);
 
 printNormal("\n> Running tests...\n");
 
-$testsList = getTestsList("cli");
-runTests($testsList, $info, $targetInfo);
+$suite = getTestSuite(TestingContext::C_CLI);
+$suite->run($info, $targetInfo);
+printResults($suite);
 
 if($info["TestScript"]["correct_working_directory"]) {
     printNormal("\n> Write log-file 'results.log' in 'PegasusHelper/testing/' ...\n");

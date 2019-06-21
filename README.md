@@ -47,8 +47,12 @@ Update and activate the plugin in the ILIAS Plugin Administration.
 ## Testing
 If the installation of the REST- or PegasusHelper-plugin as described above fails, the test-script in the directory 'testing' may provide useful information
 
-- Navigate to 'PegasusHelper/testing/' and run the test-script as ```php run.php```
-- The script prints out feedback from the tests and writes a log-file 'results.log' in 'PegasusHelper/testing/'
+Start at your ILIAS root directory
+```bash
+cd Customizing/global/plugins/Services/UIComponent/UserInterfaceHook/PegasusHelper/testing/
+php run.php
+```
+The script prints out feedback from the tests and writes a log-file 'results.log' in 'PegasusHelper/testing/'
 
 Also read through the paragraph 'Caveats' below
 

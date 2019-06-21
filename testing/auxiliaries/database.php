@@ -4,18 +4,17 @@
  * code to access the ILIAS-database
  */
 
-function initIlDB($context) {
+function initIlDB() {
     try {
-        if($context == "cli") {
+        if(isset($GLOBALS["ilias"])) {
+            $ilDB_handle = $GLOBALS["ilDB"];
+        } else {
             list($host, $username, $password, $database) = getClientInfo();
             $ilDB_handle = new mysqli($host, $username, $password, $database);
-            if ($ilDB_handle->connect_errno) throw new Exception($ilDB_handle->connect_error);
-        } else {
-            global $ilDB;
-            $ilDB_handle = $ilDB;
+            if($ilDB_handle->connect_errno) throw new Exception($ilDB_handle->connect_error);
         }
     } catch (Exception $e) {
-        if($context === "cli") printBad("\nWARNING unable to connect to ILIAS-database\n" .  $e->getMessage() . "\n");
+        addToLog("\nWARNING unable to connect to ILIAS-database\n" .  $e->getMessage() . "\n");
         $ilDB_handle = NULL;
     }
 
@@ -23,13 +22,13 @@ function initIlDB($context) {
 }
 
 function getClientInfo() {
-    global $root_ilias;
-    $clients_info = parse_ini_file($root_ilias . "ilias.ini.php", TRUE)["clients"];
-    $clients = glob($root_ilias . $clients_info["path"] . "/*", GLOB_ONLYDIR);
-    $client = count($clients) == 1 ? $clients_info["default"] : makeClientSelection($clients);
+    $clients_info = parse_ini_file(getRootIlias() . "/ilias.ini.php", true)["clients"];
+    $clients = glob(getRootIlias() . "/" . $clients_info["path"] . "/*", GLOB_ONLYDIR);
+    if(count($clients) === 0) throw new Exception("Unable to get client information from '/ilias.ini.php'");
+    $client = count($clients) === 1 ? $clients_info["default"] : makeClientSelection($clients);
 
-    $path = $root_ilias . $clients_info["path"] . "/" . $client . "/" . $clients_info["inifile"];
-    $client_ini = parse_ini_file($path, TRUE);
+    $path = getRootIlias() . "/" . $clients_info["path"] . "/" . $client . "/" . $clients_info["inifile"];
+    $client_ini = parse_ini_file($path, true);
     $db = $client_ini["db"];
 
     return [$db["host"], $db["user"], $db["pass"], $db["name"]];
@@ -45,7 +44,7 @@ function makeClientSelection($clients) {
 
     printNormal("please enter the number of the client for which you want to run the tests: ");
     for($i = 0; $i < 3; $i++) {
-        $handle = fopen ("php://stdin","r");
+        $handle = fopen("php://stdin","r");
         $line = trim(fgets($handle));
         if(ctype_digit($line))
             return $clients[(int) $line];
@@ -56,19 +55,19 @@ function makeClientSelection($clients) {
     return $clients[0];
 }
 
-function queryAndFetchIlDB($ilDB_handle, $query, $context) {
+function queryAndFetchIlDB($ilDB_handle, $query) {
     if(!isset($ilDB_handle)) return NULL;
 
     $result = $ilDB_handle->query($query);
     if($result) {
-        if($context === "cli") $result = $result->fetch_assoc();
-        else $result = (array) $ilDB_handle->fetchAssoc($result);
+        if(isset($GLOBALS["ilias"])) $result = (array) $ilDB_handle->fetchAssoc($result);
+        else $result = $result->fetch_assoc();
     }
 
     return $result;
 }
 
-function closeIlDB($ilDB_handle, $context) {
-    if(!isset($ilDB_handle)) return;
-    if($context === "cli") $ilDB_handle->close();
+function closeIlDB($ilDB_handle) {
+    if(isset($ilDB_handle) && !isset($GLOBALS["ilias"]))
+        $ilDB_handle->close();
 }
