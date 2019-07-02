@@ -31,7 +31,6 @@ class RestSetup {
 			'api_key' => "ilias_pegasus",
 			'api_secret' => $api_secret,
 			'grant_resource_owner' => 1,
-			'refresh_authorization_code' => 1,
 			'refresh_resource_owner' => 1,
 			'description' => 'ILIAS Pegasus App'
 		);
