@@ -43,7 +43,7 @@ function getILIASInfo() {
     }
 
     try {
-        $ilias_info["ilias_ini"] = parse_ini_file(getRootIlias() . "/ilias.ini.php");
+        $ilias_info["ilias_ini"] = parse_ini_file(getRootIlias() . "/ilias.ini.php", true);
         $ilias_info["ilias_ini"]["available"] = true;
     } catch (Exception $e) {
         addToLog("\n" . $err_msg . "\n" .  $e->getMessage() . "\n");
@@ -71,9 +71,14 @@ function getPluginInfo($plugin_dir, $plugin_id, $ilDB_handle) {
 
     try {
         $query = "SELECT last_update_version, active, db_version FROM ilias.il_plugin WHERE plugin_id = '" . $plugin_id . "'";
-        $plugin_info += ["ilDB" => queryAndFetchIlDB($ilDB_handle, $query)];
+        $result = queryAndFetchIlDB($ilDB_handle, $query);
+        if(!$result) {
+            $query = "SELECT last_update_version, active, db_version FROM il_plugin WHERE plugin_id = '" . $plugin_id . "'";
+            $result = queryAndFetchIlDB($ilDB_handle, $query);
+        }
 
-        $plugin_info["ilDB"]["available"] = array_key_exists("last_update_version", $plugin_info["ilDB"]);
+        $plugin_info += ["ilDB" => $result];
+        $plugin_info["ilDB"]["available"] = (bool) $result;
     } catch (Exception $e) {
         addToLog("\n" . $err_msg . "\n" .  $e->getMessage() . "\n");
         $plugin_info["ilDB"]["available"] = false;

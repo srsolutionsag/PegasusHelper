@@ -45,7 +45,9 @@ function makeClientSelection($clients) {
     printNormal("please enter the number of the client for which you want to run the tests: ");
     for($i = 0; $i < 3; $i++) {
         $handle = fopen("php://stdin","r");
-        $line = trim(fgets($handle));
+        $line = fgets($handle);
+        addToLog($line);
+        $line = trim($line);
         if(ctype_digit($line))
             return $clients[(int) $line];
         printNormal("please enter a number for one of the clients as listed above: ");

@@ -9,11 +9,15 @@ include_once __DIR__ . "/../testing/includefile.php";
 final class ilPegasusHelperTesting {
 
     public function run() {
+        $set_global_ilias = !isset($GLOBALS["ilias"]);
+        if($set_global_ilias) $GLOBALS["ilias"] = true;
+
         $info = getInfo();
         $targetInfo = getTargetInfo($info);
         $suite = getTestSuite(TestingContext::C_ILIAS);
         $suite->run($info, $targetInfo);
 
+        if($set_global_ilias) unset($GLOBALS["ilias"]);
         return $this->getResults($suite);
     }
 
