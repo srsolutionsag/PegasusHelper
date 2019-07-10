@@ -52,27 +52,23 @@ function printTest($test) {
 }
 
 function printNormal($str) {
-    if(isset($GLOBALS["ilias"])) return;
     print $str;
     addToLog($str);
 }
 
 function printGood($str) {
-    if(isset($GLOBALS["ilias"])) return;
     global $cli_color;
     print $cli_color["green"] . $str . $cli_color["black"];
     addToLog($str);
 }
 
 function printWarn($str) {
-    if(isset($GLOBALS["ilias"])) return;
     global $cli_color;
     print $cli_color["yellow"] . $str . $cli_color["black"];
     addToLog($str);
 }
 
 function printBad($str) {
-    if(isset($GLOBALS["ilias"])) return;
     global $cli_color;
     print $cli_color["red"] . $str . $cli_color["black"];
     addToLog($str);
@@ -80,6 +76,7 @@ function printBad($str) {
 
 function addToLog($str) {
     global $printLog;
+    if(isset($GLOBALS["ilias"]) || !isset($printLog)) return;
     array_push($printLog, $str);
 }
 
