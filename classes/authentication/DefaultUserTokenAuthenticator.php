@@ -86,7 +86,7 @@ final class DefaultUserTokenAuthenticator implements UserTokenAuthenticator {
 	 * @return void
 	 */
 	private function deleteToken($userId, $token) {
-		$token = UserToken::where(['userId' => $userId, 'token' => $token])->first();
+		$token = UserToken::where(['user_id' => $userId, 'token' => $token])->first();
 		if ($token !== NULL) {
 			$token->delete();
 		}
