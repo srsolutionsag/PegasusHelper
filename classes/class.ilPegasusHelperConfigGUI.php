@@ -7,24 +7,29 @@ require_once __DIR__ . '/../bootstrap.php';
  */
 final class ilPegasusHelperConfigGUI extends ilPluginConfigGUI {
 
-    public function __construct() {
-
-    }
-
+    /**
+     * invoked by parent
+     * @param $cmd string
+     */
     public function performCommand($cmd) {
+        global $ilTabs, $ilCtrl, $tpl;
+        $ilTabs->addSubTab("id_general", "General", $ilCtrl->getLinkTarget($this, "configure"));
+        $ilTabs->addSubTab("id_testing", "Testing", $ilCtrl->getLinkTarget($this, "testing"));
+
         switch ($cmd) {
             case 'saveColor':
                 $this->saveColor();
                 break;
+            case 'testing':
+                $ilTabs->setSubTabActive("id_testing");
+                $tpl->setContent($this->getTestsTableHtml());
+                break;
             case 'configure':
-                $this->showConfig();
+            default:
+                $ilTabs->setSubTabActive("id_general");
+                $tpl->setContent($this->getApiSecretFormHtml() . $this->getColorFormHtml());
                 break;
         }
-    }
-
-    public function showConfig() {
-        global $tpl;
-        $tpl->setContent($this->getApiSecretFormHtml() . $this->getColorFormHtml() . $this->getTestsTableHtml());
     }
 
     /**
@@ -147,12 +152,14 @@ final class ilPegasusHelperConfigGUI extends ilPluginConfigGUI {
      */
     protected function saveColor() {
         global $ilDB, $ilCtrl;
-
-        //TODO checks, catching of errors, inform user ect
-        //ilUtil::sendFailure("App theme coloring was not saved", true);
-
         $primaryColor = $_POST["primary_color"];
         $contrastColor = $_POST["contrast_color"];
+
+        if(!preg_match("/^[0-9a-fA-F]{6}$/", $primaryColor)) {
+            ilUtil::sendFailure("App theme was not saved", true);
+            $ilCtrl->redirect($this, "configure");
+            return;
+        }
 
         $values = array(
             "primary_color" => array("text", $primaryColor),
