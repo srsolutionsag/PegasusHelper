@@ -68,13 +68,25 @@ final class ilPegasusHelperConfigGUI extends ilPluginConfigGUI {
         $formColor = new ilPropertyFormGUI();
         $formColor->setTitle("App Theme Coloring");
         $formColor->setFormAction($ilCtrl->getFormAction($this));
+        // preview
+        $thisDir = "Customizing/global/plugins/Services/UIComponent/UserInterfaceHook/PegasusHelper/classes";
+        $tpl = new ilTemplate("tpl.theme_example.html", true, true, $thisDir);
+        $tpl->setVariable('EX_TEXT', "&nbsp;ILIAS Pegasus&nbsp;");
+        $tpl->setVariable('COLOR_PRIMARY', $primaryColor);
+        $tpl->setVariable('COLOR_CONTRAST', $contrastColor ? "ffffff" : "000000");
+        $themeExample = new ilNonEditableValueGUI("Preview", "", true);
+        $themeExample->setInfo("The current theme");
+        $themeExample->setValue($tpl->get());
+        $formColor->addItem($themeExample);
 
+        // primary color
         require_once("./Services/Form/classes/class.ilColorPickerInputGUI.php");
         $primaryInput = new ilColorPickerInputGUI("Primary color", "primary_color");
         $primaryInput->setInfo("The main color for the theme of the app");
         $primaryInput->setValue($primaryColor);
         $formColor->addItem($primaryInput);
 
+        // contrast color
         require_once("./Services/Form/classes/class.ilRadioGroupInputGUI.php");
         require_once("./Services/Form/classes/class.ilRadioOption.php");
         $contrastInput = new ilRadioGroupInputGUI("Contrast color", "contrast_color");
@@ -136,7 +148,8 @@ final class ilPegasusHelperConfigGUI extends ilPluginConfigGUI {
     protected function saveColor() {
         global $ilDB, $ilCtrl;
 
-        //ilUtil::sendFailure("App theme coloring was not saved", true); TODO checks, catching of errors, inform user ect
+        //TODO checks, catching of errors, inform user ect
+        //ilUtil::sendFailure("App theme coloring was not saved", true);
 
         $primaryColor = $_POST["primary_color"];
         $contrastColor = $_POST["contrast_color"];
@@ -150,7 +163,7 @@ final class ilPegasusHelperConfigGUI extends ilPluginConfigGUI {
         );
         $ilDB->update("ui_uihk_pegasus_theme", $values, $where);
 
-        ilUtil::sendSuccess("App theme coloring saved successfully", true);
+        ilUtil::sendSuccess("App theme saved successfully", true);
         $ilCtrl->redirect($this, "configure");
     }
 }
