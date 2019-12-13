@@ -3,6 +3,7 @@
 namespace SRAG\PegasusHelper\handler\OAuthManager\v52;
 
 use Exception;
+use ilException;
 use ilObjUser;
 use ilUtil;
 use RESTController\core\oauth2_v2\Common;
@@ -122,6 +123,7 @@ final class OauthManagerImpl extends BaseHandler implements ChainRequestHandler 
 	 *
 	 * @param $access_token string a valid access token for ILIAS REST
 	 * @return string|boolean false, if no client id is found, otherwise the client id
+     * @throws ilException throws when the request to the REST api fails. The given error code corresponds to the {@see curl_errno()}.
 	 */
 	public static function getRestClientId($access_token) {
 		global $ilIliasIniFile;
@@ -133,6 +135,13 @@ final class OauthManagerImpl extends BaseHandler implements ChainRequestHandler 
 		curl_setopt($ch, CURLOPT_HTTPHEADER, ['Authorization: Bearer ' . $access_token, 'Content-Type: text/plain']);
 
 		$result = curl_exec($ch);
+		if ($result === false) {
+			$cError = curl_error($ch);
+			$errorNumber = curl_errno($ch);
+			curl_close($ch);
+			throw new ilException("Failed to fetch rest client id: Code: '$errorNumber' with message: '$cError'", $cError);
+		}
+		curl_close($ch);
 		$arr_result = json_decode($result, true);
 
 		foreach($arr_result as $result) {
