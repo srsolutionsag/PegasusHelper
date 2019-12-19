@@ -7,24 +7,39 @@ require_once __DIR__ . '/../bootstrap.php';
  */
 final class ilPegasusHelperConfigGUI extends ilPluginConfigGUI {
 
-	public function __construct() {
+    /**
+     * invoked by parent
+     * @param $cmd string
+     */
+    public function performCommand($cmd) {
+        global $ilTabs, $ilCtrl, $tpl;
+        $ilTabs->addSubTab("id_general", "General", $ilCtrl->getLinkTarget($this, "configure"));
+        $ilTabs->addSubTab("id_testing", "Testing", $ilCtrl->getLinkTarget($this, "testing"));
 
-	}
+        switch ($cmd) {
+            case 'saveColor':
+                $this->saveColor();
+                break;
+            case 'testing':
+                $ilTabs->setSubTabActive("id_testing");
+                $tpl->setContent($this->getTestsTableHtml());
+                break;
+            case 'configure':
+            default:
+                $ilTabs->setSubTabActive("id_general");
+                $tpl->setContent($this->getApiSecretFormHtml() . $this->getColorFormHtml());
+                break;
+        }
+    }
 
-	public function performCommand($cmd) {
-		switch ($cmd) {
-			case 'configure':
-				$this->showConfig();
-				break;
-		}
-	}
-
-	public function showConfig() {
-		global $ilDB, $tpl;
-
-        // form for API-secret
+    /**
+     * html of form for API-secret
+     * @return string
+     */
+    protected function getApiSecretFormHtml() {
+        global $ilDB;
         $formApiUser = new ilPropertyFormGUI();
-		if($ilDB->tableExists("ui_uihk_rest_client")) {
+        if($ilDB->tableExists("ui_uihk_rest_client")) {
             $api_key = 'ilias_pegasus';
             $sql = "SELECT api_secret FROM ui_uihk_rest_client WHERE api_key = '$api_key'";
             $set = $ilDB->query($sql);
@@ -38,13 +53,74 @@ final class ilPegasusHelperConfigGUI extends ilPluginConfigGUI {
             $formApiUser->addItem($gui);
         }
 
+        return $formApiUser->getHTML();
+    }
 
-        // legend for tests
+    /**
+     * html of form for dynamic coloring
+     * @return string
+     */
+    protected function getColorFormHtml() {
+        global $ilDB, $ilCtrl;
+
+        $primaryColor = "04427e";
+        $contrastColor = 1;
+        $sql = "SELECT * FROM ui_uihk_pegasus_theme";
+        $set = $ilDB->query($sql);
+        if($set !== false) {
+            while ($rec = $ilDB->fetchAssoc($set)) {
+                $primaryColor = $rec["primary_color"];
+                $contrastColor = $rec["contrast_color"];
+            }
+        }
+
+
+        $formColor = new ilPropertyFormGUI();
+        $formColor->setTitle("App Theme Coloring");
+        $formColor->setFormAction($ilCtrl->getFormAction($this));
+        // preview
+        $thisDir = "Customizing/global/plugins/Services/UIComponent/UserInterfaceHook/PegasusHelper/classes";
+        $tpl = new ilTemplate("tpl.theme_example.html", true, true, $thisDir);
+        $tpl->setVariable('EX_TEXT', "&nbsp;ILIAS Pegasus&nbsp;");
+        $tpl->setVariable('COLOR_PRIMARY', $primaryColor);
+        $tpl->setVariable('COLOR_CONTRAST', $contrastColor ? "ffffff" : "000000");
+        $themeExample = new ilNonEditableValueGUI("Preview", "", true);
+        $themeExample->setInfo("The current theme");
+        $themeExample->setValue($tpl->get());
+        $formColor->addItem($themeExample);
+
+        // primary color
+        require_once("./Services/Form/classes/class.ilColorPickerInputGUI.php");
+        $primaryInput = new ilColorPickerInputGUI("Primary color", "primary_color");
+        $primaryInput->setInfo("The main color for the theme of the app");
+        $primaryInput->setValue($primaryColor);
+        $formColor->addItem($primaryInput);
+
+        // contrast color
+        require_once("./Services/Form/classes/class.ilRadioGroupInputGUI.php");
+        require_once("./Services/Form/classes/class.ilRadioOption.php");
+        $contrastInput = new ilRadioGroupInputGUI("Contrast color", "contrast_color");
+        $contrastInput->setInfo("The color of text in the app, which should be chosen dependent on the primary color");
+        $contrastInput->addOption(new ilRadioOption("White", 1));
+        $contrastInput->addOption(new ilRadioOption("Black", 0));
+        $contrastInput->setValue($contrastColor);
+        $formColor->addItem($contrastInput);
+
+        $formColor->addCommandButton("saveColor", "Save");
+
+        return $formColor->getHTML();
+    }
+
+    /**
+     * html of legend for tests
+     * @return string
+     */
+    protected function getTestsTableHtml() {
         include_once __DIR__ . "/class.ilPegasusTestingTableGUI.php";
-        $table_legend = new ilPegasusTestingTableGUI($this, "Status");
-        $table_legend->setTitle("Legend for Tests");
+        $tableLegend = new ilPegasusTestingTableGUI($this, "Status");
+        $tableLegend->setTitle("Legend for Tests");
         require_once __DIR__ . "/class.ilPegasusTestingStatus.php";
-        $data_legend = [
+        $dataLegend = [
             [
                 "status" => ilPegasusTestingStatus::T_STATUS_OK,
                 "test" => "test passed",
@@ -66,16 +142,42 @@ final class ilPegasusHelperConfigGUI extends ilPluginConfigGUI {
                 "info" => ""
             ]
         ];
-        $table_legend->setData($data_legend);
+        $tableLegend->setData($dataLegend);
 
-        // table with tests
-		$table = new ilPegasusTestingTableGUI($this, "Name");
-        $table->setTitle("Tests");
+        $tableTests = new ilPegasusTestingTableGUI($this, "Name");
+        $tableTests->setTitle("Tests");
         require_once __DIR__ . "/class.ilPegasusTesting.php";
-        $table->setData((new ilPegasusHelperTesting())->run());
+        $tableTests->setData((new ilPegasusHelperTesting())->run());
 
-		$tpl->setContent($formApiUser->getHTML() . $table_legend->getHTML() . $table->getHTML());
-	}
+        return $tableLegend->getHTML() . $tableTests->getHTML();
+    }
+
+    /**
+     * save input from the color form
+     */
+    protected function saveColor() {
+        global $ilDB, $ilCtrl;
+        $primaryColor = $_POST["primary_color"];
+        $contrastColor = $_POST["contrast_color"];
+
+        if(!preg_match("/^[0-9a-fA-F]{6}$/", $primaryColor)) {
+            ilUtil::sendFailure("App theme was not saved", true);
+            $ilCtrl->redirect($this, "configure");
+            return;
+        }
+
+        $values = array(
+            "primary_color" => array("text", $primaryColor),
+            "contrast_color" => array("integer", $contrastColor)
+        );
+        $where = array(
+            "id" => array("integer", 1)
+        );
+        $ilDB->update("ui_uihk_pegasus_theme", $values, $where);
+
+        ilUtil::sendSuccess("App theme saved successfully", true);
+        $ilCtrl->redirect($this, "configure");
+    }
 }
 
 ?>
