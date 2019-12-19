@@ -63,12 +63,17 @@ final class ilPegasusHelperConfigGUI extends ilPluginConfigGUI {
     protected function getColorFormHtml() {
         global $ilDB, $ilCtrl;
 
+        $primaryColor = "04427e";
+        $contrastColor = 1;
         $sql = "SELECT * FROM ui_uihk_pegasus_theme";
         $set = $ilDB->query($sql);
-        while ($rec = $ilDB->fetchAssoc($set)) {
-            $primaryColor = $rec["primary_color"];
-            $contrastColor = $rec["contrast_color"];
+        if($set !== false) {
+            while ($rec = $ilDB->fetchAssoc($set)) {
+                $primaryColor = $rec["primary_color"];
+                $contrastColor = $rec["contrast_color"];
+            }
         }
+
 
         $formColor = new ilPropertyFormGUI();
         $formColor->setTitle("App Theme Coloring");
