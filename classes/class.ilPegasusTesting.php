@@ -8,13 +8,28 @@ include_once __DIR__ . "/../testing/includefile.php";
  */
 final class ilPegasusHelperTesting {
 
-    public function run() {
+    public function __construct() {
+
+    }
+
+    /**
+     * @param $suiteName string set to "internal" or "external"
+     */
+    public function run($suiteName) {
         $set_global_ilias = !isset($GLOBALS["ilias"]);
         if($set_global_ilias) $GLOBALS["ilias"] = true;
 
         $info = getInfo();
         $targetInfo = getTargetInfo($info);
-        $suite = getTestSuite(TestingContext::C_ILIAS);
+        switch ($suiteName) {
+            default:
+            case "internal":
+                $suite = getInternalTestSuite(TestingContext::C_ILIAS);
+                break;
+            case "external":
+                $suite = getExternalTestsSuite(TestingContext::C_ILIAS);
+                break;
+        }
         $suite->run($info, $targetInfo);
 
         if($set_global_ilias) unset($GLOBALS["ilias"]);

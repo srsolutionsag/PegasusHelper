@@ -5,12 +5,15 @@
  */
 
 class TestSuite {
+    /** @var string */
+    public $title;
     /** @var TestCategory[] */
     public $categories = [];
     /** @var TestingContext */
     public $context;
 
-    public function __construct($context, $categories = []) {
+    public function __construct($title, $context, $categories = []) {
+        $this->title = $title;
         $this->context = $context;
         $this->categories = $categories;
     }
@@ -30,6 +33,13 @@ class TestSuite {
         foreach ($this->categories as $category) {
             if($category->title === $title) return $category;
         }
+        return NULL;
+    }
+
+    public function getTestByCategoryTitleAndTestFn($category, $test_fn) {
+        $category = $this->getCategoryByTitle($category);
+        if($category !== NULL)
+            return $category->getTestByTitle($test_fn);
         return NULL;
     }
 }
@@ -59,6 +69,13 @@ class TestCategory {
     public function addTests($tests) {
         if(is_array($tests)) $this->tests = array_merge($this->tests, $tests);
         else array_push($this->tests, $tests);
+    }
+
+    public function getTestByTitle($title) {
+        foreach ($this->tests as $test) {
+            if($test->title === $title) return $test;
+        }
+        return NULL;
     }
 }
 
