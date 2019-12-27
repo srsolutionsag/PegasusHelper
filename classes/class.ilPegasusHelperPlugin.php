@@ -54,5 +54,26 @@ final class ilPegasusHelperPlugin extends ilUserInterfaceHookPlugin
         return true;
     }
 
+    /**
+     * Before uninstall processing
+     */
+    protected function beforeUninstall() {
+        try {
+            global $ilDB;
+            $ilDB->dropTable("ui_uihk_pegasus_theme", false);
+
+            global $ilPluginAdmin;
+            if($ilPluginAdmin->isActive(IL_COMP_SERVICE, 'UIComponent', 'uihk', 'REST')) {
+                require_once './Customizing/global/plugins/Services/UIComponent/UserInterfaceHook/PegasusHelper/bootstrap.php';
+
+                $rest = new SRAG\PegasusHelper\rest\RestSetup();
+                $rest->deleteClient();
+            }
+            return true;
+        } catch (Exception $e) {
+            ilUtil::sendFailure("There was a problem when uninstalling the PegasuHelper plugin", true);
+            return false;
+        }
+    }
 
 }

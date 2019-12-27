@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - modified feedback to user for failed tests (even if test fails, setup may still be ok)
 ### Fixed
 - checking for presence of mysqli implementation
+- installing and uninstalling the plugin
 
 ## [1.1.0]
 ### Added
