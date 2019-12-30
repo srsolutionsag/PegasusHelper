@@ -78,3 +78,24 @@ $ilDB->insert('ui_uihk_pegasus_theme', array(
 global $ilLog;
 $ilLog->write('Plugin PegasusHelper -> DB-Update #6: Filled ui_uihk_pegasus_theme.');
 ?>
+<#7>
+<?php
+$ilDB->addTableColumn("ui_uihk_pegasus_theme", "timestamp",
+    array(
+        "type" => "integer",
+        "length" => 8,
+        "notnull" => true
+    )
+);
+?>
+<#8>
+<?php
+$values = array(
+    "timestamp" => array("integer", time())
+);
+$where = array(
+    "id" => array("integer", 1)
+);
+
+$ilDB->update("ui_uihk_pegasus_theme", $values, $where);
+?>
