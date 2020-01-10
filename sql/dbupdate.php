@@ -99,3 +99,7 @@ $where = array(
 
 $ilDB->update("ui_uihk_pegasus_theme", $values, $where);
 ?>
+<#9>
+<?php
+ilPegasusHelperConfigGUI::copyDefaultIcons();
+?>

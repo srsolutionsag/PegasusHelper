@@ -1,13 +1,17 @@
 <?php
 
-include_once "../includefile.php";
-
+$internal_log = "request @ " . date("Y-m-d H:i:s") . PHP_EOL;
 try {
+    $internal_log .= "host   : " . $_GET["host"] . PHP_EOL;
+    $internal_log .= "client : " . $_GET["client_id"] . PHP_EOL;
     $log = performTest();
     setResponse($log);
+    $internal_log .= "RESULT : " . print_r($log, true) . PHP_EOL;
 } catch (Exception $e) {
+    $internal_log .= "ERROR  : " . $e->getMessage() . PHP_EOL;
     setResponse("", 500);
 }
+file_put_contents("check.log", $internal_log . PHP_EOL . PHP_EOL , FILE_APPEND);
 
 /**
  * runs the test(s) and creates a log with the results
@@ -21,7 +25,7 @@ function performTest() {
     $url = $api . "/v1/tests/routesAccess?client_id=" . $clientId;
 
     $log = httpLoggedRequest($url, "GET", ["dat" => "test"], []);
-    $log["host"] = 'https://'.$_SERVER['HTTP_HOST']."//".$_SERVER['REQUEST_URI'];
+    $log["host"] = "https://" . $_SERVER["HTTP_HOST"] . "//" . $_SERVER["REQUEST_URI"];
 
     return $log;
 }
@@ -46,4 +50,28 @@ function setResponse($bodyArr, $code = 200) {
     header("Status: " . $status[$code]);
 
     echo json_encode($bodyArr);
+}
+
+function httpLoggedRequest($url, $method = "GET", $bodyArr = [], $headerArr = []) {
+    if($method !== "GET" && $method !== "POST") throw new Error("the argument \$method for httpLoggedRequest must be GET or POST");
+    $headerArr += [count($bodyArr) ? "Content-Type: application/json" : "User-Agent: srag (testing script)"];
+    $ch = curl_init();
+
+    curl_setopt($ch, CURLOPT_URL, $url);
+    curl_setopt($ch, CURLOPT_HEADER, true);
+    curl_setopt($ch, CURLOPT_HTTPHEADER, $headerArr);
+    if($method === "POST") curl_setopt($ch,CURLOPT_POST,true);
+    if(!count($bodyArr)) curl_setopt($ch, CURLOPT_NOBODY, true);
+    else curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($bodyArr));
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+
+    $response = curl_exec($ch);
+
+    $log["info"] = curl_getinfo($ch);
+    $log["errno"] = curl_errno($ch);
+    $log["errmsg"] = curl_error($ch);
+    $log["response"] = json_decode($response);
+
+    curl_close($ch);
+    return $log;
 }
