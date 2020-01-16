@@ -175,7 +175,7 @@ final class ilPegasusHelperConfigGUI extends ilPluginConfigGUI {
         foreach(ilPegasusHelperConfigGUI::$ICON_CATEGORIES as $category) {
             // current item
             $thisDir = "Customizing/global/plugins/Services/UIComponent/UserInterfaceHook/PegasusHelper/classes";
-            $clientName = $DIC->clientIni()->readVariable("client", "name");
+            $clientName = CLIENT_ID;
             $webDir = "data/$clientName/";
             $tpl = new ilTemplate("tpl.icon.html", true, true, $thisDir);
             $iconsDir = $webDir . ilPegasusHelperConfigGUI::$ICON_WEB_DIR;
