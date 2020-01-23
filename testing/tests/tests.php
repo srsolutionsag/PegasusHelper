@@ -13,24 +13,27 @@
  */
 
 /**
+ * creates a collection of tests without HTTP requests
+ *
  * @param $context int for TestingContext
  * @return TestSuite
  */
-function getTestSuite($context) {
-    $suite = new TestSuite($context);
+function getInternalTestSuite($context) {
+    $suite = new TestSuite("Internal Testing", $context);
 
     $general = new TestCategory("General");
     $general->addTests([
         new Test("location where script is run", "testWorkingDirectory", true, [TestingContext::C_CLI]),
         new Test("location of REST-plugin", "testRESTDirectory"),
         new Test("location of PegasusHelper-plugin", "testPegasusHelperDirectory"),
-        new Test("connection to ILIAS-database", "testIlBDConnection", false, [TestingContext::C_CLI])
+        new Test("connection to ILIAS-database", "testIlBDConnection", false, [TestingContext::C_CLI]),
+        new Test("compatible PHP-version", "testPhpVersion", false)
     ]);
     $suite->addCategories($general);
 
     $ilias = new TestCategory("ILIAS");
     $ilias->addTests([
-        new Test("compatible ilias-version", "testILIASVersion"),
+        new Test("compatible ILIAS-version", "testILIASVersion"),
         new Test("https redirects", "testILIASRedirectStatement", false)
     ]);
     $suite->addCategories($ilias);
@@ -38,10 +41,10 @@ function getTestSuite($context) {
     $rest = new TestCategory("REST-plugin");
     $rest->addTests([
         new Test("version", "testRESTVersion", false),
-        new Test("compatible ilias-version", "testRESTkMinMaxVersion"),
-        new Test("entry in ilias-database", "testRESTInIlDB"),
-        new Test("plugin-updates in ilias", "testRESTLastUpdateVersion"),
-        new Test("ilias-database version", "testRESTDbVersion"),
+        new Test("compatible ILIAS-version", "testRESTkMinMaxVersion"),
+        new Test("entry in ILIAS-database", "testRESTInIlDB"),
+        new Test("plugin-updates in ILIAS", "testRESTLastUpdateVersion", false),
+        new Test("ILIAS-database version", "testRESTDbVersion"),
         new Test("active", "testRESTPluginActive")
     ]);
     $suite->addCategories($rest);
@@ -50,10 +53,10 @@ function getTestSuite($context) {
     $pegasusHelper->addTests([
         new Test("working REST-installation", "testPegasusHelperRESTInstallation"),
         new Test("version", "testPegasusHelperVersion", false),
-        new Test("compatible ilias-version", "testPegasusHelperMinMaxVersion"),
-        new Test("entry in ilias-database", "testPegasusHelperInIlDB"),
-        new Test("plugin-updates in ilias", "testPegasusHelperLastUpdateVersion"),
-        new Test("ilias-database version", "testPegasusHelperDbVersion"),
+        new Test("compatible ILIAS-version", "testPegasusHelperMinMaxVersion"),
+        new Test("entry in ILIAS-database", "testPegasusHelperInIlDB"),
+        new Test("plugin-updates in ILIAS", "testPegasusHelperLastUpdateVersion", false),
+        new Test("ILIAS-database version", "testPegasusHelperDbVersion"),
         new Test("active", "testPegasusHelperPluginActive")
     ]);
     $suite->addCategories($pegasusHelper);
@@ -61,31 +64,63 @@ function getTestSuite($context) {
     return $suite;
 }
 
-// 0 general
+/**
+ * creates a collection of tests with HTTP requests
+ *
+ * @param $context int for TestingContext
+ * @return TestSuite
+ */
+function getExternalTestsSuite($context) {
+    $suite = new TestSuite("External Testing", $context);
+
+    $pegasusHelper = new TestCategory("Accessing Resources");
+    $pegasusHelper->addTests([
+        new Test("external URL", "testExternalUrl", false),
+        new Test("REST login", "testRESTLoginConnection", false)
+    ]);
+    $suite->addCategories($pegasusHelper);
+
+    $pegasusHelper = new TestCategory("External Script");
+    $pegasusHelper->addTests([
+        new Test("successful run", "testRESTExternalTestScriptComplete", false),
+        new Test("body transmitted", "testRESTExternalTestScriptTransmitted", false)
+    ]);
+    $suite->addCategories($pegasusHelper);
+
+    return $suite;
+}
+
+// 0 General
 
 function testWorkingDirectory($info, $targetInfo, $suite) {
     $pass = $info["TestScript"]["correct_working_directory"];
-    $msg = $pass ? "correct" : "the script must be run from [YOUR_ILIAS]/Customizing/global/plugins/Services/UIComponent/UserInterfaceHook/PegasusHelper/testing";
+    $msg = $pass ? "" : "the script must be run from [YOUR_ILIAS]/Customizing/global/plugins/Services/UIComponent/UserInterfaceHook/PegasusHelper/testing";
     return completeTestResult($pass, $msg);
 }
 
 function testRESTDirectory($info, $targetInfo, $suite) {
     if(!$info["TestScript"]["correct_working_directory"]) return failTestFromMissingInfo("wrong working directory");
     $pass = file_exists(getRootPlugins() . "/REST");
-    $msg = $pass ? "correct" : "REST must be located at [YOUR_ILIAS]/Customizing/global/plugins/Services/UIComponent/UserInterfaceHook/REST";
+    $msg = $pass ? "" : "REST must be located at [YOUR_ILIAS]/Customizing/global/plugins/Services/UIComponent/UserInterfaceHook/REST";
     return completeTestResult($pass, $msg);
 }
 
 function testPegasusHelperDirectory($info, $targetInfo, $suite) {
     if(!$info["TestScript"]["correct_working_directory"]) return failTestFromMissingInfo("wrong working directory");
     $pass = file_exists(getRootPlugins() . "/PegasusHelper");
-    $msg = $pass ? "correct" : "PegasusHelper must be located at [YOUR_ILIAS]/Customizing/global/plugins/Services/UIComponent/UserInterfaceHook/PegasusHelper";
+    $msg = $pass ? "" : "PegasusHelper must be located at [YOUR_ILIAS]/Customizing/global/plugins/Services/UIComponent/UserInterfaceHook/PegasusHelper";
     return completeTestResult($pass, $msg);
 }
 
 function testIlBDConnection($info, $targetInfo, $suite) {
     $pass = $info["TestScript"]["ilDB_connection"];
     $msg = $pass ? "succeeded" : "connection to ILIAS-database failed, some tests cannot be performed";
+    return completeTestResult($pass, $msg);
+}
+
+function testPhpVersion($info, $targetInfo, $suite) {
+    if(!$info["TestScript"]["php_version"]) return failTestFromMissingInfo();
+    list($pass, $msg) =  testVersionIs($info["TestScript"]["php_version"], $targetInfo["TestScript"]["php_version"]);
     return completeTestResult($pass, $msg);
 }
 
@@ -100,7 +135,7 @@ function testILIASVersion($info, $targetInfo, $suite) {
 function testILIASRedirectStatement($info, $targetInfo, $suite) {
     if(!$info["ILIAS"]["ilias_ini"]["available"]) return failTestFromMissingInfo();
     $pass = isset($info["ILIAS"]["ilias_ini"]["server"]["http_path"]);
-    $msg = $pass ? "present" : "if requests to ILIAS are redirected to https, then the file ilias.ini.php must be configured accordingly";
+    $msg = $pass ? "" : "if requests to ILIAS are redirected to https, then the file ilias.ini.php must be configured accordingly";
     return completeTestResult($pass, $msg);
 }
 
@@ -122,7 +157,8 @@ function testRESTkMinMaxVersion($info, $targetInfo, $suite) {
 
 function testRESTInIlDB($info, $targetInfo, $suite) {
     if(!$info["TestScript"]["ilDB_connection"]) return failTestFromMissingInfo("connection to ILIAS-database required");
-    list($pass, $msg) =  testInIlDB( $info["REST"]);
+    list($pass, $msg) =  testInIlDB($info["REST"]);
+    if(!$pass) failTestFromMissingInfo($msg); // TODO this may fail with installed plugins (mysql user?)
     return completeTestResult($pass, $msg);
 }
 
@@ -130,7 +166,7 @@ function testRESTLastUpdateVersion($info, $targetInfo, $suite) {
     if(!$info["TestScript"]["ilDB_connection"]) return failTestFromMissingInfo("connection to ILIAS-database required");
     if(!$info["REST"]["ilDB"]["available"]) return failTestFromMissingInfo("plugin is not (correctly) installed");
     if(!$info["REST"]["available"]) return failTestFromMissingInfo();
-    list($pass, $msg) =  testVersionIs($info["REST"]["ilDB"]["last_update_version"], $info["REST"]["version"], "some plugin-updates in ilias are not installed");
+    list($pass, $msg) =  testVersionIs($info["REST"]["ilDB"]["last_update_version"], $info["REST"]["version"], "some plugin-updates in ILIAS are not installed");
     return completeTestResult($pass, $msg);
 }
 
@@ -182,12 +218,13 @@ function testPegasusHelperRESTInstallation($info, $targetInfo, $suite) {
     if(!$pass) return completeTestResult(false, "some tests failed for the REST-plugin");
     if(!$pass_non_mandatory) return failTestFromMissingInfo("a test for the REST-plugin that is not mandatory has failed");
     if($missing_info) return failTestFromMissingInfo("a test for the REST-plugin has not been completed");
-    return completeTestResult(true, "working");
+    return completeTestResult(true, "");
 }
 
 function testPegasusHelperInIlDB($info, $targetInfo, $suite) {
     if(!$info["TestScript"]["ilDB_connection"]) return failTestFromMissingInfo("connection to ILIAS-database required");
     list($pass, $msg) =  testInIlDB($info["PegasusHelper"]);
+    if(!$pass) failTestFromMissingInfo($msg); // TODO this may fail with installed plugins (mysql user?)
     return completeTestResult($pass, $msg);
 }
 
@@ -195,7 +232,7 @@ function testPegasusHelperLastUpdateVersion($info, $targetInfo, $suite) {
     if(!$info["TestScript"]["ilDB_connection"]) return failTestFromMissingInfo("connection to ILIAS-database required");
     if(!$info["PegasusHelper"]["ilDB"]["available"]) return failTestFromMissingInfo("plugin is not (correctly) installed");
     if(!$info["PegasusHelper"]["available"]) return failTestFromMissingInfo();
-    list($pass, $msg) =  testVersionIs($info["PegasusHelper"]["ilDB"]["last_update_version"], $info["PegasusHelper"]["version"], "some plugin-updates in ilias are not installed");
+    list($pass, $msg) =  testVersionIs($info["PegasusHelper"]["ilDB"]["last_update_version"], $info["PegasusHelper"]["version"], "some plugin-updates in ILIAS are not installed");
     return completeTestResult($pass, $msg);
 }
 
@@ -214,12 +251,40 @@ function testPegasusHelperPluginActive($info, $targetInfo, $suite) {
     return completeTestResult($pass, $msg);
 }
 
-// * multiple
+// 4 External
+
+function testExternalUrl($info, $targetInfo, $suite) {
+    if(!$info["Connectivity"]["external_url"]["response"]["status"]) return failTestFromMissingInfo();
+    list($pass, $msg) = testHttpResponseStatus($info["Connectivity"]["external_url"]["response"]["status"]);
+    return completeTestResult($pass, $msg);
+}
+
+function testRESTLoginConnection($info, $targetInfo, $suite) {
+    if(!$info["Connectivity"]["rest_login"]["response"]["status"]) return failTestFromMissingInfo();
+    list($pass, $msg) = testHttpResponseStatus($info["Connectivity"]["rest_login"]["response"]["status"]);
+    return completeTestResult($pass, $msg);
+}
+
+function testRESTExternalTestScriptComplete($info, $targetInfo, $suite) {
+    if(!$info["Connectivity"]["external_testing"]) return failTestFromMissingInfo();
+    list($pass, $msg) = testHttpResponseStatus($info["Connectivity"]["external_testing"]["response"]["status"]);
+    return completeTestResult($pass, $msg);
+}
+
+function testRESTExternalTestScriptTransmitted($info, $targetInfo, $suite) {
+    if(!$info["Connectivity"]["external_testing"]["response"]["body"]["response"]) return failTestFromMissingInfo();
+    $pass = isset($info["Connectivity"]["external_testing"]["response"]["body"]["response"]["body"]["request"]["body"]["dat"]);
+    $msg = ""; // TODO better failing message
+    return completeTestResult($pass, $msg);
+}
+
+// * Multiple
 
 /**
  * @param $v string
  * @param $v_min string
  * @param $v_max string
+ * @return array
  */
 function testMinMaxVersion($v, $v_min, $v_max) {
     $v_arr = strVersionToArray($v);
@@ -237,6 +302,7 @@ function testMinMaxVersion($v, $v_min, $v_max) {
  * @param $version string
  * @param $target string
  * @param $msg_fail string
+ * @return array
  */
 function testVersionIs($version, $target, $msg_fail = "version must be [TARGET] but is [VERSION]") {
     $pass = strVersionToArray($version) >= strVersionToArray($target);
@@ -246,12 +312,18 @@ function testVersionIs($version, $target, $msg_fail = "version must be [TARGET] 
 
 function testInIlDB($plugin_info) {
     $pass = $plugin_info["ilDB"]["available"];
-    $msg = $pass ? "found entry" : "the plugin must be installed";
+    $msg = $pass ? "" : "the plugin must be installed";
     return [$pass, $msg];
 }
 
 function testPluginActive($plugin_info) {
     $pass = (bool) $plugin_info["active"];
-    $msg = $pass ? "yes" : "the plugin must be activated";
+    $msg = $pass ? "" : "the plugin must be activated";
+    return [$pass, $msg];
+}
+
+function testHttpResponseStatus($status) {
+    $pass = $status == 200;
+    $msg = $pass ? "" : "received status $status";
     return [$pass, $msg];
 }

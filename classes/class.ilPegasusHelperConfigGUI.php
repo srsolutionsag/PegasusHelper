@@ -17,14 +17,18 @@ final class ilPegasusHelperConfigGUI extends ilPluginConfigGUI {
         $ilTabs->addSubTab("id_testing", "Testing", $ilCtrl->getLinkTarget($this, "testing"));
 
         switch ($cmd) {
-            case 'saveColor':
+            case "saveColor":
                 $this->saveColor();
                 break;
-            case 'testing':
+            case "testing":
                 $ilTabs->setSubTabActive("id_testing");
                 $tpl->setContent($this->getTestsTableHtml());
                 break;
-            case 'configure':
+            case "testing_run_external_tests":
+                $ilTabs->setSubTabActive("id_testing");
+                $tpl->setContent($this->getTestsTableHtml(true));
+                break;
+            case "configure":
             default:
                 $ilTabs->setSubTabActive("id_general");
                 $tpl->setContent($this->getApiSecretFormHtml() . $this->getColorFormHtml());
@@ -113,9 +117,12 @@ final class ilPegasusHelperConfigGUI extends ilPluginConfigGUI {
 
     /**
      * html of legend for tests
+     *
+     * @param bool $external
      * @return string
      */
-    protected function getTestsTableHtml() {
+    protected function getTestsTableHtml($external = false) {
+        global $ilCtrl;
         include_once __DIR__ . "/class.ilPegasusTestingTableGUI.php";
         $tableLegend = new ilPegasusTestingTableGUI($this, "Status");
         $tableLegend->setTitle("Legend for Tests");
@@ -144,12 +151,23 @@ final class ilPegasusHelperConfigGUI extends ilPluginConfigGUI {
         ];
         $tableLegend->setData($dataLegend);
 
-        $tableTests = new ilPegasusTestingTableGUI($this, "Name");
-        $tableTests->setTitle("Tests");
+        // table with internal tests
+        $tableInt = new ilPegasusTestingTableGUI($this, "Name");
+        $tableInt->setTitle("Tests");
         require_once __DIR__ . "/class.ilPegasusTesting.php";
-        $tableTests->setData((new ilPegasusHelperTesting())->run());
+        $tableInt->setData((new ilPegasusHelperTesting())->run("internal"));
 
-        return $tableLegend->getHTML() . $tableTests->getHTML();
+        // table with external tests, run if $external is true
+        $tableExt = new ilPegasusTestingTableGUI($this, "Name");
+        $tableExt->setTitle("External Tests");
+        if($external) {
+            require_once __DIR__ . "/class.ilPegasusTesting.php";
+            $tableExt->setData((new ilPegasusHelperTesting())->run("external"));
+        }
+        $tableExt->setFormAction($ilCtrl->getFormAction($this));
+        $tableExt->addCommandButton("testing_run_external_tests", "Run external tests");
+
+        return $tableLegend->getHTML() . $tableInt->getHTML() . $tableExt->getHTML();
     }
 
     /**

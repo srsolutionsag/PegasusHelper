@@ -9,6 +9,9 @@ function initIlDB() {
         if(isset($GLOBALS["ilias"])) {
             $ilDB_handle = $GLOBALS["ilDB"];
         } else {
+            if(!function_exists('mysqli_init') && !extension_loaded('mysqli'))
+                throw new Exception("implementation of mysqli not found");
+
             list($host, $username, $password, $database) = getClientInfo();
             $ilDB_handle = new mysqli($host, $username, $password, $database);
             if($ilDB_handle->connect_errno) throw new Exception($ilDB_handle->connect_error);
