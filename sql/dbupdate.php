@@ -78,3 +78,35 @@ $ilDB->insert('ui_uihk_pegasus_theme', array(
 global $ilLog;
 $ilLog->write('Plugin PegasusHelper -> DB-Update #6: Filled ui_uihk_pegasus_theme.');
 ?>
+<#7>
+<?php
+global $ilDB;
+$error_if_not_existing = false;
+$ilDB->dropTable("ui_uihk_pegasus_theme", $error_if_not_existing);
+
+$fields = array(
+    'id' => array(
+        'type'    => 'integer',
+        'length'  => 4,
+        'notnull' => true
+    ),
+    'primary_color'  => array(
+        'type'        => 'text',
+        'length'      => 10,
+        'fixed'       => true,
+        'notnull'     => true
+    ),
+    'contrast_color' => array(
+        'type'        => 'integer',
+        'length'      => 4,
+        'notnull'     => true
+    )
+);
+$ilDB->createTable('ui_uihk_pegasus_theme', $fields, true);
+
+$ilDB->addPrimaryKey('ui_uihk_pegasus_theme', array('id'));
+$ilDB->manipulate('ALTER TABLE ui_uihk_pegasus_theme CHANGE id id INT NOT NULL AUTO_INCREMENT');
+
+global $ilLog;
+$ilLog->write('Plugin PegasusHelper -> DB-Update #5: Created ui_uihk_pegasus_theme.');
+?>
