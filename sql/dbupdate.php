@@ -108,5 +108,16 @@ $ilDB->addPrimaryKey('ui_uihk_pegasus_theme', array('id'));
 $ilDB->manipulate('ALTER TABLE ui_uihk_pegasus_theme CHANGE id id INT NOT NULL AUTO_INCREMENT');
 
 global $ilLog;
-$ilLog->write('Plugin PegasusHelper -> DB-Update #5: Created ui_uihk_pegasus_theme.');
+$ilLog->write('Plugin PegasusHelper -> DB-Update #7: Created ui_uihk_pegasus_theme.');
+?>
+<#8>
+<?php
+global $ilDB;
+$ilDB->insert('ui_uihk_pegasus_theme', array(
+    'primary_color'             => array('text', '4a668b'),
+    'contrast_color'            => array('integer', 1)
+));
+
+global $ilLog;
+$ilLog->write('Plugin PegasusHelper -> DB-Update #8: Filled ui_uihk_pegasus_theme.');
 ?>
