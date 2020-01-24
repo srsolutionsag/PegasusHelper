@@ -27,6 +27,7 @@ function finalize() {
  * @param $suite TestSuite
  */
 function printResults($suite) {
+    printNormal("\n" . $suite->title . "\n");
     $no_category = 0;
     foreach ($suite->categories as $category) {
         printNormal("\n" . $no_category . ") " . $category->title . "\n");

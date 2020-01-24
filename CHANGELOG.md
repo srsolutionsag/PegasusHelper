@@ -4,6 +4,27 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
+## [1.1.3]
+### Added
+- app theme icons
+
+## [1.1.2]
+### Fixed
+- addition of table 'ui_uihk_pegasus_theme' 
+
+## [1.1.1]
+### Added
+- external testing
+### Changed
+- modified feedback to user for failed tests (even if test fails, setup may still be ok)
+### Fixed
+- checking for presence of mysqli implementation
+- installing and uninstalling the plugin
+
+## [1.1.0]
+### Added
+- app theme coloring
+
 ## [1.0.2]
 ### Added
 - testing for REST- and PegasusHelper-Plugins

@@ -2,6 +2,7 @@
 
 namespace SRAG\PegasusHelper\rest;
 
+use Complex\Exception;
 use ilDatabaseException;
 use SRAG\PegasusHelper\handler\OAuthManager\v52\OauthManagerImpl;
 
@@ -39,13 +40,42 @@ class RestSetup {
 		$this->host = $ilIliasIniFile->readVariable('server', 'http_path');
 	}
 
-
+    /**
+     * setup the REST client for the plugin if it does not exist yet
+     */
 	public function setupClient() {
-
-		$response = $this->post($this->host."/Customizing/global/plugins/Services/UIComponent/UserInterfaceHook/REST/api.php/v1/clients", $this->clientParams);
-		$this->handle($response);
+        $id = $this->getClientId();
+        if(!isset($id)) {
+            $response = $this->post($this->host . "/Customizing/global/plugins/Services/UIComponent/UserInterfaceHook/REST/api.php/v1/clients", $this->clientParams);
+            $this->handle($response);
+        }
 	}
 
+    /**
+     * delete the REST client for the plugin if it exists
+     */
+	public function deleteClient() {
+        $id = $this->getClientId();
+        if(isset($id)) {
+            $response = $this->delete($this->host . "/Customizing/global/plugins/Services/UIComponent/UserInterfaceHook/REST/api.php/v1/clients/" . strval($id));
+            if (isset($response))
+                $this->handle($response);
+        }
+    }
+
+    /**
+     * readout the id from the REST client of the plugin. returns null, if this client does not exist
+     */
+    private function getClientId() {
+        $response = $this->get($this->host."/Customizing/global/plugins/Services/UIComponent/UserInterfaceHook/REST/api.php/v1/clients");
+        $response = json_decode($response, true);
+
+        foreach($response as $id => $client)
+            if($client["api_key"] === $this->clientParams["api_key"])
+                return intval($id);
+
+        return null;
+    }
 
 	/**
 	 * @param $tokenParam TokenParam
@@ -100,6 +130,19 @@ class RestSetup {
 		return $randstring;
 	}
 
+    private function get($uri) {
+
+        // TODO: move this method to this class
+        $oauthData = OauthManagerImpl::createAccessToken('apollon');
+
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $uri);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, array('Authorization: Bearer ' . $oauthData['access_token']));
+
+        return curl_exec($ch);
+    }
+
 	private function post($uri, $params) {
 
 		// TODO: move this method to this class
@@ -128,6 +171,19 @@ class RestSetup {
 		curl_setopt($ch, CURLOPT_POSTFIELDS,http_build_query($params));
 		return curl_exec($ch);
 	}
+
+    private function delete($uri) {
+
+        // TODO: move this method to this class
+        $oauthData = OauthManagerImpl::createAccessToken('apollon');
+
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $uri);
+        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'DELETE');
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, array('Authorization: Bearer ' . $oauthData['access_token']));
+        return curl_exec($ch);
+    }
 
 	private function handle($response) {
 

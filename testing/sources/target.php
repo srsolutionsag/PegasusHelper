@@ -6,10 +6,19 @@
 
 function getTargetInfo($info) {
     return [
+        "TestScript" => getTestScriptTargetInfo(),
         "ILIAS" => getILIASTargetInfo($info),
         "REST" => getPluginTargetInfo("REST", "Ilias.RESTPlugin"),
         "PegasusHelper" => getPluginTargetInfo("PegasusHelper", "PegasusHelper")
     ];
+}
+
+function getTestScriptTargetInfo() {
+    $testScript_target = [];
+
+    $testScript_target["php_version"] = "7";
+
+    return $testScript_target;
 }
 
 function getILIASTargetInfo($info) {
@@ -57,10 +66,9 @@ function getTargetDbVersion($plugin_dir) {
 
     // go through file-content and search for last occurrence of <#x>
     $version = "0";
-    $regs = array();
     foreach($dbupdate_lines as $line) {
-        if(preg_match('/^\<\#([0-9]+)>/', $line, $regs)) {
-            $version = $regs[1];
+        if(preg_match('/^\<\#([0-9]+)>/', $line, $matches)) {
+            $version = $matches[1];
         }
     }
 
@@ -68,7 +76,8 @@ function getTargetDbVersion($plugin_dir) {
 }
 
 function getTargetVersion($repo) {
-    $tags = httpGetAsJson("https://api.github.com/repos/studer-raimann/{$repo}/tags");
+    $tags = httpLoggedRequest("https://api.github.com/repos/studer-raimann/{$repo}/tags")["response"]["body"];
+
     foreach ($tags as $tag) {
         try {
             $version = tagToVersion($tag["name"]);
@@ -80,25 +89,11 @@ function getTargetVersion($repo) {
 }
 
 /**
- * invokes a GET-request to $url and returns the response as a JSON-object
- *
- * @param $url string
- * @return mixed
- */
-function httpGetAsJson($url) {
-    $options = ['http' => [
-        'method'=>"GET",
-        'header'=>"User-Agent: lashaparesha api script\r\n"
-    ]];
-    $response = file_get_contents($url , false, stream_context_create($options));
-    return json_decode($response, true);
-}
-
-/**
  * Parse a tag-string, such as 'v1.7.3-srag' to a version-string, such as '1.7.3'
  * The method finds the first occurrence of a pattern N.M.(...).K where N, M, K are integers
  *
  * @param $tag string
+ * @return string|null
  */
 function tagToVersion($tag) {
     $version = NULL;
