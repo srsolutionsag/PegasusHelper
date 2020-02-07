@@ -13,6 +13,7 @@ final class ilPegasusHelperConfigGUI extends ilPluginConfigGUI {
         "group",
         "file",
         "learningplace",
+        "learningmodule",
         "link"
     ];
     static $ICON_WEB_DIR = "pegasushelper/theme/icons/";
@@ -164,7 +165,7 @@ final class ilPegasusHelperConfigGUI extends ilPluginConfigGUI {
      * @throws ilTemplateException
      */
     function getIconsForm() {
-        global $ilCtrl, $DIC;
+        global $ilCtrl;
 
         $form = new ilPropertyFormGUI();
         $form->setTitle("Icons");
