@@ -2,16 +2,17 @@
 
 namespace SRAG\PegasusHelper\rest;
 
-use Complex\Exception;
+use Exception;
 use ilDatabaseException;
+use ClientConfiguration;
 use SRAG\PegasusHelper\handler\OAuthManager\v52\OauthManagerImpl;
 
 /**
  * Class RestSetup
  *
- * @author  nmaerchy
- * @date    10.10.17
- * @version 0.0.1
+ * @author  nmaerchy, mschneiter
+ * @date    09.04.20
+ * @version 0.1.0
  *
  */
 class RestSetup {
@@ -45,30 +46,28 @@ class RestSetup {
      */
 	public function setupClient() {
         $id = $this->getClientId();
-        if(!isset($id)) {
-            $response = $this->post($this->host . "/Customizing/global/plugins/Services/UIComponent/UserInterfaceHook/REST/api.php/v1/clients", $this->clientParams);
-            $this->handle($response);
-        }
+        if(!isset($id)) ClientConfiguration::createClient($this->clientParams);
 	}
 
     /**
      * delete the REST client for the plugin if it exists
      */
 	public function deleteClient() {
+	    // first try the old version of the uninstall process without any error messages
+        try {
+            $this->deleteClientOldVersionWithRequest();
+            return;
+        } catch (Exception $e) {}
+
         $id = $this->getClientId();
-        if(isset($id)) {
-            $response = $this->delete($this->host . "/Customizing/global/plugins/Services/UIComponent/UserInterfaceHook/REST/api.php/v1/clients/" . strval($id));
-            if (isset($response))
-                $this->handle($response);
-        }
+        if(isset($id)) ClientConfiguration::deleteClient($id);
     }
 
     /**
      * readout the id from the REST client of the plugin. returns null, if this client does not exist
      */
     private function getClientId() {
-        $response = $this->get($this->host."/Customizing/global/plugins/Services/UIComponent/UserInterfaceHook/REST/api.php/v1/clients");
-        $response = json_decode($response, true);
+        $response = ClientConfiguration::getClients();
 
         foreach($response as $id => $client)
             if($client["api_key"] === $this->clientParams["api_key"])
@@ -81,41 +80,26 @@ class RestSetup {
 	 * @param $tokenParam TokenParam
 	 */
 	public function configTTL($tokenParam) {
-
-		$uri = $this->host."/Customizing/global/plugins/Services/UIComponent/UserInterfaceHook/REST/api.php/v2/admin/config/" . $tokenParam->getType();
-		$params = array( 'value' => strval($tokenParam->getTTL()));
-
-		$response = $this->put($uri, $params);
-		$this->handle($response);
+        ClientConfiguration::setClientConfig($tokenParam->getType(), strval($tokenParam->getTTL()));
 	}
 
-	/**
-	 * @param $routeParams RouteParam
-	 *
-	 * @throws ilDatabaseException
-	 */
+    /**
+     * @param $routeParams RouteParam
+     *
+     * @throws \RESTController\libs\Exceptions\Database
+     * @throws \ilException
+     * @throws ilDatabaseException
+     * @throws \RESTController\core\oauth2_v2\Exceptions\InvalidRequest
+     */
 	public function addRoute($routeParams) {
-
-		// TODO: move this method to this class
-		$oauthData = OauthManagerImpl::createAccessToken('apollon');
-
-		// TODO: move this method to this class
+        $oauthData = OauthManagerImpl::createAccessToken('apollon');
 		$rest_client_id = OauthManagerImpl::getRestClientId($oauthData['access_token']);
 		if(!$rest_client_id) {
 			throw new ilDatabaseException("REST Client ".OauthManagerImpl::API_KEY." is not configured");
 		}
 
-		$uri = $this->host."/Customizing/global/plugins/Services/UIComponent/UserInterfaceHook/REST/api.php/v2/admin/permission/".$rest_client_id;
-		$params = array(
-			'pattern' => $routeParams->getPattern(),
-			'verb' => $routeParams->getVerb()
-		);
-
-		$response = $this->post($uri, $params);
-		$this->handle($response);
+		ClientConfiguration::addClientPermission($rest_client_id, $routeParams->getPattern(), $routeParams->getVerb());
 	}
-
-
 
 	/**
 	 * @param int $length
@@ -130,66 +114,29 @@ class RestSetup {
 		return $randstring;
 	}
 
-    private function get($uri) {
+    /**
+     * for uninstalling the PegasusHelper with an outdated REST version
+     * delete the REST client for the plugin if it exists
+     */
+    public function deleteClientOldVersionWithRequest() {
+        $id = $this->getClientId();
+        if(isset($id)) {
+            $oauthData = OauthManagerImpl::createAccessToken('apollon');
 
-        // TODO: move this method to this class
-        $oauthData = OauthManagerImpl::createAccessToken('apollon');
-
-        $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, $uri);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_HTTPHEADER, array('Authorization: Bearer ' . $oauthData['access_token']));
-
-        return curl_exec($ch);
+            $uri = $this->host . "/Customizing/global/plugins/Services/UIComponent/UserInterfaceHook/REST/api.php/v1/clients/" . strval($id);
+            $ch = curl_init();
+            curl_setopt($ch, CURLOPT_URL, $uri);
+            curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'DELETE');
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+            curl_setopt($ch, CURLOPT_HTTPHEADER, array('Authorization: Bearer ' . $oauthData['access_token']));
+            $response = curl_exec($ch);
+            if (isset($response)) {
+                $arr_result = json_decode($response, true);
+                if($arr_result['error'] || $arr_result['message']) {
+                    throw new ilDatabaseException($arr_result['message'].' '.$arr_result['error']['message']);
+                }
+            }
+        }
     }
 
-	private function post($uri, $params) {
-
-		// TODO: move this method to this class
-		$oauthData = OauthManagerImpl::createAccessToken('apollon');
-
-		$ch = curl_init();
-		curl_setopt($ch, CURLOPT_URL, $uri);
-		curl_setopt($ch, CURLOPT_POST, true );
-		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-		curl_setopt($ch, CURLOPT_HTTPHEADER, array('Authorization: Bearer ' . $oauthData['access_token']));
-		curl_setopt($ch, CURLOPT_POSTFIELDS, $params );
-
-		return curl_exec($ch);
-	}
-
-	private function put($uri, $params) {
-
-		// TODO: move this method to this class
-		$oauthData = OauthManagerImpl::createAccessToken('apollon');
-
-		$ch = curl_init();
-		curl_setopt($ch, CURLOPT_URL, $uri);
-		curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'PUT');
-		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-		curl_setopt($ch, CURLOPT_HTTPHEADER, array('Authorization: Bearer ' . $oauthData['access_token']));
-		curl_setopt($ch, CURLOPT_POSTFIELDS,http_build_query($params));
-		return curl_exec($ch);
-	}
-
-    private function delete($uri) {
-
-        // TODO: move this method to this class
-        $oauthData = OauthManagerImpl::createAccessToken('apollon');
-
-        $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, $uri);
-        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'DELETE');
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_HTTPHEADER, array('Authorization: Bearer ' . $oauthData['access_token']));
-        return curl_exec($ch);
-    }
-
-	private function handle($response) {
-
-		$arr_result = json_decode($response, true);
-		if($arr_result['error'] || $arr_result['message']) {
-			throw new ilDatabaseException($arr_result['message'].' '.$arr_result['error']['message']);
-		}
-	}
 }
