@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ## [1.1.4]
 ### Added
 - added token statistics (number of logins for past 30 90 180 days)
+- configuration of REST client without requests to API
 
 ## [1.1.3]
 ### Added
