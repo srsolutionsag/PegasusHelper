@@ -13,6 +13,7 @@ final class ilPegasusHelperConfigGUI extends ilPluginConfigGUI {
         "group",
         "file",
         "learningplace",
+        "learningmodule",
         "link"
     ];
     static $ICON_WEB_DIR = "pegasushelper/theme/icons/";
@@ -74,7 +75,7 @@ final class ilPegasusHelperConfigGUI extends ilPluginConfigGUI {
             case "general":
             default:
                 $ilTabs->setSubTabActive("id_general");
-                $tpl->setContent($this->getApiSecretFormHtml());
+                $tpl->setContent($this->getApiSecretFormHtml() . $this->getTokenStatisticsHtml());
                 break;
         }
     }
@@ -101,6 +102,35 @@ final class ilPegasusHelperConfigGUI extends ilPluginConfigGUI {
         }
 
         return $formApiUser->getHTML();
+    }
+
+    /**
+     * html with token statistics
+     * @return string
+     */
+    protected function getTokenStatisticsHtml() {
+        $formTokensStatistics = new ilPropertyFormGUI();
+        $formTokensStatistics->setTitle('Tokens Statistics');
+
+        // get number of accesses for different durations
+        $differences = [
+            "Month (30 days)"     => 30,
+            "Quarter (90 days)"   => 90,
+            "Semester (180 days)" => 180
+        ];
+
+        foreach($differences as $label => $dd) {
+            global $ilDB;
+            $sql = "SELECT COUNT(*) FROM ui_uihk_rest_refresh WHERE datediff(NOW(), created) < $dd";
+            $set = $ilDB->query($sql);
+            $counts = current($ilDB->fetchAssoc($set));
+
+            $gui = new ilNonEditableValueGUI($label);
+            $gui->setValue($counts);
+            $formTokensStatistics->addItem($gui);
+        }
+
+        return $formTokensStatistics->getHTML();
     }
 
     /**
@@ -164,7 +194,7 @@ final class ilPegasusHelperConfigGUI extends ilPluginConfigGUI {
      * @throws ilTemplateException
      */
     function getIconsForm() {
-        global $ilCtrl, $DIC;
+        global $ilCtrl;
 
         $form = new ilPropertyFormGUI();
         $form->setTitle("Icons");
