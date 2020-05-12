@@ -2,7 +2,6 @@
 
 namespace SRAG\PegasusHelper\rest;
 
-use Complex\Exception;
 use ilDatabaseException;
 use SRAG\PegasusHelper\handler\OAuthManager\v52\OauthManagerImpl;
 
@@ -66,13 +65,23 @@ class RestSetup {
     /**
      * readout the id from the REST client of the plugin. returns null, if this client does not exist
      */
-    private function getClientId() {
-        $response = $this->get($this->host."/Customizing/global/plugins/Services/UIComponent/UserInterfaceHook/REST/api.php/v1/clients");
+    private function getClientId()
+    {
+        $response = $this->get($this->host . "/Customizing/global/plugins/Services/UIComponent/UserInterfaceHook/REST/api.php/v1/clients");
         $response = json_decode($response, true);
 
-        foreach($response as $id => $client)
-            if($client["api_key"] === $this->clientParams["api_key"])
+        if (!isset($this->clientParams["api_key"])) {
+            return null;
+        }
+
+        foreach ($response as $id => $client) {
+            if (!isset($client["api_key"])) {
+                continue;
+            }
+            if ($client["api_key"] === $this->clientParams["api_key"]) {
                 return intval($id);
+            }
+        }
 
         return null;
     }
