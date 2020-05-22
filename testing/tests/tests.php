@@ -291,7 +291,8 @@ function testMinMaxVersion($v, $v_min, $v_max) {
     $v_min_arr = strVersionToArray($v_min);
     $v_max_arr = strVersionToArray($v_max);
 
-    $pass = ($v_min_arr <= $v_arr) && ($v_arr <= $v_max_arr);
+    $pass = (arrayVersionSmallerThan($v_min_arr, $v_arr, true)) &&
+        (arrayVersionSmallerThan($v_arr, $v_max_arr, true));
     $msg = $pass ? "version " . $v : "the version " . $v . " is not contained in " . $v_min . " and " . $v_max;
     return [$pass, $msg];
 }
@@ -305,7 +306,7 @@ function testMinMaxVersion($v, $v_min, $v_max) {
  * @return array
  */
 function testVersionIs($version, $target, $msg_fail = "version must be [TARGET] but is [VERSION]") {
-    $pass = strVersionToArray($version) >= strVersionToArray($target);
+    $pass = arrayVersionSmallerThan(strVersionToArray($target), strVersionToArray($version), true);
     $msg = $pass ? "version " . $version : str_replace("[VERSION]", $version, str_replace("[TARGET]", $target, $msg_fail));
     return [$pass, $msg];
 }
