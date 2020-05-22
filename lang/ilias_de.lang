@@ -1,0 +1,39 @@
+tab_general#:#Allgemein
+tab_app_theme#:#Erscheinungsbild
+tab_testing#:#Tests
+form_api_secret#:#ILIAS Pegasus API Benutzer
+form_token_statistics#:#Token Statistik
+form_coloring#:#Farbwahl
+form_icon#:#Icons
+button_reset#:#Zurücksetzen
+button_save#:#Speichern
+button_white#:#Weiss
+button_black#:#Schwarz
+txt_preview#:#Vorschau
+txt_info_preview#:#Aktuelles Erscheinungsbild
+txt_primary_color#:#Grundfarbe
+txt_info_primary_color#:#Die Grundfarbe für das Erscheinungsbild der App
+txt_contrast#:#Kontrastfarbe
+txt_info_contrast#:#Die Kontrastfarbe zu der Grundfarbe der App
+txt_month#:#Monat (30 Tage)
+txt_quarter#:#Quartal (90 Tage)
+txt_semester#:#Semester (180 Tage)
+tests_txt_legend#:#Legende für Testresultate
+tests_txt_passed#:#Test erfüllt
+tests_txt_failed#:#Test nicht erfüllt
+tests_txt_failed_info#:#Das entsprechende Problem muss behoben werden, damit die Pegasus App funktionsfähig ist
+tests_txt_warning#:#Der Test ergab eine Warnung
+tests_txt_warning_info#:#Je nach Konfiguration kann eine Warnung auf ein Problem der Installation hinweisen
+tests_txt_aborted#:#Der Test konnte nicht durchgeführt werden
+tests_txt_name#:#Titel
+tests_txt_tests#:#Tests
+tests_txt_external_tests#:#Externe Tests
+tests_txt_run_external_tests#:#Externe Tests durchführen
+msg_coloring_not_saved#:#Die Farbwahl konnte nicht gespeichert werden. Die Grundfarbe muss als 6-stellige hex-Zahl eingegeben werden
+msg_coloring_saved#:#Die Farbwahl wurde gespeichert
+msg_coloring_reset#:#Die Farbwahl wurde zurückgesetzt
+msg_icon_not_uploaded#:#Fehler beim Laden einer Datei
+msg_icon_saved_pre#:#Icon '
+msg_icon_saved_post#:#' wurde gespeichert<br/>
+msg_icons_reset#:#Die Icons wurden zurückgesetzt
+msg_icons_not_saved#:#Die Icons konnten nicht geladen werden

@@ -7,6 +7,11 @@ require_once __DIR__ . '/../bootstrap.php';
  */
 final class ilPegasusHelperConfigGUI extends ilPluginConfigGUI {
 
+    /**
+     * @var \ilPegasusHelperPlugin
+     */
+    var $pl;
+
     static $ICON_CATEGORIES =  [
         "course",
         "folder",
@@ -17,6 +22,10 @@ final class ilPegasusHelperConfigGUI extends ilPluginConfigGUI {
         "link"
     ];
     static $ICON_WEB_DIR = "pegasushelper/theme/icons/";
+
+    public function __construct() {
+        $this->pl = new ilPegasusHelperPlugin();
+    }
 
     /**
      * copies the default icons to the directory for the synchronization with the app
@@ -43,9 +52,21 @@ final class ilPegasusHelperConfigGUI extends ilPluginConfigGUI {
      */
     public function performCommand($cmd) {
         global $ilTabs, $ilCtrl, $tpl;
-        $ilTabs->addSubTab("id_general", "General", $ilCtrl->getLinkTarget($this, "general"));
-        $ilTabs->addSubTab("id_theme", "App Theme", $ilCtrl->getLinkTarget($this, "theme"));
-        $ilTabs->addSubTab("id_testing", "Testing", $ilCtrl->getLinkTarget($this, "testing"));
+        $ilTabs->addSubTab(
+            "id_general",
+            $this->pl->txt("tab_general"),
+            $ilCtrl->getLinkTarget($this, "general")
+        );
+        $ilTabs->addSubTab(
+            "id_theme",
+            $this->pl->txt("tab_app_theme"),
+            $ilCtrl->getLinkTarget($this, "theme")
+        );
+        $ilTabs->addSubTab(
+            "id_testing",
+            $this->pl->txt("tab_testing"),
+            $ilCtrl->getLinkTarget($this, "testing")
+        );
 
         switch ($cmd) {
             case "testing":
@@ -95,7 +116,7 @@ final class ilPegasusHelperConfigGUI extends ilPluginConfigGUI {
                 $api_secret = $rec['api_secret'];
             }
 
-            $formApiUser->setTitle('ILIAS Pegasus API User');
+            $formApiUser->setTitle($this->pl->txt("form_api_secret"));
             $gui = new ilNonEditableValueGUI($api_key);
             $gui->setValue($api_secret);
             $formApiUser->addItem($gui);
@@ -110,13 +131,13 @@ final class ilPegasusHelperConfigGUI extends ilPluginConfigGUI {
      */
     protected function getTokenStatisticsHtml() {
         $formTokensStatistics = new ilPropertyFormGUI();
-        $formTokensStatistics->setTitle('Tokens Statistics');
+        $formTokensStatistics->setTitle($this->pl->txt("form_token_statistics"));
 
         // get number of accesses for different durations
         $differences = [
-            "Month (30 days)"     => 30,
-            "Quarter (90 days)"   => 90,
-            "Semester (180 days)" => 180
+            $this->pl->txt("txt_month") => 30,
+            $this->pl->txt("txt_quarter") => 90,
+            $this->pl->txt("txt_semester") => 180
         ];
 
         foreach($differences as $label => $dd) {
@@ -141,10 +162,10 @@ final class ilPegasusHelperConfigGUI extends ilPluginConfigGUI {
         global $ilDB, $ilCtrl;
 
         $form = new ilPropertyFormGUI();
-        $form->setTitle("Coloring");
+        $form->setTitle($this->pl->txt("form_coloring"));
         $form->setFormAction($ilCtrl->getFormAction($this));
-        $form->addCommandButton("theme_reset_colors", "Reset");
-        $form->addCommandButton("theme_save_colors", "Save");
+        $form->addCommandButton("theme_reset_colors", $this->pl->txt("button_reset"));
+        $form->addCommandButton("theme_save_colors", $this->pl->txt("button_save"));
 
         $primaryColor = "04427e";
         $contrastColor = 1;
@@ -163,25 +184,25 @@ final class ilPegasusHelperConfigGUI extends ilPluginConfigGUI {
         $tpl->setVariable('EX_TEXT', "&nbsp;ILIAS Pegasus&nbsp;");
         $tpl->setVariable('COLOR_PRIMARY', $primaryColor);
         $tpl->setVariable('COLOR_CONTRAST', $contrastColor ? "ffffff" : "000000");
-        $themeExample = new ilNonEditableValueGUI("Preview", "", true);
-        $themeExample->setInfo("The current theme");
+        $themeExample = new ilNonEditableValueGUI($this->pl->txt("txt_preview"), "", true);
+        $themeExample->setInfo($this->pl->txt("txt_info_preview"));
         $themeExample->setValue($tpl->get());
         $form->addItem($themeExample);
 
         // primary color
         require_once("./Services/Form/classes/class.ilColorPickerInputGUI.php");
-        $primaryInput = new ilColorPickerInputGUI("Primary color", "primary_color");
-        $primaryInput->setInfo("The main color for the theme of the app");
+        $primaryInput = new ilColorPickerInputGUI($this->pl->txt("txt_primary_color"), "primary_color");
+        $primaryInput->setInfo($this->pl->txt("txt_info_primary_color"));
         $primaryInput->setValue($primaryColor);
         $form->addItem($primaryInput);
 
         // contrast color
         require_once("./Services/Form/classes/class.ilRadioGroupInputGUI.php");
         require_once("./Services/Form/classes/class.ilRadioOption.php");
-        $contrastInput = new ilRadioGroupInputGUI("Contrast color", "contrast_color");
-        $contrastInput->setInfo("The color of text in the app, which should be chosen dependent on the primary color");
-        $contrastInput->addOption(new ilRadioOption("White", 1));
-        $contrastInput->addOption(new ilRadioOption("Black", 0));
+        $contrastInput = new ilRadioGroupInputGUI($this->pl->txt("txt_contrast"), "contrast_color");
+        $contrastInput->setInfo($this->pl->txt("txt_info_contrast"));
+        $contrastInput->addOption(new ilRadioOption($this->pl->txt("button_white"), 1));
+        $contrastInput->addOption(new ilRadioOption($this->pl->txt("button_black"), 0));
         $contrastInput->setValue($contrastColor);
         $form->addItem($contrastInput);
 
@@ -197,10 +218,10 @@ final class ilPegasusHelperConfigGUI extends ilPluginConfigGUI {
         global $ilCtrl;
 
         $form = new ilPropertyFormGUI();
-        $form->setTitle("Icons");
+        $form->setTitle($this->pl->txt("form_icon"));
         $form->setFormAction($ilCtrl->getFormAction($this));
-        $form->addCommandButton("theme_reset_icons", "Reset");
-        $form->addCommandButton("theme_save_icons", "Save");
+        $form->addCommandButton("theme_reset_icons", $this->pl->txt("button_reset"));
+        $form->addCommandButton("theme_save_icons", $this->pl->txt("button_save"));
 
         foreach(ilPegasusHelperConfigGUI::$ICON_CATEGORIES as $category) {
             // current item
@@ -232,47 +253,50 @@ final class ilPegasusHelperConfigGUI extends ilPluginConfigGUI {
         global $ilCtrl;
         include_once __DIR__ . "/class.ilPegasusTestingTableGUI.php";
         $tableLegend = new ilPegasusTestingTableGUI($this, "Status");
-        $tableLegend->setTitle("Legend for Tests");
+        $tableLegend->setTitle($this->pl->txt("tests_txt_legend"));
         require_once __DIR__ . "/class.ilPegasusTestingStatus.php";
         $dataLegend = [
             [
                 "status" => ilPegasusTestingStatus::T_STATUS_OK,
-                "test" => "test passed",
+                "test" => $this->pl->txt("tests_txt_passed"),
                 "info" => ""
             ],
             [
                 "status" => ilPegasusTestingStatus::T_STATUS_FAIL,
-                "test" => "test failed",
-                "info" => "a failed test indicates that the Pegasus App cannot operate correctly, the corresponding problem must be solved"
+                "test" => $this->pl->txt("tests_txt_failed"),
+                "info" => $this->pl->txt("tests_txt_failed_info")
             ],
             [
                 "status" => ilPegasusTestingStatus::T_STATUS_WARN,
-                "test" => "test resulted in a warning",
-                "info" => "depending on the setup of ILIAS, a test resulting in a warning may indicate a problem"
+                "test" => $this->pl->txt("tests_txt_warning"),
+                "info" => $this->pl->txt("tests_txt_warning_info")
             ],
             [
                 "status" => ilPegasusTestingStatus::T_STATUS_INCOMPLETE,
-                "test" => "it was not possible to run the test",
+                "test" => $this->pl->txt("tests_txt_aborted"),
                 "info" => ""
             ]
         ];
         $tableLegend->setData($dataLegend);
 
         // table with internal tests
-        $tableInt = new ilPegasusTestingTableGUI($this, "Name");
-        $tableInt->setTitle("Tests");
+        $tableInt = new ilPegasusTestingTableGUI($this, $this->pl->txt("tests_txt_name"));
+        $tableInt->setTitle($this->pl->txt("tests_txt_tests"));
         require_once __DIR__ . "/class.ilPegasusTesting.php";
         $tableInt->setData((new ilPegasusHelperTesting())->run("internal"));
 
         // table with external tests, run if $external is true
-        $tableExt = new ilPegasusTestingTableGUI($this, "Name");
-        $tableExt->setTitle("External Tests");
+        $tableExt = new ilPegasusTestingTableGUI($this, $this->pl->txt("tests_txt_name"));
+        $tableExt->setTitle($this->pl->txt("tests_txt_external_tests"));
         if($external) {
             require_once __DIR__ . "/class.ilPegasusTesting.php";
             $tableExt->setData((new ilPegasusHelperTesting())->run("external"));
         }
         $tableExt->setFormAction($ilCtrl->getFormAction($this));
-        $tableExt->addCommandButton("testing_run_external_tests", "Run external tests");
+        $tableExt->addCommandButton(
+            "testing_run_external_tests",
+            $this->pl->txt("tests_txt_run_external_tests")
+        );
 
         return $tableLegend->getHTML() . $tableInt->getHTML() . $tableExt->getHTML();
     }
@@ -286,7 +310,7 @@ final class ilPegasusHelperConfigGUI extends ilPluginConfigGUI {
         $contrastColor = $_POST["contrast_color"];
 
         if(!preg_match("/^[0-9a-fA-F]{6}$/", $primaryColor)) {
-            ilUtil::sendFailure("App coloring was not saved. The input for the primary color must be a 6-digit hex-color", true);
+            ilUtil::sendFailure($this->pl->txt("msg_coloring_not_saved"), true);
             $ilCtrl->redirect($this, "theme");
             return;
         }
@@ -301,7 +325,7 @@ final class ilPegasusHelperConfigGUI extends ilPluginConfigGUI {
         $ilDB->update("ui_uihk_pegasus_theme", $values, $where);
 
         $this->updateTimestamp();
-        ilUtil::sendSuccess("App coloring saved successfully", true);
+        ilUtil::sendSuccess($this->pl->txt("msg_coloring_saved"), true);
         $ilCtrl->redirect($this, "theme");
     }
 
@@ -321,7 +345,7 @@ final class ilPegasusHelperConfigGUI extends ilPluginConfigGUI {
         $ilDB->update("ui_uihk_pegasus_theme", $values, $where);
 
         $this->updateTimestamp();
-        ilUtil::sendSuccess("App coloring reset successfully", true);
+        ilUtil::sendSuccess($this->pl->txt("msg_coloring_reset"), true);
         $ilCtrl->redirect($this, "theme");
     }
 
@@ -354,11 +378,11 @@ final class ilPegasusHelperConfigGUI extends ilPluginConfigGUI {
                                 $DIC->filesystem()->web()->delete(ilPegasusHelperConfigGUI::$ICON_WEB_DIR . $fileName);
                             }
                             $DIC->upload()->moveOneFileTo($result, ilPegasusHelperConfigGUI::$ICON_WEB_DIR, \ILIAS\FileUpload\Location::WEB, $fileName);
-                            $msgSuccess .= "Icon for '$category' saved successfully<br/>";
+                            $msgSuccess .= $this->pl->txt("msg_icon_saved_pre") . $category . $this->pl->txt("msg_icon_saved_post");
                         }
                     } else {
                         if($result->getName()) {
-                            $msgFail = "Problem when uploading file";
+                            $msgFail = $this->pl->txt("msg_icon_not_uploaded");
                         }
                     }
                 }
@@ -372,7 +396,7 @@ final class ilPegasusHelperConfigGUI extends ilPluginConfigGUI {
                 ilUtil::sendFailure($msgFail, true);
             }
         } else {
-            ilUtil::sendFailure("Unable to upload icons", true);
+            ilUtil::sendFailure($this->pl->txt("msg_icons_not_saved"), true);
         }
 
         $ilCtrl->redirect($this, "theme");
@@ -387,7 +411,7 @@ final class ilPegasusHelperConfigGUI extends ilPluginConfigGUI {
         ilPegasusHelperConfigGUI::copyDefaultIcons();
 
         $this->updateTimestamp();
-        ilUtil::sendSuccess("App icons reset successfully", true);
+        ilUtil::sendSuccess($this->pl->txt("msg_icons_reset"), true);
         $ilCtrl->redirect($this, "theme");
     }
 

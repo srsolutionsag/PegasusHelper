@@ -1,0 +1,39 @@
+tab_general#:#General
+tab_app_theme#:#App Theme
+tab_testing#:#Testing
+form_api_secret#:#ILIAS Pegasus API User
+form_token_statistics#:#Tokens Statistics
+form_coloring#:#Coloring
+form_icon#:#Icons
+button_reset#:#Reset
+button_save#:#Save
+button_white#:#White
+button_black#:#Black
+txt_preview#:#Preview
+txt_info_preview#:#The current theme
+txt_primary_color#:#Primary color
+txt_info_primary_color#:#The main color for the theme of the app
+txt_contrast#:#Contrast color
+txt_info_contrast#:#The color of text in the app, which should be chosen dependent on the primary color
+txt_month#:#Month (30 days)
+txt_quarter#:#Quarter (90 days)
+txt_semester#:#Semester (180 days)
+tests_txt_legend#:#Legend for Tests
+tests_txt_passed#:#test passed
+tests_txt_failed#:#test failed
+tests_txt_failed_info#:#a failed test indicates that the Pegasus App cannot operate correctly, the corresponding problem must be solved
+tests_txt_warning#:#test resulted in a warning
+tests_txt_warning_info#:#depending on the setup of ILIAS, a test resulting in a warning may indicate a problem
+tests_txt_aborted#:#it was not possible to run the test
+tests_txt_name#:#Name
+tests_txt_tests#:#Tests
+tests_txt_external_tests#:#External Tests
+tests_txt_run_external_tests#:#Run external tests
+msg_coloring_not_saved#:#App coloring was not saved. The input for the primary color must be a 6-digit hex-color
+msg_coloring_saved#:#App coloring saved successfully
+msg_coloring_reset#:#App coloring reset successfully
+msg_icon_not_uploaded#:#Problem when uploading file
+msg_icon_saved_pre#:#Icon for '
+msg_icon_saved_post#:#' saved successfully<br/>
+msg_icons_reset#:#App icons reset successfully
+msg_icons_not_saved#:#Unable to upload icons
