@@ -92,8 +92,7 @@ class RestSetup {
      * @throws \RESTController\core\oauth2_v2\Exceptions\InvalidRequest
      */
 	public function addRoute($routeParams) {
-        $oauthData = OauthManagerImpl::createAccessToken('apollon');
-		$rest_client_id = OauthManagerImpl::getRestClientId($oauthData['access_token']);
+		$rest_client_id = $this->getClientId();
 		if(!$rest_client_id) {
 			throw new ilDatabaseException("REST Client ".OauthManagerImpl::API_KEY." is not configured");
 		}
