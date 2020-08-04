@@ -1,8 +1,9 @@
 tab_general#:#General
 tab_app_theme#:#App Theme
 tab_testing#:#Testing
+tab_statistics#:#Statistics
 form_api_secret#:#ILIAS Pegasus API User
-form_token_statistics#:#Tokens Statistics
+form_token_statistics#:#Tokens
 form_coloring#:#Coloring
 form_icon#:#Icons
 button_reset#:#Reset

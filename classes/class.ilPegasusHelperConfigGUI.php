@@ -63,6 +63,11 @@ final class ilPegasusHelperConfigGUI extends ilPluginConfigGUI {
             $ilCtrl->getLinkTarget($this, "theme")
         );
         $ilTabs->addSubTab(
+            "id_statistics",
+            $this->pl->txt("tab_statistics"),
+            $ilCtrl->getLinkTarget($this, "statistics")
+        );
+        $ilTabs->addSubTab(
             "id_testing",
             $this->pl->txt("tab_testing"),
             $ilCtrl->getLinkTarget($this, "testing")
@@ -81,6 +86,10 @@ final class ilPegasusHelperConfigGUI extends ilPluginConfigGUI {
                 $ilTabs->setSubTabActive("id_theme");
                 $tpl->setContent($this->getColorFormHtml() . $this->getIconsForm()->getHTML());
                 break;
+            case "statistics":
+                $ilTabs->setSubTabActive("id_statistics");
+                $tpl->setContent($this->getTokenStatisticsHtml());
+                break;
             case "theme_save_colors":
                 $this->saveColors();
                 break;
@@ -96,7 +105,7 @@ final class ilPegasusHelperConfigGUI extends ilPluginConfigGUI {
             case "general":
             default:
                 $ilTabs->setSubTabActive("id_general");
-                $tpl->setContent($this->getApiSecretFormHtml() . $this->getTokenStatisticsHtml());
+                $tpl->setContent($this->getApiSecretFormHtml());
                 break;
         }
     }
