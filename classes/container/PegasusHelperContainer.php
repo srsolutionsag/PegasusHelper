@@ -7,6 +7,7 @@ use SRAG\PegasusHelper\container\exception\DependencyResolutionException;
 use SRAG\PegasusHelper\container\provider\AuthenticationProvider;
 use SRAG\PegasusHelper\container\provider\Ilias52RequestHandlerProvider;
 use SRAG\PegasusHelper\container\provider\Ilias53RequestHandlerProvider;
+use SRAG\PegasusHelper\container\provider\Ilias6RequestHandlerProvider;
 
 /**
  * Class PegasusHelperContainer
@@ -33,7 +34,10 @@ final class PegasusHelperContainer {
 		static::$container = $GLOBALS['DIC'];
 
 		static::$container->register(new AuthenticationProvider());
-		if(version_compare(ILIAS_VERSION_NUMERIC, '5.3', '>=')) {
+		if (version_compare(ILIAS_VERSION_NUMERIC, '6.0', '>=')) {
+            static::$container->register(new Ilias6RequestHandlerProvider());
+        }
+		else if(version_compare(ILIAS_VERSION_NUMERIC, '5.3', '>=')) {
 			static::$container->register(new Ilias53RequestHandlerProvider());
 		}
 		else if(version_compare(ILIAS_VERSION_NUMERIC, '5.2', '>=')) {
