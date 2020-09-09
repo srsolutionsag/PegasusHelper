@@ -26,35 +26,36 @@ use SRAG\PegasusHelper\handler\ResourceLinkHandler\v52\ResourceLinkHandlerImpl;
  *
  * @author  Nicolas Schäfli <ns@studer-raimann.ch>
  */
-final class Ilias52RequestHandlerProvider implements ServiceProviderInterface {
+final class Ilias52RequestHandlerProvider implements ServiceProviderInterface
+{
 
-	/**
-	 * @inheritDoc
-	 */
-	public function register(Container $pimple) {
+    /**
+     * @inheritDoc
+     */
+    public function register(Container $pimple)
+    {
+        $pimple[ExcludedHandler::class] = $pimple->factory(function ($c) {
+            return new ExcludedHandlerImpl();
+        });
 
-		$pimple[ExcludedHandler::class] = $pimple->factory(function ($c) {
-			return new ExcludedHandlerImpl();
-		});
+        $pimple[LoginPageManager::class] = $pimple->factory(function ($c) {
+            return new LoginPageManagerImpl();
+        });
 
-		$pimple[LoginPageManager::class] = $pimple->factory(function ($c) {
-			return new LoginPageManagerImpl();
-		});
+        $pimple[NewsLinkRedirectHandler::class] = $pimple->factory(function ($c) {
+            return new NewsLinkRedirectHandlerImpl($c[UserTokenAuthenticator::class], $c[ilCtrl::class]);
+        });
 
-		$pimple[NewsLinkRedirectHandler::class] = $pimple->factory(function ($c) {
-			return new NewsLinkRedirectHandlerImpl($c[UserTokenAuthenticator::class] ,$c[ilCtrl::class]);
-		});
+        $pimple[OAuthManager::class] = $pimple->factory(function ($c) {
+            return new OauthManagerImpl();
+        });
 
-		$pimple[OAuthManager::class] = $pimple->factory(function ($c) {
-			return new OauthManagerImpl();
-		});
+        $pimple[RefLinkRedirectHandler::class] = $pimple->factory(function ($c) {
+            return new RefLinkRedirectHandlerImpl($c[UserTokenAuthenticator::class]);
+        });
 
-		$pimple[RefLinkRedirectHandler::class] = $pimple->factory(function ($c) {
-			return new RefLinkRedirectHandlerImpl($c[UserTokenAuthenticator::class]);
-		});
-
-		$pimple[ResourceLinkHandler::class] = $pimple->factory(function ($c) {
-			return new ResourceLinkHandlerImpl($c[UserTokenAuthenticator::class]);
-		});
-	}
+        $pimple[ResourceLinkHandler::class] = $pimple->factory(function ($c) {
+            return new ResourceLinkHandlerImpl($c[UserTokenAuthenticator::class]);
+        });
+    }
 }

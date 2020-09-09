@@ -1,13 +1,14 @@
 <?php
-include_once ('./Services/Table/classes/class.ilTable2GUI.php');
+include_once('./Services/Table/classes/class.ilTable2GUI.php');
 include_once "class.ilPegasusTesting.php";
 
 /**
  * Table for Pegasus Testing Results
  */
-class ilPegasusTestingTableGUI extends ilTable2GUI {
-
-    public function __construct($a_parent_obj, $primary_column_name) {
+class ilPegasusTestingTableGUI extends ilTable2GUI
+{
+    public function __construct($a_parent_obj, $primary_column_name)
+    {
         parent::__construct($a_parent_obj);
 
         $this->setEnableHeader(true);
@@ -16,16 +17,17 @@ class ilPegasusTestingTableGUI extends ilTable2GUI {
         $this->setLimit(100);
         $this->setRowTemplate("tpl.pegasus_testing_row.html", "./Customizing/global/plugins/Services/UIComponent/UserInterfaceHook/PegasusHelper/classes");
 
-        $this->addColumn("","status","5%");
-        $this->addColumn("<b>" . ucfirst($primary_column_name) . "</b>","test", "30%");
-        $this->addColumn("<b>Info</b>","info");
+        $this->addColumn("", "status", "5%");
+        $this->addColumn("<b>" . ucfirst($primary_column_name) . "</b>", "test", "30%");
+        $this->addColumn("<b>Info</b>", "info");
     }
 
     /**
      * Fill a single data row.
      */
-    protected function fillRow($a_set) {
-        if(isset($a_set["category"])) {
+    protected function fillRow($a_set)
+    {
+        if (isset($a_set["category"])) {
             $this->tpl->setCurrentBlock("category");
             $this->tpl->setVariable("TXT_CATEGORY", ucfirst($a_set["category"]));
             $this->tpl->parseCurrentBlock();
@@ -40,7 +42,8 @@ class ilPegasusTestingTableGUI extends ilTable2GUI {
         }
     }
 
-    private function getStatusImg($status) {
+    private function getStatusImg($status)
+    {
         require_once __DIR__ . "/class.ilPegasusTestingStatus.php";
         return [ilPegasusTestingStatus::getStatusImagePath($status), ilPegasusTestingStatus::getStatusText($status)];
     }

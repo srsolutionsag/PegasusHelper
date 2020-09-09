@@ -11,14 +11,15 @@ try {
     $internal_log .= "ERROR  : " . $e->getMessage() . PHP_EOL;
     setResponse("", 500);
 }
-file_put_contents("check.log", $internal_log . PHP_EOL . PHP_EOL , FILE_APPEND);
+file_put_contents("check.log", $internal_log . PHP_EOL . PHP_EOL, FILE_APPEND);
 
 /**
  * runs the test(s) and creates a log with the results
  *
  * @return mixed an array containing the info of the test(s)
  */
-function performTest() {
+function performTest()
+{
     $clientId = $_GET["client_id"];
     $host = $_GET["host"];
     $api = $host . "/Customizing/global/plugins/Services/UIComponent/UserInterfaceHook/REST/api.php";
@@ -36,7 +37,8 @@ function performTest() {
  * @param string $bodyArr the body as an array
  * @param int $code the status code
  */
-function setResponse($bodyArr, $code = 200) {
+function setResponse($bodyArr, $code = 200)
+{
     header_remove();
 
     http_response_code($code);
@@ -52,17 +54,25 @@ function setResponse($bodyArr, $code = 200) {
     echo json_encode($bodyArr);
 }
 
-function httpLoggedRequest($url, $method = "GET", $bodyArr = [], $headerArr = []) {
-    if($method !== "GET" && $method !== "POST") throw new Error("the argument \$method for httpLoggedRequest must be GET or POST");
+function httpLoggedRequest($url, $method = "GET", $bodyArr = [], $headerArr = [])
+{
+    if ($method !== "GET" && $method !== "POST") {
+        throw new Error("the argument \$method for httpLoggedRequest must be GET or POST");
+    }
     $headerArr += [count($bodyArr) ? "Content-Type: application/json" : "User-Agent: srag (testing script)"];
     $ch = curl_init();
 
     curl_setopt($ch, CURLOPT_URL, $url);
     curl_setopt($ch, CURLOPT_HEADER, true);
     curl_setopt($ch, CURLOPT_HTTPHEADER, $headerArr);
-    if($method === "POST") curl_setopt($ch,CURLOPT_POST,true);
-    if(!count($bodyArr)) curl_setopt($ch, CURLOPT_NOBODY, true);
-    else curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($bodyArr));
+    if ($method === "POST") {
+        curl_setopt($ch, CURLOPT_POST, true);
+    }
+    if (!count($bodyArr)) {
+        curl_setopt($ch, CURLOPT_NOBODY, true);
+    } else {
+        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($bodyArr));
+    }
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 
     $response = curl_exec($ch);

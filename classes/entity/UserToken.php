@@ -21,82 +21,89 @@ use ActiveRecord;
  * @version 1.0.0
  *
  */
-class UserToken extends ActiveRecord {
+class UserToken extends ActiveRecord
+{
+    public static function returnDbTableName()
+    {
+        return 'ui_uihk_rest_token';
+    }
 
-	public static function returnDbTableName() {
-		return 'ui_uihk_rest_token';
-	}
+    /**
+     * @var int
+     *
+     * @con_is_primary true
+     * @con_is_unique true
+     * @con_has_field true
+     * @con_fieldtype integer
+     * @con_length 4
+     */
+    protected $user_id;
 
-	/**
-	 * @var int
-	 *
-	 * @con_is_primary true
-	 * @con_is_unique true
-	 * @con_has_field true
-	 * @con_fieldtype integer
-	 * @con_length 4
-	 */
-	protected $user_id;
-
-	/**
-	 * @var string
-	 *
-	 * @con_has_field true
-	 * @con_fieldtype text
-	 * @con_length 128
-	 */
-	protected $token;
-	/**
-	 * @con_has_field true
-	 * @con_fieldtype timestamp
-	 */
-	protected $expires;
-
-
-	/**
-	 * @return int
-	 */
-	public function getUserId() {
-		return $this->user_id;
-	}
+    /**
+     * @var string
+     *
+     * @con_has_field true
+     * @con_fieldtype text
+     * @con_length 128
+     */
+    protected $token;
+    /**
+     * @con_has_field true
+     * @con_fieldtype timestamp
+     */
+    protected $expires;
 
 
-	/**
-	 * @param int $user_id
-	 */
-	public function setUserId($user_id) {
-		$this->user_id = $user_id;
-	}
+    /**
+     * @return int
+     */
+    public function getUserId()
+    {
+        return $this->user_id;
+    }
 
 
-	/**
-	 * @return string
-	 */
-	public function getToken() {
-		return $this->token;
-	}
+    /**
+     * @param int $user_id
+     */
+    public function setUserId($user_id)
+    {
+        $this->user_id = $user_id;
+    }
 
 
-	/**
-	 * @param string $token
-	 */
-	public function setToken($token) {
-		$this->token = $token;
-	}
+    /**
+     * @return string
+     */
+    public function getToken()
+    {
+        return $this->token;
+    }
 
 
-	/**
-	 * @return string
-	 */
-	public function getExpires() {
-		return $this->expires;
-	}
+    /**
+     * @param string $token
+     */
+    public function setToken($token)
+    {
+        $this->token = $token;
+    }
 
 
-	/**
-	 * @param string $expires
-	 */
-	public function setExpires($expires) {
-		$this->expires = $expires;
-	}
+    /**
+     * @return string
+     */
+    public function getExpires()
+    {
+        return $this->expires;
+    }
+
+
+    /**
+     * @param string $expires
+     */
+    public function setExpires($expires)
+    {
+        $this->expires = $expires;
+    }
 }

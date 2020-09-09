@@ -4,7 +4,8 @@
  * helper-functions to perform the tests in the cli
  */
 
-function init() {
+function init()
+{
     global $printLog;
     $printLog = [];
 
@@ -19,14 +20,16 @@ function init() {
     });
 }
 
-function finalize() {
+function finalize()
+{
     restore_error_handler();
 }
 
 /**
  * @param $suite TestSuite
  */
-function printResults($suite) {
+function printResults($suite)
+{
     printNormal("\n" . $suite->title . "\n");
     $no_category = 0;
     foreach ($suite->categories as $category) {
@@ -42,46 +45,59 @@ function printResults($suite) {
 /**
  * @param $test Test
  */
-function printTest($test) {
+function printTest($test)
+{
     $pass = $test->result->state === ResultState::R_PASS;
-    if ($pass) printGood("OK   ");
-    elseif ($test->mandatory && $test->result->state === ResultState::R_FAIL) printBad("FAIL ");
-    else printWarn("WARN ");
+    if ($pass) {
+        printGood("OK   ");
+    } elseif ($test->mandatory && $test->result->state === ResultState::R_FAIL) {
+        printBad("FAIL ");
+    } else {
+        printWarn("WARN ");
+    }
 
     $description = $test->result->description;
     printNormal($test->description . (!$pass && isset($description) ? " >> " . $description : "") . "\n");
 }
 
-function printNormal($str) {
+function printNormal($str)
+{
     print $str;
     addToLog($str);
 }
 
-function printGood($str) {
+function printGood($str)
+{
     global $cli_color;
     print $cli_color["green"] . $str . $cli_color["black"];
     addToLog($str);
 }
 
-function printWarn($str) {
+function printWarn($str)
+{
     global $cli_color;
     print $cli_color["yellow"] . $str . $cli_color["black"];
     addToLog($str);
 }
 
-function printBad($str) {
+function printBad($str)
+{
     global $cli_color;
     print $cli_color["red"] . $str . $cli_color["black"];
     addToLog($str);
 }
 
-function addToLog($str) {
+function addToLog($str)
+{
     global $printLog;
-    if(isset($GLOBALS["ilias"]) || !isset($printLog)) return;
+    if (isset($GLOBALS["ilias"]) || !isset($printLog)) {
+        return;
+    }
     array_push($printLog, $str);
 }
 
-function writeLog($info, $targetInfo) {
+function writeLog($info, $targetInfo)
+{
     global $printLog;
 
     $logFile = "results.log";

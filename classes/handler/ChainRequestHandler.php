@@ -20,24 +20,25 @@ namespace SRAG\PegasusHelper\handler;
  *
  * @see     chain of responsability
  */
-interface ChainRequestHandler {
+interface ChainRequestHandler
+{
 
-	/**
-	 * Add a new chain link to the end of the chain.
-	 *
-	 * @param ChainRequestHandler $handler The chain element which should be added to the chain end.
-	 *
-	 * @return  void
-	 */
-	public function add(ChainRequestHandler $handler);
+    /**
+     * Add a new chain link to the end of the chain.
+     *
+     * @param ChainRequestHandler $handler The chain element which should be added to the chain end.
+     *
+     * @return  void
+     */
+    public function add(ChainRequestHandler $handler);
 
 
-	/**
-	 * The request handling logic of the chain link.
-	 * This logic must call the next() unless it is responsible to handle
-	 * the request.
-	 *
-	 * @return void
-	 */
-	public function handle();
+    /**
+     * The request handling logic of the chain link.
+     * This logic must call the next() unless it is responsible to handle
+     * the request.
+     *
+     * @return void
+     */
+    public function handle();
 }

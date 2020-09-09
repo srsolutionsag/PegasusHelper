@@ -16,6 +16,6 @@ use SRAG\Learnplaces\container\PluginContainer;
  * @author  Nicolas Schäfli <ns@studer-raimann.ch>
  * @see PluginContainer
  */
-class DependencyResolutionException extends RuntimeException {
-
+class DependencyResolutionException extends RuntimeException
+{
 }

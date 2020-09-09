@@ -5,14 +5,15 @@ require_once __DIR__ . '/../bootstrap.php';
 /**
  * Class ilPegasusHelperConfigGUI
  */
-final class ilPegasusHelperConfigGUI extends ilPluginConfigGUI {
+final class ilPegasusHelperConfigGUI extends ilPluginConfigGUI
+{
 
     /**
      * @var \ilPegasusHelperPlugin
      */
-    var $pl;
+    public $pl;
 
-    static $ICON_CATEGORIES =  [
+    public static $ICON_CATEGORIES = [
         "course",
         "folder",
         "group",
@@ -21,24 +22,26 @@ final class ilPegasusHelperConfigGUI extends ilPluginConfigGUI {
         "learningmodule",
         "link"
     ];
-    static $ICON_WEB_DIR = "pegasushelper/theme/icons/";
+    public static $ICON_WEB_DIR = "pegasushelper/theme/icons/";
 
-    public function __construct() {
+    public function __construct()
+    {
         $this->pl = new ilPegasusHelperPlugin();
     }
 
     /**
      * copies the default icons to the directory for the synchronization with the app
      */
-    static function copyDefaultIcons() {
+    public static function copyDefaultIcons()
+    {
         global $DIC;
 
         $customizingSourceDir = "global/plugins/Services/UIComponent/UserInterfaceHook/PegasusHelper/templates/icons/";
-        foreach(ilPegasusHelperConfigGUI::$ICON_CATEGORIES as $category) {
+        foreach (ilPegasusHelperConfigGUI::$ICON_CATEGORIES as $category) {
             $fileName = "icon_$category.svg";
             $fsWeb = $DIC->filesystem()->web();
             $fsCustomizing = $DIC->filesystem()->customizing();
-            if($fsWeb->has(ilPegasusHelperConfigGUI::$ICON_WEB_DIR . $fileName)) {
+            if ($fsWeb->has(ilPegasusHelperConfigGUI::$ICON_WEB_DIR . $fileName)) {
                 $fsWeb->delete(ilPegasusHelperConfigGUI::$ICON_WEB_DIR . $fileName);
             }
             $fileStream = $fsCustomizing->readStream($customizingSourceDir . $fileName);
@@ -50,7 +53,8 @@ final class ilPegasusHelperConfigGUI extends ilPluginConfigGUI {
      * invoked by parent
      * @param $cmd string
      */
-    public function performCommand($cmd) {
+    public function performCommand($cmd)
+    {
         global $ilTabs, $ilCtrl, $tpl;
         $ilTabs->addSubTab(
             "id_general",
@@ -114,10 +118,11 @@ final class ilPegasusHelperConfigGUI extends ilPluginConfigGUI {
      * html of form for API-secret
      * @return string
      */
-    protected function getApiSecretFormHtml() {
+    protected function getApiSecretFormHtml()
+    {
         global $ilDB;
         $formApiUser = new ilPropertyFormGUI();
-        if($ilDB->tableExists("ui_uihk_rest_client")) {
+        if ($ilDB->tableExists("ui_uihk_rest_client")) {
             $api_key = 'ilias_pegasus';
             $sql = "SELECT api_secret FROM ui_uihk_rest_client WHERE api_key = '$api_key'";
             $set = $ilDB->query($sql);
@@ -138,7 +143,8 @@ final class ilPegasusHelperConfigGUI extends ilPluginConfigGUI {
      * html with token statistics
      * @return string
      */
-    protected function getTokenStatisticsHtml() {
+    protected function getTokenStatisticsHtml()
+    {
         $formTokensStatistics = new ilPropertyFormGUI();
         $formTokensStatistics->setTitle($this->pl->txt("form_token_statistics"));
 
@@ -149,7 +155,7 @@ final class ilPegasusHelperConfigGUI extends ilPluginConfigGUI {
             $this->pl->txt("txt_semester") => 180
         ];
 
-        foreach($differences as $label => $dd) {
+        foreach ($differences as $label => $dd) {
             global $ilDB;
             $sql = "SELECT COUNT(*) FROM ui_uihk_rest_refresh WHERE datediff(NOW(), created) < $dd";
             $set = $ilDB->query($sql);
@@ -167,7 +173,8 @@ final class ilPegasusHelperConfigGUI extends ilPluginConfigGUI {
      * form for dynamic coloring
      * @return string
      */
-    protected function getColorFormHtml() {
+    protected function getColorFormHtml()
+    {
         global $ilDB, $ilCtrl;
 
         $form = new ilPropertyFormGUI();
@@ -180,7 +187,7 @@ final class ilPegasusHelperConfigGUI extends ilPluginConfigGUI {
         $contrastColor = 1;
         $sql = "SELECT * FROM ui_uihk_pegasus_theme";
         $set = $ilDB->query($sql);
-        if($set !== false) {
+        if ($set !== false) {
             while ($rec = $ilDB->fetchAssoc($set)) {
                 $primaryColor = $rec["primary_color"];
                 $contrastColor = $rec["contrast_color"];
@@ -223,7 +230,8 @@ final class ilPegasusHelperConfigGUI extends ilPluginConfigGUI {
      * @return ilPropertyFormGUI
      * @throws ilTemplateException
      */
-    function getIconsForm() {
+    public function getIconsForm()
+    {
         global $ilCtrl;
 
         $form = new ilPropertyFormGUI();
@@ -232,7 +240,7 @@ final class ilPegasusHelperConfigGUI extends ilPluginConfigGUI {
         $form->addCommandButton("theme_reset_icons", $this->pl->txt("button_reset"));
         $form->addCommandButton("theme_save_icons", $this->pl->txt("button_save"));
 
-        foreach(ilPegasusHelperConfigGUI::$ICON_CATEGORIES as $category) {
+        foreach (ilPegasusHelperConfigGUI::$ICON_CATEGORIES as $category) {
             // current item
             $thisDir = "Customizing/global/plugins/Services/UIComponent/UserInterfaceHook/PegasusHelper/classes";
             $clientName = CLIENT_ID;
@@ -258,7 +266,8 @@ final class ilPegasusHelperConfigGUI extends ilPluginConfigGUI {
      * @param bool $external
      * @return string
      */
-    protected function getTestsTableHtml($external = false) {
+    protected function getTestsTableHtml($external = false)
+    {
         global $ilCtrl;
         include_once __DIR__ . "/class.ilPegasusTestingTableGUI.php";
         $tableLegend = new ilPegasusTestingTableGUI($this, "Status");
@@ -297,7 +306,7 @@ final class ilPegasusHelperConfigGUI extends ilPluginConfigGUI {
         // table with external tests, run if $external is true
         $tableExt = new ilPegasusTestingTableGUI($this, $this->pl->txt("tests_txt_name"));
         $tableExt->setTitle($this->pl->txt("tests_txt_external_tests"));
-        if($external) {
+        if ($external) {
             require_once __DIR__ . "/class.ilPegasusTesting.php";
             $tableExt->setData((new ilPegasusHelperTesting())->run("external"));
         }
@@ -313,19 +322,20 @@ final class ilPegasusHelperConfigGUI extends ilPluginConfigGUI {
     /**
      * save input from the colors form
      */
-    protected function saveColors() {
+    protected function saveColors()
+    {
         global $ilDB, $ilCtrl;
         $primaryColor = $_POST["primary_color"];
         $contrastColor = $_POST["contrast_color"];
 
-        if(!preg_match("/^[0-9a-fA-F]{6}$/", $primaryColor)) {
+        if (!preg_match("/^[0-9a-fA-F]{6}$/", $primaryColor)) {
             ilUtil::sendFailure($this->pl->txt("msg_coloring_not_saved"), true);
             $ilCtrl->redirect($this, "theme");
             return;
         }
 
         $values = array(
-            "primary_color"  => array("text", $primaryColor),
+            "primary_color" => array("text", $primaryColor),
             "contrast_color" => array("integer", $contrastColor)
         );
         $where = array(
@@ -341,11 +351,12 @@ final class ilPegasusHelperConfigGUI extends ilPluginConfigGUI {
     /**
      * reset colors to default values
      */
-    protected function resetColors() {
+    protected function resetColors()
+    {
         global $ilDB, $ilCtrl;
 
         $values = array(
-            "primary_color"  => array("text", "4a668b"),
+            "primary_color" => array("text", "4a668b"),
             "contrast_color" => array("integer", 1)
         );
         $where = array(
@@ -358,14 +369,15 @@ final class ilPegasusHelperConfigGUI extends ilPluginConfigGUI {
         $ilCtrl->redirect($this, "theme");
     }
 
-    protected function saveIcons() {
+    protected function saveIcons()
+    {
         global $ilCtrl, $DIC;
 
         $form = $this->getIconsForm();
-        if($form->checkInput()) {
+        if ($form->checkInput()) {
             // manage upload
-            if($DIC->upload()->hasBeenProcessed() !== true) {
-                if(PATH_TO_GHOSTSCRIPT !== "") {
+            if ($DIC->upload()->hasBeenProcessed() !== true) {
+                if (PATH_TO_GHOSTSCRIPT !== "") {
                     $DIC->upload()->register(new ilCountPDFPagesPreProcessors());
                 }
             }
@@ -374,23 +386,23 @@ final class ilPegasusHelperConfigGUI extends ilPluginConfigGUI {
             // for each category, set the new icon
             $msgSuccess = "";
             $msgFail = "";
-            foreach(ilPegasusHelperConfigGUI::$ICON_CATEGORIES as $category) {
+            foreach (ilPegasusHelperConfigGUI::$ICON_CATEGORIES as $category) {
                 $key = "post_icon_$category";
                 $file = $form->getInput($key);
 
-                foreach($DIC->upload()->getResults() as $result) {
-                    if($result->getStatus()->getCode() === \ILIAS\FileUpload\DTO\ProcessingStatus::OK) {
+                foreach ($DIC->upload()->getResults() as $result) {
+                    if ($result->getStatus()->getCode() === \ILIAS\FileUpload\DTO\ProcessingStatus::OK) {
                         $resultMatchesCategory = $file["tmp_name"] === $result->getPath();
-                        if($resultMatchesCategory) {
+                        if ($resultMatchesCategory) {
                             $fileName = "icon_$category.svg";
-                            if($DIC->filesystem()->web()->has(ilPegasusHelperConfigGUI::$ICON_WEB_DIR . $fileName)) {
+                            if ($DIC->filesystem()->web()->has(ilPegasusHelperConfigGUI::$ICON_WEB_DIR . $fileName)) {
                                 $DIC->filesystem()->web()->delete(ilPegasusHelperConfigGUI::$ICON_WEB_DIR . $fileName);
                             }
                             $DIC->upload()->moveOneFileTo($result, ilPegasusHelperConfigGUI::$ICON_WEB_DIR, \ILIAS\FileUpload\Location::WEB, $fileName);
                             $msgSuccess .= $this->pl->txt("msg_icon_saved_pre") . $category . $this->pl->txt("msg_icon_saved_post");
                         }
                     } else {
-                        if($result->getName()) {
+                        if ($result->getName()) {
                             $msgFail = $this->pl->txt("msg_icon_not_uploaded");
                         }
                     }
@@ -398,10 +410,10 @@ final class ilPegasusHelperConfigGUI extends ilPluginConfigGUI {
             }
             $this->updateTimestamp();
             // user feedback
-            if($msgSuccess) {
+            if ($msgSuccess) {
                 ilUtil::sendSuccess($msgSuccess, true);
             }
-            if($msgFail) {
+            if ($msgFail) {
                 ilUtil::sendFailure($msgFail, true);
             }
         } else {
@@ -414,7 +426,8 @@ final class ilPegasusHelperConfigGUI extends ilPluginConfigGUI {
     /**
      * reset icons to default values
      */
-    protected function resetIcons() {
+    protected function resetIcons()
+    {
         global $ilCtrl;
 
         ilPegasusHelperConfigGUI::copyDefaultIcons();
@@ -427,7 +440,8 @@ final class ilPegasusHelperConfigGUI extends ilPluginConfigGUI {
     /**
      * sets the timestamp for the settings to the current time
      */
-    private function updateTimestamp() {
+    private function updateTimestamp()
+    {
         global $ilDB;
 
         $values = array(
@@ -439,5 +453,3 @@ final class ilPegasusHelperConfigGUI extends ilPluginConfigGUI {
         $ilDB->update("ui_uihk_pegasus_theme", $values, $where);
     }
 }
-
-?>

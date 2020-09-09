@@ -15,48 +15,52 @@ namespace SRAG\PegasusHelper\handler;
  *
  * @see chain of responsability
  */
-abstract class BaseHandler implements ChainRequestHandler {
+abstract class BaseHandler implements ChainRequestHandler
+{
 
-	/**
-	 * @var BaseHandler $next
-	 */
-	private $next = NULL;
-
-
-	/**
-	 * Called by the implementation of the handle method.
-	 * MUST only be called if the concrete handler is not responsible to
-	 * handle the request.
-	 *
-	 * @return  void
-	 */
-	protected final function next() {
-		if(!is_null($this->next)) {
-			$this->next->handle();
-		}
-	}
+    /**
+     * @var BaseHandler $next
+     */
+    private $next = null;
 
 
-	/**
-	 * Add a new chain link to the end of the chain.
-	 *
-	 * @param ChainRequestHandler $handler  The chain element which should be added to the chain end.
-	 * @return  void
-	 */
-	public final function add(ChainRequestHandler $handler) {
-		if(is_null($this->next))
-			$this->next = $handler;
-		else
-			$this->next->add($handler);
-	}
+    /**
+     * Called by the implementation of the handle method.
+     * MUST only be called if the concrete handler is not responsible to
+     * handle the request.
+     *
+     * @return  void
+     */
+    final protected function next()
+    {
+        if (!is_null($this->next)) {
+            $this->next->handle();
+        }
+    }
 
 
-	/**
-	 * The request handling logic of the chain link.
-	 * This logic must call the next() unless it is responsible to handle
-	 * the request.
-	 *
-	 * @return void
-	 */
-	public abstract function handle();
+    /**
+     * Add a new chain link to the end of the chain.
+     *
+     * @param ChainRequestHandler $handler  The chain element which should be added to the chain end.
+     * @return  void
+     */
+    final public function add(ChainRequestHandler $handler)
+    {
+        if (is_null($this->next)) {
+            $this->next = $handler;
+        } else {
+            $this->next->add($handler);
+        }
+    }
+
+
+    /**
+     * The request handling logic of the chain link.
+     * This logic must call the next() unless it is responsible to handle
+     * the request.
+     *
+     * @return void
+     */
+    abstract public function handle();
 }

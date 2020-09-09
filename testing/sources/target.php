@@ -4,7 +4,8 @@
  * collection of target-information for tests
  */
 
-function getTargetInfo($info) {
+function getTargetInfo($info)
+{
     return [
         "TestScript" => getTestScriptTargetInfo(),
         "ILIAS" => getILIASTargetInfo($info),
@@ -13,7 +14,8 @@ function getTargetInfo($info) {
     ];
 }
 
-function getTestScriptTargetInfo() {
+function getTestScriptTargetInfo()
+{
     $testScript_target = [];
 
     $testScript_target["php_version"] = "7";
@@ -21,7 +23,8 @@ function getTestScriptTargetInfo() {
     return $testScript_target;
 }
 
-function getILIASTargetInfo($info) {
+function getILIASTargetInfo($info)
+{
     $ilias_target = [];
     $err_msg = "WARNING unable to get some Information about ILIAS";
 
@@ -31,14 +34,15 @@ function getILIASTargetInfo($info) {
 
         $ilias_target["available"] = true;
     } catch (Exception $e) {
-        addToLog("\n" . $err_msg . "\n" .  $e->getMessage() . "\n");
+        addToLog("\n" . $err_msg . "\n" . $e->getMessage() . "\n");
         $ilias_target["available"] = false;
     }
 
     return $ilias_target;
 }
 
-function getPluginTargetInfo($plugin_dir, $repo) {
+function getPluginTargetInfo($plugin_dir, $repo)
+{
     $plugin_target = [];
     $err_msg = "WARNING unable to get some Information about plugin " . $plugin_dir;
 
@@ -46,7 +50,7 @@ function getPluginTargetInfo($plugin_dir, $repo) {
         $plugin_target["version"] = getTargetVersion($repo);
         $plugin_target["available"] = true;
     } catch (Exception $e) {
-        addToLog("\n" . $err_msg . "\n" .  $e->getMessage() . "\n");
+        addToLog("\n" . $err_msg . "\n" . $e->getMessage() . "\n");
         $plugin_target["available"] = false;
     }
 
@@ -54,20 +58,21 @@ function getPluginTargetInfo($plugin_dir, $repo) {
         $plugin_target["ilDB"]["db_version"] = getTargetDbVersion($plugin_dir);
         $plugin_target["ilDB"]["available"] = true;
     } catch (Exception $e) {
-        addToLog("\n" . $err_msg . "\n" .  $e->getMessage() . "\n");
+        addToLog("\n" . $err_msg . "\n" . $e->getMessage() . "\n");
         $plugin_target["ilDB"]["available"] = false;
     }
 
     return $plugin_target;
 }
 
-function getTargetDbVersion($plugin_dir) {
+function getTargetDbVersion($plugin_dir)
+{
     $dbupdate_lines = file(getRootPlugins() . "/" . $plugin_dir . "/sql/dbupdate.php");
 
     // go through file-content and search for last occurrence of <#x>
     $version = "0";
-    foreach($dbupdate_lines as $line) {
-        if(preg_match('/^\<\#([0-9]+)>/', $line, $matches)) {
+    foreach ($dbupdate_lines as $line) {
+        if (preg_match('/^\<\#([0-9]+)>/', $line, $matches)) {
             $version = $matches[1];
         }
     }
@@ -75,14 +80,18 @@ function getTargetDbVersion($plugin_dir) {
     return $version;
 }
 
-function getTargetVersion($repo) {
+function getTargetVersion($repo)
+{
     $tags = httpLoggedRequest("https://api.github.com/repos/studer-raimann/{$repo}/tags")["response"]["body"];
 
     foreach ($tags as $tag) {
         try {
             $version = tagToVersion($tag["name"]);
-            if(isset($version)) return $version;
-        } catch (Exception $e) {}
+            if (isset($version)) {
+                return $version;
+            }
+        } catch (Exception $e) {
+        }
     }
 
     throw new Exception("Unable to get version via api.github.com");
@@ -95,23 +104,30 @@ function getTargetVersion($repo) {
  * @param $tag string
  * @return string|null
  */
-function tagToVersion($tag) {
-    $version = NULL;
+function tagToVersion($tag)
+{
+    $version = null;
     $copy = false;
-    for($i = 0; $i < strlen($tag); $i++) {
+    for ($i = 0; $i < strlen($tag); $i++) {
         $char = $tag[$i];
         // start copying when a number is found
-        if(!$copy && is_numeric($char) && !isset($version)) {
+        if (!$copy && is_numeric($char) && !isset($version)) {
             $copy = true;
             $version = "";
         }
         // stop copying when a char that is not a number or '.' is found
-        if($copy && !(is_numeric($char) || $char === ".")) $copy = false;
+        if ($copy && !(is_numeric($char) || $char === ".")) {
+            $copy = false;
+        }
 
-        if($copy) $version .= $char;
+        if ($copy) {
+            $version .= $char;
+        }
     }
 
-    if($version === "") return NULL;
+    if ($version === "") {
+        return null;
+    }
 
     return $version;
 }

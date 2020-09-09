@@ -11,6 +11,6 @@ use SRAG\PegasusHelper\handler\ChainRequestHandler;
  *
  * @author  Nicolas Schäfli <ns@studer-raimann.ch>
  */
-interface RefLinkRedirectHandler extends ChainRequestHandler {
-
+interface RefLinkRedirectHandler extends ChainRequestHandler
+{
 }

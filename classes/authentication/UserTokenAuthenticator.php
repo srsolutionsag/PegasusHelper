@@ -12,16 +12,17 @@ namespace SRAG\PegasusHelper\authentication;
  *
  * @author  Nicolas Schäfli <ns@studer-raimann.ch>
  */
-interface UserTokenAuthenticator {
+interface UserTokenAuthenticator
+{
 
-	/**
-	 * Authenticates the user with the given token.
-	 * The token will always be deleted, regardless of the authentication result.
-	 *
-	 * @param int    $userId The id of the user which should be logged in.
-	 * @param string $token  The token which should be used to authenticate the user with the given id.
-	 *
-	 * @return void
-	 */
-	public function authenticate($userId, $token);
+    /**
+     * Authenticates the user with the given token.
+     * The token will always be deleted, regardless of the authentication result.
+     *
+     * @param int    $userId The id of the user which should be logged in.
+     * @param string $token  The token which should be used to authenticate the user with the given id.
+     *
+     * @return void
+     */
+    public function authenticate($userId, $token);
 }
