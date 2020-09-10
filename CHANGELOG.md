@@ -4,6 +4,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
+## [1.1.6]
+### Fixed
+- News link redirects are now working correctly on ILIAS 6
+- Timeline links no longer result in a 404 error on ILIAS 6
+
+### Removed
+- ILIAS 5.2 support
+
 ## [1.1.5]
 ### Fixed
 - Plugin max ILIAS version constraint
