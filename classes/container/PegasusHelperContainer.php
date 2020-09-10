@@ -5,9 +5,9 @@ namespace SRAG\PegasusHelper\container;
 use ILIAS\DI\Container;
 use SRAG\PegasusHelper\container\exception\DependencyResolutionException;
 use SRAG\PegasusHelper\container\provider\AuthenticationProvider;
-use SRAG\PegasusHelper\container\provider\Ilias52RequestHandlerProvider;
 use SRAG\PegasusHelper\container\provider\Ilias53RequestHandlerProvider;
 use SRAG\PegasusHelper\container\provider\Ilias6RequestHandlerProvider;
+use SRAG\PegasusHelper\container\provider\Ilias54RequestHandlerProvider;
 
 /**
  * Class PegasusHelperContainer
@@ -38,10 +38,10 @@ final class PegasusHelperContainer
         static::$container->register(new AuthenticationProvider());
         if (version_compare(ILIAS_VERSION_NUMERIC, '6.0', '>=')) {
             static::$container->register(new Ilias6RequestHandlerProvider());
+        } elseif (version_compare(ILIAS_VERSION_NUMERIC, '5.4', '>=')) {
+            static::$container->register(new Ilias54RequestHandlerProvider());
         } elseif (version_compare(ILIAS_VERSION_NUMERIC, '5.3', '>=')) {
             static::$container->register(new Ilias53RequestHandlerProvider());
-        } elseif (version_compare(ILIAS_VERSION_NUMERIC, '5.2', '>=')) {
-            static::$container->register(new Ilias52RequestHandlerProvider());
         } else {
             throw new DependencyResolutionException('The pegasus helper plugin has no provider for the current ILIAS version.');
         }
