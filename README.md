@@ -12,8 +12,8 @@ The plugin enables the mobile application to:
 
 
 ## Requirements
-* Version: ILIAS 5.2 to 5.4
-* PHP 5.5.9 or PHP 7
+* Version: ILIAS 5.3 to 6
+* PHP 5.6 or PHP 7.0 - 7.4
 
 ## Installation
 
