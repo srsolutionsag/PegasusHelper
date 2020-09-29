@@ -2,12 +2,15 @@
 The pegasus helper is a small helper plugin for ILIAS which is required to
 operate the ILIAS Pegasus mobile application.
 
-The plugin enables the mobile application to:
-- Login
+Features:
+- Custom app login flow
 - Download files from ILIAS except FileObjects
-- Open ILIAS pages
+- Directly open ILIAS pages with SSO tokens
 - Open personal news of the user
 - Configure required REST plugin routes and client
+- Configure dynamic theme of the ILIAS-Pegasus community app
+- Basic user token statistic
+- Basic plugin setup tests which verify your local ILIAS configuration
 
 
 
