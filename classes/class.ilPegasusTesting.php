@@ -6,18 +6,21 @@ include_once __DIR__ . "/../testing/includefile.php";
 /**
  * Class ilPegasusHelperTesting runs the test-suite for the PegasusHelper- and REST-plugins
  */
-final class ilPegasusHelperTesting {
-
-    public function __construct() {
-
+final class ilPegasusHelperTesting
+{
+    public function __construct()
+    {
     }
 
     /**
      * @param $suiteName string set to "internal" or "external"
      */
-    public function run($suiteName) {
+    public function run($suiteName)
+    {
         $set_global_ilias = !isset($GLOBALS["ilias"]);
-        if($set_global_ilias) $GLOBALS["ilias"] = true;
+        if ($set_global_ilias) {
+            $GLOBALS["ilias"] = true;
+        }
 
         $info = getInfo();
         $targetInfo = getTargetInfo($info);
@@ -32,14 +35,17 @@ final class ilPegasusHelperTesting {
         }
         $suite->run($info, $targetInfo);
 
-        if($set_global_ilias) unset($GLOBALS["ilias"]);
+        if ($set_global_ilias) {
+            unset($GLOBALS["ilias"]);
+        }
         return $this->getResults($suite);
     }
 
     /**
      * @param $suite TestSuite
      */
-    private function getResults($suite) {
+    private function getResults($suite)
+    {
         $results = [];
         foreach ($suite->categories as $category) {
             array_push($results, ["category" => $category->title]);
@@ -60,11 +66,17 @@ final class ilPegasusHelperTesting {
      * @param $state ResultState
      * @param $mandatory boolean
      */
-    private function getTestStatus($state, $mandatory) {
-        if($state === ResultState::R_PASS) return ilPegasusTestingStatus::T_STATUS_OK;
-        if($state === ResultState::R_FAIL && $mandatory) return ilPegasusTestingStatus::T_STATUS_FAIL;
-        if($state === ResultState::R_MISSING_INFO || $state === ResultState::R_ERROR) return ilPegasusTestingStatus::T_STATUS_INCOMPLETE;
+    private function getTestStatus($state, $mandatory)
+    {
+        if ($state === ResultState::R_PASS) {
+            return ilPegasusTestingStatus::T_STATUS_OK;
+        }
+        if ($state === ResultState::R_FAIL && $mandatory) {
+            return ilPegasusTestingStatus::T_STATUS_FAIL;
+        }
+        if ($state === ResultState::R_MISSING_INFO || $state === ResultState::R_ERROR) {
+            return ilPegasusTestingStatus::T_STATUS_INCOMPLETE;
+        }
         return ilPegasusTestingStatus::T_STATUS_WARN;
     }
-
 }

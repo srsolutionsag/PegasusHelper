@@ -17,7 +17,7 @@ printNormal("Diagnostics for REST- and PegasusHelper-plugins\n");
 printNormal("===============================================\n");
 
 printNormal("do you want to run external tests [y/n]? ");
-$handle = fopen("php://stdin","r");
+$handle = fopen("php://stdin", "r");
 $line = fgets($handle);
 addToLog($line);
 $line = trim($line);
@@ -39,7 +39,7 @@ $suite = getInternalTestSuite(TestingContext::C_CLI);
 $suite->run($info, $targetInfo);
 printResults($suite);
 
-if($external) {
+if ($external) {
     $suite = getExternalTestsSuite(TestingContext::C_CLI);
     $suite->run($info, $targetInfo);
     printResults($suite);
@@ -47,7 +47,7 @@ if($external) {
 
 // write log
 
-if($info["TestScript"]["correct_working_directory"]) {
+if ($info["TestScript"]["correct_working_directory"]) {
     printNormal("\n> Write log-file 'results.log' in 'PegasusHelper/testing/' ...\n");
     writeLog($info, $targetInfo);
 }

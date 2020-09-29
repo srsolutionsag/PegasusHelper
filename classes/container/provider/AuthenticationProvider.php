@@ -14,14 +14,16 @@ use SRAG\PegasusHelper\authentication\UserTokenAuthenticator;
  *
  * @author  Nicolas Schäfli <ns@studer-raimann.ch>
  */
-final class AuthenticationProvider implements ServiceProviderInterface {
+final class AuthenticationProvider implements ServiceProviderInterface
+{
 
-	/**
-	 * @inheritDoc
-	 */
-	public function register(Container $pimple) {
-		$pimple[UserTokenAuthenticator::class] = function ($c) {
-			return new DefaultUserTokenAuthenticator();
-		};
-	}
+    /**
+     * @inheritDoc
+     */
+    public function register(Container $pimple)
+    {
+        $pimple[UserTokenAuthenticator::class] = function ($c) {
+            return new DefaultUserTokenAuthenticator();
+        };
+    }
 }

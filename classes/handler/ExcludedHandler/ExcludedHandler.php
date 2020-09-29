@@ -11,6 +11,6 @@ use SRAG\PegasusHelper\handler\ChainRequestHandler;
  *
  * @author  Nicolas Schäfli <ns@studer-raimann.ch>
  */
-interface ExcludedHandler extends ChainRequestHandler {
-
+interface ExcludedHandler extends ChainRequestHandler
+{
 }

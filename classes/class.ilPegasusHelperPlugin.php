@@ -38,7 +38,7 @@ final class ilPegasusHelperPlugin extends ilUserInterfaceHookPlugin
         return 'PegasusHelper';
     }
 
-	/**
+    /**
      * Before update processing
      */
     protected function beforeUpdate()
@@ -47,8 +47,8 @@ final class ilPegasusHelperPlugin extends ilUserInterfaceHookPlugin
          * @var ilPluginAdmin $ilPluginAdmin
          */
         global $ilPluginAdmin;
-        if(!$ilPluginAdmin->isActive(IL_COMP_SERVICE, 'UIComponent', 'uihk', 'REST')) {
-            ilUtil::sendFailure('Please install the ILIAS REST Plugin first!',true);
+        if (!$ilPluginAdmin->isActive(IL_COMP_SERVICE, 'UIComponent', 'uihk', 'REST')) {
+            ilUtil::sendFailure('Please install the ILIAS REST Plugin first!', true);
             return false;
         }
         return true;
@@ -57,13 +57,14 @@ final class ilPegasusHelperPlugin extends ilUserInterfaceHookPlugin
     /**
      * Before uninstall processing
      */
-    protected function beforeUninstall() {
+    protected function beforeUninstall()
+    {
         try {
             global $ilDB;
             $ilDB->dropTable("ui_uihk_pegasus_theme", false);
 
             global $ilPluginAdmin;
-            if($ilPluginAdmin->isActive(IL_COMP_SERVICE, 'UIComponent', 'uihk', 'REST')) {
+            if ($ilPluginAdmin->isActive(IL_COMP_SERVICE, 'UIComponent', 'uihk', 'REST')) {
                 require_once './Customizing/global/plugins/Services/UIComponent/UserInterfaceHook/PegasusHelper/bootstrap.php';
 
                 $rest = new SRAG\PegasusHelper\rest\RestSetup();
@@ -75,5 +76,4 @@ final class ilPegasusHelperPlugin extends ilUserInterfaceHookPlugin
             return false;
         }
     }
-
 }

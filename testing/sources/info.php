@@ -4,7 +4,8 @@
  * collection of information for tests, about the current installation
  */
 
-function getInfo() {
+function getInfo()
+{
     $info = [];
 
     $ilDB_handle = initIlDB();
@@ -18,7 +19,8 @@ function getInfo() {
     return $info;
 }
 
-function getTestScriptInfo($ilDB_handle) {
+function getTestScriptInfo($ilDB_handle)
+{
     $testScript_info = [];
 
     $location = "Customizing/global/plugins/Services/UIComponent/UserInterfaceHook/PegasusHelper/testing";
@@ -32,7 +34,8 @@ function getTestScriptInfo($ilDB_handle) {
     return $testScript_info;
 }
 
-function getConnectivityInfo() {
+function getConnectivityInfo()
+{
     $connectivity_info = [];
     $err_msg = "WARNING unable to get some Information about the connectivity";
 
@@ -40,17 +43,17 @@ function getConnectivityInfo() {
         $host = parse_ini_file(getRootIlias() . "/ilias.ini.php", true)["server"]["http_path"];
         $url_rest = $host . "/Customizing/global/plugins/Services/UIComponent/UserInterfaceHook/REST";
 
-        $url_login = $url_rest ."/apps/admin";
+        $url_login = $url_rest . "/apps/admin";
         $connectivity_info["rest_login"] = httpLoggedRequest($url_login);
     } catch (Exception $e) {
-        addToLog("\n" . $err_msg . "\n" .  $e->getMessage() . "\n");
+        addToLog("\n" . $err_msg . "\n" . $e->getMessage() . "\n");
     }
 
     $external_host = "https://test.studer-raimann.ch/pegasus-ilias53-php7"; // TODO setup backend (summarize urls in constants-file?)
     try {
         $connectivity_info["external_url"] = httpLoggedRequest($external_host);
     } catch (Exception $e) {
-        addToLog("\n" . $err_msg . "\n" .  $e->getMessage() . "\n");
+        addToLog("\n" . $err_msg . "\n" . $e->getMessage() . "\n");
     }
 
     $external_script = $external_host . "/Customizing/global/plugins/Services/UIComponent/UserInterfaceHook/PegasusHelper/testing/external/run.php";
@@ -60,13 +63,14 @@ function getConnectivityInfo() {
         $urlTestScript .= "&client_id=" . urlencode($client);
         $connectivity_info["external_testing"] = httpLoggedRequest($urlTestScript);
     } catch (Exception $e) {
-        addToLog("\n" . $err_msg . "\n" .  $e->getMessage() . "\n");
+        addToLog("\n" . $err_msg . "\n" . $e->getMessage() . "\n");
     }
 
     return $connectivity_info;
 }
 
-function getILIASInfo() {
+function getILIASInfo()
+{
     $ilias_info = [];
     $err_msg = "WARNING unable to get some Information about ILIAS";
 
@@ -76,7 +80,7 @@ function getILIASInfo() {
 
         $ilias_info["available"] = true;
     } catch (Exception $e) {
-        addToLog("\n" . $err_msg . "\n" .  $e->getMessage() . "\n");
+        addToLog("\n" . $err_msg . "\n" . $e->getMessage() . "\n");
         $ilias_info["available"] = false;
     }
 
@@ -84,14 +88,15 @@ function getILIASInfo() {
         $ilias_info["ilias_ini"] = parse_ini_file(getRootIlias() . "/ilias.ini.php", true);
         $ilias_info["ilias_ini"]["available"] = true;
     } catch (Exception $e) {
-        addToLog("\n" . $err_msg . "\n" .  $e->getMessage() . "\n");
+        addToLog("\n" . $err_msg . "\n" . $e->getMessage() . "\n");
         $ilias_info["ilias_ini"]["available"] = false;
     }
 
     return $ilias_info;
 }
 
-function getPluginInfo($plugin_dir, $plugin_id, $ilDB_handle) {
+function getPluginInfo($plugin_dir, $plugin_id, $ilDB_handle)
+{
     $plugin_info = [];
     $err_msg = "WARNING unable to get some Information about plugin " . $plugin_dir;
 
@@ -103,14 +108,14 @@ function getPluginInfo($plugin_dir, $plugin_id, $ilDB_handle) {
 
         $plugin_info["available"] = true;
     } catch (Exception $e) {
-        addToLog("\n" . $err_msg . "\n" .  $e->getMessage() . "\n");
+        addToLog("\n" . $err_msg . "\n" . $e->getMessage() . "\n");
         $plugin_info["available"] = false;
     }
 
     try {
         $query = "SELECT last_update_version, active, db_version FROM ilias.il_plugin WHERE plugin_id = '" . $plugin_id . "'";
         $result = queryAndFetchIlDB($ilDB_handle, $query);
-        if(!$result) {
+        if (!$result) {
             $query = "SELECT last_update_version, active, db_version FROM il_plugin WHERE plugin_id = '" . $plugin_id . "'";
             $result = queryAndFetchIlDB($ilDB_handle, $query);
         }
@@ -118,7 +123,7 @@ function getPluginInfo($plugin_dir, $plugin_id, $ilDB_handle) {
         $plugin_info += ["ilDB" => $result];
         $plugin_info["ilDB"]["available"] = (bool) $result;
     } catch (Exception $e) {
-        addToLog("\n" . $err_msg . "\n" .  $e->getMessage() . "\n");
+        addToLog("\n" . $err_msg . "\n" . $e->getMessage() . "\n");
         $plugin_info["ilDB"]["available"] = false;
     }
 

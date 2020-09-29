@@ -13,11 +13,11 @@ use SRAG\PegasusHelper\handler\ExcludedHandler\v52\ExcludedHandlerImpl;
 use SRAG\PegasusHelper\handler\LoginPageHandler\LoginPageManager;
 use SRAG\PegasusHelper\handler\LoginPageHandler\v52\LoginPageManagerImpl;
 use SRAG\PegasusHelper\handler\NewsLinkRedirectHandler\NewsLinkRedirectHandler;
-use SRAG\PegasusHelper\handler\NewsLinkRedirectHandler\v52\NewsLinkRedirectHandlerImpl;
+use SRAG\PegasusHelper\handler\NewsLinkRedirectHandler\v6\NewsLinkRedirectHandlerImpl;
 use SRAG\PegasusHelper\handler\OAuthManager\OAuthManager;
 use SRAG\PegasusHelper\handler\OAuthManager\v52\OauthManagerImpl;
 use SRAG\PegasusHelper\handler\RefLinkRedirectHandler\RefLinkRedirectHandler;
-use SRAG\PegasusHelper\handler\RefLinkRedirectHandler\v52\RefLinkRedirectHandlerImpl;
+use SRAG\PegasusHelper\handler\RefLinkRedirectHandler\v54\RefLinkRedirectHandlerImpl;
 use SRAG\PegasusHelper\handler\ResourceLinkHandler\ResourceLinkHandler;
 use SRAG\PegasusHelper\handler\ResourceLinkHandler\v53\ResourceLinkHandlerImpl;
 
@@ -28,7 +28,7 @@ use SRAG\PegasusHelper\handler\ResourceLinkHandler\v53\ResourceLinkHandlerImpl;
  *
  * @author  Nicolas Schäfli <ns@studer-raimann.ch>
  */
-final class Ilias53RequestHandlerProvider implements ServiceProviderInterface
+final class Ilias6RequestHandlerProvider implements ServiceProviderInterface
 {
 
     /**
@@ -53,7 +53,7 @@ final class Ilias53RequestHandlerProvider implements ServiceProviderInterface
         });
 
         $pimple[RefLinkRedirectHandler::class] = $pimple->factory(function ($c) {
-            return new RefLinkRedirectHandlerImpl($c[UserTokenAuthenticator::class]);
+            return new RefLinkRedirectHandlerImpl($c[UserTokenAuthenticator::class], $c[ilCtrl::class]);
         });
 
         $pimple[ResourceLinkHandler::class] = $pimple->factory(function ($c) {

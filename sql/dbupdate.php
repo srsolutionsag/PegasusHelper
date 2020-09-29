@@ -44,20 +44,20 @@ $ilDB->dropTable("ui_uihk_pegasus_theme", $error_if_not_existing);
 
 $fields = array(
     'id' => array(
-        'type'    => 'integer',
-        'length'  => 4,
+        'type' => 'integer',
+        'length' => 4,
         'notnull' => true
     ),
-    'primary_color'  => array(
-        'type'        => 'text',
-        'length'      => 10,
-        'fixed'       => true,
-        'notnull'     => true
+    'primary_color' => array(
+        'type' => 'text',
+        'length' => 10,
+        'fixed' => true,
+        'notnull' => true
     ),
     'contrast_color' => array(
-        'type'        => 'integer',
-        'length'      => 4,
-        'notnull'     => true
+        'type' => 'integer',
+        'length' => 4,
+        'notnull' => true
     )
 );
 $ilDB->createTable('ui_uihk_pegasus_theme', $fields, true);
@@ -71,8 +71,8 @@ $ilLog->write('Plugin PegasusHelper -> DB-Update #5: Created ui_uihk_pegasus_the
 <#6>
 <?php
 $ilDB->insert('ui_uihk_pegasus_theme', array(
-    'primary_color'             => array('text', '4a668b'),
-    'contrast_color'            => array('integer', 1)
+    'primary_color' => array('text', '4a668b'),
+    'contrast_color' => array('integer', 1)
 ));
 
 global $ilLog;
@@ -86,20 +86,20 @@ $ilDB->dropTable("ui_uihk_pegasus_theme", $error_if_not_existing);
 
 $fields = array(
     'id' => array(
-        'type'    => 'integer',
-        'length'  => 4,
+        'type' => 'integer',
+        'length' => 4,
         'notnull' => true
     ),
-    'primary_color'  => array(
-        'type'        => 'text',
-        'length'      => 10,
-        'fixed'       => true,
-        'notnull'     => true
+    'primary_color' => array(
+        'type' => 'text',
+        'length' => 10,
+        'fixed' => true,
+        'notnull' => true
     ),
     'contrast_color' => array(
-        'type'        => 'integer',
-        'length'      => 4,
-        'notnull'     => true
+        'type' => 'integer',
+        'length' => 4,
+        'notnull' => true
     )
 );
 $ilDB->createTable('ui_uihk_pegasus_theme', $fields, true);
@@ -114,8 +114,8 @@ $ilLog->write('Plugin PegasusHelper -> DB-Update #7: Created ui_uihk_pegasus_the
 <?php
 global $ilDB;
 $ilDB->insert('ui_uihk_pegasus_theme', array(
-    'primary_color'             => array('text', '4a668b'),
-    'contrast_color'            => array('integer', 1)
+    'primary_color' => array('text', '4a668b'),
+    'contrast_color' => array('integer', 1)
 ));
 
 global $ilLog;
@@ -124,7 +124,9 @@ $ilLog->write('Plugin PegasusHelper -> DB-Update #8: Filled ui_uihk_pegasus_them
 <#9>
 <?php
 global $ilDB;
-$ilDB->addTableColumn("ui_uihk_pegasus_theme", "timestamp",
+$ilDB->addTableColumn(
+    "ui_uihk_pegasus_theme",
+    "timestamp",
     array(
         "type" => "integer",
         "length" => 8,

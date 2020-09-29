@@ -1,6 +1,6 @@
 <?php
 
-namespace SRAG\PegasusHelper\handler\NewsLinkRedirectHandler\v52;
+namespace SRAG\PegasusHelper\handler\NewsLinkRedirectHandler\v6;
 
 use ilCtrl;
 use SRAG\PegasusHelper\authentication\UserTokenAuthenticator;
@@ -99,14 +99,14 @@ final class NewsLinkRedirectHandlerImpl extends BaseHandler
         if (!self::$self_call) {
             self::$self_call = true;
 
-            $this->controlFlow->initBaseClass("ilPersonalDesktopGUI");
+            $this->controlFlow->initBaseClass("ilDashboardGUI");
             $this->controlFlow->setTargetScript('ilias.php');
             $this->controlFlow->setParameterByClass("ilpdnewsblockgui", "news_id", $this->newsId);
             $this->controlFlow->setParameterByClass("ilpdnewsblockgui", "news_context", $this->newsContext);
             $this->controlFlow->setParameterByClass("ilpdnewsblockgui", "block_type", "pdnews");
             $this->controlFlow->setParameterByClass("ilpdnewsblockgui", "col_side", "left");
 
-            $this->controlFlow->redirectByClass(["ilPersonalDesktopGUI", "ilColumnGUI", "ilpdnewsblockgui"], "showNews");
+            $this->controlFlow->redirectByClass(["ilDashboardGUI", "ilColumnGUI", "ilpdnewsblockgui"], "showNews");
         }
     }
 }

@@ -11,6 +11,6 @@ use SRAG\PegasusHelper\handler\ChainRequestHandler;
  *
  * @author  Nicolas Schäfli <ns@studer-raimann.ch>
  */
-interface LoginPageManager extends ChainRequestHandler {
-
+interface LoginPageManager extends ChainRequestHandler
+{
 }

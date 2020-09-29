@@ -18,17 +18,7 @@
     "classmap": [
       "./classes/class.ilPegasusHelperConfigGUI.php",
       "./classes/class.ilPegasusHelperPlugin.php",
-      "./classes/class.ilPegasusHelperUIHookGUI.php",
-      "../../../../../../../Services/Form",
-      "../../../../../../../Services/News",
-      "../../../../../../../Services/Component",
-      "../../../../../../../Services/UIComponent",
-      "../../../../../../../Services/Database",
-      "../../../../../../../Services/ActiveRecord",
-      "../../../../../../../Services/Authentication",
-      "../../../../../../../Services/Utilities",
-      "../../../../../../../Services/Link",
-      "../../../../../../../Services/WebAccessChecker"
+      "./classes/class.ilPegasusHelperUIHookGUI.php"
     ]
   },
   "config": {

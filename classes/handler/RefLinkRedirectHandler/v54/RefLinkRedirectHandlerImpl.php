@@ -1,6 +1,6 @@
 <?php
 
-namespace SRAG\PegasusHelper\handler\RefLinkRedirectHandler\v52;
+namespace SRAG\PegasusHelper\handler\RefLinkRedirectHandler\v54;
 
 use ilLink;
 use ilObject2;
@@ -8,12 +8,13 @@ use ilUtil;
 use SRAG\PegasusHelper\authentication\UserTokenAuthenticator;
 use SRAG\PegasusHelper\handler\BaseHandler;
 use SRAG\PegasusHelper\handler\RefLinkRedirectHandler\RefLinkRedirectHandler;
+use ilCtrl;
 
 /**
  * Class TokenChecker handles a specific link to log in
  * the user with a token and redirect him to the wanted page.
  *
- * @author  Nicolas Märchy <nm@studer-raimann.ch>
+ * @author  Nicolas Schäfli <ns@studer-raimann.ch>
  * @version 1.1.0
  *
  */
@@ -29,16 +30,20 @@ final class RefLinkRedirectHandlerImpl extends BaseHandler implements RefLinkRed
      * @var UserTokenAuthenticator $authenticator
      */
     private $authenticator;
-
+    /**
+     * @var ilCtrl $ctrl
+     */
+    private $ctrl;
 
     /**
      * TokenChecker constructor.
-     *
      * @param UserTokenAuthenticator $authenticator
+     * @param ilCtrl                 $ctrl
      */
-    public function __construct(UserTokenAuthenticator $authenticator)
+    public function __construct(UserTokenAuthenticator $authenticator, ilCtrl $ctrl)
     {
         $this->authenticator = $authenticator;
+        $this->ctrl = $ctrl;
     }
 
 
@@ -105,24 +110,21 @@ final class RefLinkRedirectHandlerImpl extends BaseHandler implements RefLinkRed
             switch ($this->view) {
                 case "default":
                     $link = ilLink::_getLink($this->refId);
-                    ilUtil::redirect($link);
+                    $this->ctrl->redirectToURL($link);
                     break;
                 case "timeline":
-
-                    global $ilCtrl;
-
                     $type = ilObject2::_lookupType($this->refId, true);
 
-                    $ilCtrl->initBaseClass("ilrepositorygui");
-                    $ilCtrl->setParameterByClass("ilnewstimelinegui", "ref_id", $this->refId);
-                    $ilCtrl->setParameterByClass("ilnewstimelinegui", "cmd", "show");
+                    $this->ctrl->initBaseClass("ilrepositorygui");
+                    $this->ctrl->setParameterByClass("ilnewstimelinegui", "ref_id", $this->refId);
+                    $this->ctrl->setParameterByClass("ilnewstimelinegui", "cmd", "show");
 
                     if ($type === "crs") {
-                        $link = $ilCtrl->getLinkTargetByClass(["ilrepositorygui", "ilobjcoursegui", "ilnewstimelinegui"]);
-                        ilUtil::redirect(ilUtil::_getHttpPath() . "/ilias.php" . htmlspecialchars_decode($link));
+                        $link = $this->ctrl->getLinkTargetByClass(["ilrepositorygui", "ilobjcoursegui", "ilnewstimelinegui"]);
+                        $this->ctrl->redirectToURL(ilUtil::_getHttpPath() . "/" . htmlspecialchars_decode($link));
                     } elseif ($type === "grp") {
-                        $link = $ilCtrl->getLinkTargetByClass(["ilrepositorygui", "ilobjgroupgui", "ilnewstimelinegui"]);
-                        ilUtil::redirect(ilUtil::_getHttpPath() . "/ilias.php" . htmlspecialchars_decode($link));
+                        $link = $this->ctrl->getLinkTargetByClass(["ilrepositorygui", "ilobjgroupgui", "ilnewstimelinegui"]);
+                        $this->ctrl->redirectToURL(ilUtil::_getHttpPath() . "/" . htmlspecialchars_decode($link));
                     }
                     break;
             }
